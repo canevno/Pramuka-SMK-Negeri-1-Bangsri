@@ -3,63 +3,95 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\PetugasAbsensi;
-use App\Models\AttendanceRecord;
 use App\Models\Notification;
+use App\Models\PetugasAbsensi;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PetugasController extends Controller
 {
     public function index(Request $request)
     {
-        $petugas = AttendanceRecord::query()
-            ->select('petugas_name', 'petugas_nta', 'petugas_kelas')
-            ->selectRaw('MAX(created_at) as last_seen')
-            ->selectRaw('COUNT(*) as total_records')
-            ->groupBy('petugas_name', 'petugas_nta', 'petugas_kelas')
-            ->orderByDesc('last_seen')
-            ->get()
-            ->map(function ($record) {
-                $lastSeen = Carbon::parse($record->last_seen);
-                $activeThreshold = now()->subDays(14);
+        $now = Carbon::now();
 
-                return [
-                    'name' => $record->petugas_name,
-                    'nta' => $record->petugas_nta,
-                    'kelas' => $record->petugas_kelas,
-                    'last_seen' => $lastSeen,
-                    'total_records' => $record->total_records,
-                    'status' => $lastSeen->greaterThan($activeThreshold) ? 'Aktif' : 'Tidak Aktif',
-                    'last_seen_text' => $lastSeen->translatedFormat('d F Y H:i'),
-                ];
-            });
+        // 1. Rentang Waktu Akurat
+        $startOfWeek = $now->copy()->startOfWeek()->format('Y-m-d');
+        $endOfWeek   = $now->copy()->endOfWeek()->format('Y-m-d');
+        $currentYear = $now->year;
+        $currentMonth = $now->month;
 
-        return view('admin.petugas', [
-            'petugas' => $petugas,
-        ]);
+        // Label Tampilan Card
+        $currentWeekLabel = "Minggu Ke-" . $now->weekOfMonth . " (" . $now->copy()->startOfWeek()->format('d M') . " - " . $now->copy()->endOfWeek()->format('d M Y') . ")";
+        $currentMonthKey  = $now->translatedFormat('F Y');
+        $currentYearLabel = $currentYear;
+
+        // 2. TOTAL ABSENSI: Menghitung total seluruh siswa/anak yang diabsensi
+        $totalAbsensiAnak = DB::table('attendances')->count();
+
+        // 3. MINGGU INI: Menghitung jumlah sesi rekam kelas (Putra & Putri) minggu ini
+        $rekamMingguIni = DB::table('attendances')
+            ->whereBetween(DB::raw('DATE(record_date)'), [$startOfWeek, $endOfWeek])
+            ->select(DB::raw('COUNT(DISTINCT CONCAT(IFNULL(participant_kelas, ""), "_", DATE(record_date))) as total'))
+            ->value('total') ?? 0;
+
+        // 4. BULAN INI: Menghitung jumlah sesi rekam kelas (Putra & Putri) bulan ini
+        $rekamBulanIni = DB::table('attendances')
+            ->whereYear('record_date', $currentYear)
+            ->whereMonth('record_date', $currentMonth)
+            ->select(DB::raw('COUNT(DISTINCT CONCAT(IFNULL(participant_kelas, ""), "_", DATE(record_date))) as total'))
+            ->value('total') ?? 0;
+
+        // 5. TAHUN INI: Menghitung jumlah sesi rekam kelas (Putra & Putri) tahun ini
+        $rekamTahunIni = DB::table('attendances')
+            ->whereYear('record_date', $currentYear)
+            ->select(DB::raw('COUNT(DISTINCT CONCAT(IFNULL(participant_kelas, ""), "_", DATE(record_date))) as total'))
+            ->value('total') ?? 0;
+
+        // 6. Data Petugas & Total Rekam Per Petugas
+        $petugas = PetugasAbsensi::latest()->get()->map(function ($p) {
+            $countFromAttendances = DB::table('attendances')
+                ->where('petugas_nta', trim($p->nta))
+                ->select(DB::raw('COUNT(DISTINCT CONCAT(IFNULL(participant_kelas, ""), "_", DATE(record_date))) as total'))
+                ->value('total');
+
+            $p->jumlah_rekam = $countFromAttendances > 0 ? $countFromAttendances : ($p->attributes['jumlah_rekam'] ?? 0);
+
+            return $p;
+        });
+
+        return view('admin.petugas', compact(
+            'petugas',
+            'totalAbsensiAnak',
+            'rekamMingguIni',
+            'rekamBulanIni',
+            'rekamTahunIni',
+            'currentWeekLabel',
+            'currentMonthKey',
+            'currentYearLabel'
+        ));
     }
 
     public function storePetugas(Request $request)
     {
         $request->validate([
-            'nama' => 'required|string',
-            'nta' => 'required|string|unique:petugas_absensis,nta',
+            'nama'          => 'required|string',
+            'nta'           => 'required|string|unique:petugas_absensis,nta',
             'kelas_petugas' => 'required|string',
         ]);
 
         $petugas = PetugasAbsensi::create([
-            'nama' => trim($request->nama),
-            'nta' => trim($request->nta),
+            'nama'          => trim($request->nama),
+            'nta'           => trim($request->nta),
             'kelas_petugas' => trim($request->kelas_petugas),
-            'is_approved' => true,
-            'is_active' => true,
+            'is_approved'   => true,
+            'is_active'     => true,
         ]);
-        // Trigger notification
+
         Notification::create([
-            'title' => 'Petugas Baru Ditambahkan',
+            'title'   => 'Petugas Baru Ditambahkan',
             'message' => "Admin menambahkan petugas baru: {$petugas->nama} ({$petugas->kelas_petugas}).",
-            'type' => 'success',
+            'type'    => 'success',
         ]);
 
         return back()->with('success', 'Petugas berhasil ditambahkan!');
@@ -74,16 +106,16 @@ class PetugasController extends Controller
         $statusStr = $petugas->is_active ? 'Diaktifkan' : 'Dinonaktifkan';
 
         Notification::create([
-            'title' => "Petugas {$statusStr}",
-            'message' => "Status petugas {$petugas->nama} diubah menjadi " . strtolower($statusStr) . " oleh Admin.",
-            'type' => $petugas->is_active ? 'info' : 'warning',
+            'title'   => "Petugas {$statusStr}",
+            'message' => "Status keaktifan petugas {$petugas->nama} diubah menjadi " . strtolower($statusStr) . " oleh Admin.",
+            'type'    => $petugas->is_active ? 'info' : 'warning',
         ]);
 
         if ($request->wantsJson() || $request->ajax()) {
             return response()->json([
-                'success' => true,
+                'success'   => true,
                 'is_active' => (bool) $petugas->is_active,
-                'message' => "Status petugas {$petugas->nama} berhasil diubah.",
+                'message'   => "Status petugas {$petugas->nama} berhasil diubah.",
             ]);
         }
 
@@ -93,36 +125,31 @@ class PetugasController extends Controller
     public function markAllNotificationsRead()
     {
         Notification::where('is_read', false)->update(['is_read' => true]);
+
         return back()->with('success', 'Semua notifikasi telah ditandai dibaca.');
     }
 
-    /**
-     * Return latest notifications as JSON for admin polling
-     */
     public function fetchNotifications(Request $request)
     {
         $items = Notification::latest()->take(10)->get();
         $count = Notification::where('is_read', false)->count();
 
         return response()->json([
-            'success' => true,
+            'success'     => true,
             'unreadCount' => $count,
             'notifications' => $items->map(function ($n) {
                 return [
-                    'id' => $n->id,
-                    'title' => $n->title,
-                    'message' => $n->message,
-                    'type' => $n->type,
-                    'is_read' => (bool) $n->is_read,
+                    'id'         => $n->id,
+                    'title'      => $n->title,
+                    'message'    => $n->message,
+                    'type'       => $n->type,
+                    'is_read'    => (bool) $n->is_read,
                     'created_at' => $n->created_at->toIso8601String(),
                 ];
             }),
         ]);
     }
 
-    /**
-     * Mark a single notification as read and return its data
-     */
     public function markNotificationRead(Request $request, $id)
     {
         $notif = Notification::findOrFail($id);
@@ -130,13 +157,13 @@ class PetugasController extends Controller
         $notif->save();
 
         return response()->json([
-            'success' => true,
+            'success'      => true,
             'notification' => [
-                'id' => $notif->id,
-                'title' => $notif->title,
-                'message' => $notif->message,
-                'type' => $notif->type,
-                'is_read' => (bool) $notif->is_read,
+                'id'         => $notif->id,
+                'title'      => $notif->title,
+                'message'    => $notif->message,
+                'type'       => $notif->type,
+                'is_read'    => (bool) $notif->is_read,
                 'created_at' => $notif->created_at->toIso8601String(),
             ],
             'unreadCount' => Notification::where('is_read', false)->count(),

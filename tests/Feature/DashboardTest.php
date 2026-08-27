@@ -19,3 +19,16 @@ test('authenticated admin users can visit the dashboard', function () {
     $response = $this->get(route('dashboard'));
     $response->assertOk();
 });
+
+test('dashboard shows income collection chart for iuran', function () {
+    $user = User::factory()->create([
+        'is_admin' => true,
+    ]);
+    $this->actingAs($user);
+
+    $response = $this->get(route('dashboard'));
+
+    $response->assertOk()
+        ->assertSee('Grafik Uang Iuran')
+        ->assertSee('Total Iuran');
+});

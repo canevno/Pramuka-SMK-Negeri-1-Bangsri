@@ -4,12 +4,7 @@
 @section('content') {{-- Hapuskan baris ini jika menggunakan <x-admin-layout> --}}
 
 <div class="p-6">
-    <!-- Alert Notifikasi Sukses -->
-    @if (session('success'))
-        <div class="mb-4 p-4 text-sm text-green-700 bg-green-100 rounded-lg border border-green-200" role="alert">
-            <span class="font-medium">Berhasil!</span> {{ session('success') }}
-        </div>
-    @endif
+    
 
     <div class="flex justify-between items-center mb-6">
         <div>
@@ -18,8 +13,10 @@
         </div>
     </div>
 
+    <!-- Detail Modal is rendered via the layout modal stack (@stack('modals')) -->
+
     <!-- Tabel Data Pendaftar -->
-    <div class="overflow-x-auto relative shadow-md sm:rounded-lg">
+    <div class="overflow-x-auto relative shadow-md sm:rounded-lg hide-scrollbar">
         <table class="w-full text-sm text-left text-gray-500">
             <thead class="text-xs text-gray-700 uppercase bg-gray-100">
                 <tr>
@@ -35,36 +32,52 @@
             </thead>
             <tbody>
                 @forelse ($registrations as $index => $item)
-                    <tr class="bg-white border-b hover:bg-gray-50">
+                    @php
+                        // Normalize DB status_verifikasi to frontend values used by the select
+                        $currentStatus = 'pending';
+                        if (isset($item->status_verifikasi)) {
+                            if ($item->status_verifikasi === 'disetujui') $currentStatus = 'approved';
+                            elseif ($item->status_verifikasi === 'ditolak') $currentStatus = 'rejected';
+                            else $currentStatus = 'pending';
+                        }
+                    @endphp
+                    <tr data-rt="{{ e($item->rt) }}" data-rw="{{ e($item->rw) }}" data-kecamatan="{{ e($item->kecamatan) }}" data-kabupaten="{{ e($item->kabupaten) }}" data-ttl="{{ e($item->tempat_tanggal_lahir) }}" data-motivasi="{{ e($item->motivasi) }}" class="bg-white border-b hover:bg-gray-50">
                         <td class="py-4 px-4 font-medium text-gray-900">
                             {{ $registrations->firstItem() + $index }}
                         </td>
-                        <td class="py-4 px-4 font-semibold text-gray-900">
-                            {{ $item->nama }}
-                            <div class="text-xs text-gray-400 font-normal">
-                                {{ $item->tempat_tanggal_lahir }}
+                        <td class="py-4 px-4 font-semibold text-gray-900 align-middle">
+                            <div class="max-w-[220px] min-w-0">
+                                <a href="#" class="show-detail text-gray-900 hover:underline block whitespace-nowrap truncate" data-id="{{ $item->id }}">{{ $item->nama }}</a>
                             </div>
                         </td>
-                        <td class="py-4 px-4">{{ $item->kelas }}</td>
+                        <td class="py-4 px-4 whitespace-nowrap">{{ $item->kelas }}</td>
                         <td class="py-4 px-4">
                             <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $item->whatsapp) }}" target="_blank" class="text-blue-600 hover:underline">
                                 {{ $item->whatsapp }}
                             </a>
                         </td>
-                        <td class="py-4 px-4">
-                            @if($item->surat_izin_path)
-                                <a href="{{ asset('storage/' . $item->surat_izin_path) }}" target="_blank" class="inline-flex items-center px-2.5 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 rounded hover:bg-blue-200">
-                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-                                    Lihat Berkas
+                        <td class="py-4 px-4 align-middle">
+                            @php
+                                $hasSurat = false;
+                                try {
+                                    $hasSurat = $item->surat_izin_path && \Illuminate\Support\Facades\Storage::disk('public')->exists($item->surat_izin_path);
+                                } catch (\Throwable $e) {
+                                    $hasSurat = false;
+                                }
+                            @endphp
+                                @if($hasSurat)
+                                <a href="{{ route('admin.pendaftaran.surat.download', $item->id) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 rounded hover:bg-blue-200 whitespace-nowrap min-w-[96px]">
+                                    <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l-4-4m4 4l4-4"/></svg>
+                                    Download Berkas
                                 </a>
                             @else
                                 <span class="text-xs text-gray-400">Tidak ada berkas</span>
                             @endif
                         </td>
                         <td class="py-4 px-4">
-                            @if($item->status === 'approved')
+                            @if($currentStatus === 'approved')
                                 <span class="bg-green-100 text-green-800 text-xs font-semibold px-2.5 py-0.5 rounded border border-green-200">Disetujui</span>
-                            @elseif($item->status === 'rejected')
+                            @elseif($currentStatus === 'rejected')
                                 <span class="bg-red-100 text-red-800 text-xs font-semibold px-2.5 py-0.5 rounded border border-red-200">Ditolak</span>
                             @else
                                 <span class="bg-yellow-100 text-yellow-800 text-xs font-semibold px-2.5 py-0.5 rounded border border-yellow-200">Pending</span>
@@ -75,9 +88,9 @@
                                 @csrf
                                 @method('PATCH')
                                 <select name="status" onchange="this.form.submit()" class="text-xs rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 py-1 px-2">
-                                    <option value="pending" {{ $item->status === 'pending' ? 'selected' : '' }}>Pending</option>
-                                    <option value="approved" {{ $item->status === 'approved' ? 'selected' : '' }}>Setujui</option>
-                                    <option value="rejected" {{ $item->status === 'rejected' ? 'selected' : '' }}>Tolak</option>
+                                    <option value="pending" {{ $currentStatus === 'pending' ? 'selected' : '' }}>Pending</option>
+                                    <option value="approved" {{ $currentStatus === 'approved' ? 'selected' : '' }}>Setujui</option>
+                                    <option value="rejected" {{ $currentStatus === 'rejected' ? 'selected' : '' }}>Tolak</option>
                                 </select>
                             </form>
                         </td>
@@ -110,3 +123,105 @@
 
 {{-- 2. GANTI BARIS INI SESUAI PENUTUP FILE PENDAFTARAN LAKSANA --}}
 @endsection {{-- atau </x-admin-layout> --}}
+
+@push('modals')
+<div id="pendaftaran-detail-backdrop" class="fixed inset-0 hidden items-center justify-center" style="z-index: 2147483647 !important;">
+    <div id="pendaftaran-detail-overlay" class="absolute inset-0 bg-black/40 backdrop-blur-sm" style="z-index: 2147483646 !important;"></div>
+
+    <div id="pendaftaran-detail-card" class="relative mx-4 w-full max-w-3xl" style="z-index: 2147483647 !important; position: relative;">
+        <div class="rounded-lg border border-slate-200 bg-white p-6 shadow-lg" style="position: relative; z-index: 2147483647 !important;">
+            <div class="flex items-start justify-between">
+                <div>
+                    <h4 class="text-md font-semibold text-gray-800">Detail Pendaftar</h4>
+                    <p id="detail-nama" class="text-sm text-gray-500 mt-1"></p>
+                </div>
+                <button id="detail-close" class="text-2xl leading-none text-gray-400 hover:text-gray-700">×</button>
+            </div>
+
+            <div class="mt-5 space-y-5">
+                <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                    <h5 class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Identitas Alamat</h5>
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <div>
+                            <span class="block text-[11px] font-medium uppercase tracking-wide text-slate-500">RT</span>
+                            <div id="detail-rt" class="mt-1 text-base font-semibold text-slate-800"></div>
+                        </div>
+                        <div>
+                            <span class="block text-[11px] font-medium uppercase tracking-wide text-slate-500">RW</span>
+                            <div id="detail-rw" class="mt-1 text-base font-semibold text-slate-800"></div>
+                        </div>
+                        <div class="sm:col-span-2">
+                            <span class="block text-[11px] font-medium uppercase tracking-wide text-slate-500">Kecamatan</span>
+                            <div id="detail-kecamatan" class="mt-1 text-base font-semibold text-slate-800"></div>
+                        </div>
+                        <div>
+                            <span class="block text-[11px] font-medium uppercase tracking-wide text-slate-500">Kabupaten</span>
+                            <div id="detail-kabupaten" class="mt-1 text-base font-semibold text-slate-800"></div>
+                        </div>
+                        <div>
+                            <span class="block text-[11px] font-medium uppercase tracking-wide text-slate-500">Tempat, Tanggal Lahir</span>
+                            <div id="detail-ttl" class="mt-1 text-base font-semibold text-slate-800"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="rounded-xl border border-slate-200 bg-white p-4">
+                    <h5 class="mb-3 text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Motivasi</h5>
+                    <div id="detail-motivasi" class="text-sm leading-6 text-slate-700 whitespace-pre-line"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@endpush
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    var backdrop = document.getElementById('pendaftaran-detail-backdrop');
+    var overlay = document.getElementById('pendaftaran-detail-overlay');
+    var card = document.getElementById('pendaftaran-detail-card');
+    var closeBtn = document.getElementById('detail-close');
+
+    function openModal() {
+        if (!backdrop) return;
+        backdrop.classList.remove('hidden');
+        backdrop.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModal() {
+        if (!backdrop) return;
+        backdrop.classList.add('hidden');
+        backdrop.classList.remove('flex');
+        document.body.style.overflow = '';
+    }
+
+    function showDetailFromRow(row, name) {
+        if (!row) return;
+        document.getElementById('detail-nama').textContent = name || '';
+        document.getElementById('detail-rt').textContent = row.getAttribute('data-rt') || '';
+        document.getElementById('detail-rw').textContent = row.getAttribute('data-rw') || '';
+        document.getElementById('detail-kecamatan').textContent = row.getAttribute('data-kecamatan') || '';
+        document.getElementById('detail-kabupaten').textContent = row.getAttribute('data-kabupaten') || '';
+        document.getElementById('detail-ttl').textContent = row.getAttribute('data-ttl') || '';
+        document.getElementById('detail-motivasi').textContent = row.getAttribute('data-motivasi') || '';
+        openModal();
+    }
+
+    document.querySelectorAll('.show-detail').forEach(function(el){
+        el.addEventListener('click', function(e){
+            e.preventDefault();
+            var row = el.closest('tr');
+            showDetailFromRow(row, el.textContent.trim());
+        });
+    });
+
+    if (closeBtn) closeBtn.addEventListener('click', closeModal);
+    if (overlay) overlay.addEventListener('click', closeModal);
+
+    // close on ESC
+    document.addEventListener('keydown', function(e){ if (e.key === 'Escape') closeModal(); });
+});
+</script>
+@endpush

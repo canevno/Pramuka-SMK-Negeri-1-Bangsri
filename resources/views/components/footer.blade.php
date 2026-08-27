@@ -92,7 +92,6 @@
                         <a href="https://instagram.com/rreedka_" target="_blank" class="text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-white">Reykhandika Ibnu Ula</a>
                     </div>
                 </div>
-                <p class="w-full sm:w-auto sm:text-right">Dibuat untuk informasi kepramukaan SMK Negeri 1 Bangsri.</p>
             </div>
         </div>
     </div>

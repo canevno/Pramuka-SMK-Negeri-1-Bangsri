@@ -1,51 +1,124 @@
 <!DOCTYPE html>
-<html lang="id">
+<html lang="id" class="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>Admin Login - Scoutmind</title>
+    <title>Scoutmind — Admin Login</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     @livewireStyles
     <style>[x-cloak]{display:none!important}</style>
 </head>
-<body class="min-h-screen bg-slate-950 text-white">
-    <div class="flex min-h-screen items-center justify-center px-4 py-12">
-        <div class="w-full max-w-md rounded-3xl border border-white/10 bg-slate-900/90 p-8 shadow-2xl shadow-black/20 backdrop-blur-sm">
-            <div class="mb-8 text-center">
-                <div class="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-white text-slate-950">
-                    <svg viewBox="0 0 24 24" class="h-8 w-8" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 7v4a4 4 0 0 0 4 4h2"></path>
-                        <path d="M17 17h2a4 4 0 0 0 4-4V7"></path>
-                        <path d="M9 7V4a3 3 0 0 1 3-3h0a3 3 0 0 1 3 3v3"></path>
-                        <path d="M8 12h8"></path>
-                    </svg>
+<body class="bg-neutral-950 text-neutral-100 font-sans antialiased min-h-screen selection:bg-purple-500/30 selection:text-purple-200">
+
+    <div class="min-h-screen w-full flex flex-col lg:grid lg:grid-cols-12 lg:h-screen lg:overflow-hidden">
+
+        <!-- SISI KIRI: Polos & Kosong -->
+        <div class="hidden lg:block lg:col-span-7 bg-neutral-950 border-r border-neutral-800/80"></div>
+
+        <!-- SISI KANAN: Form Login -->
+        <div class="lg:col-span-5 p-6 sm:p-10 lg:p-12 flex flex-col justify-center bg-neutral-950 min-h-screen lg:min-h-0" 
+             x-data="{ 
+                 showPassword: false, 
+                 selectedRole: '{{ old('role', '') }}', 
+                 isSubmitting: false
+             }">
+            
+            <div class="max-w-sm w-full mx-auto space-y-8">
+                
+                <!-- Logo Header -->
+                <div class="flex items-center gap-2.5">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-neutral-900 border border-neutral-800 text-white font-bold text-sm">
+                        <img src="{{ asset('images/logo.png') }}" 
+                             alt="Logo Scoutmind" 
+                             class="h-5 w-5 object-contain" 
+                             onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                        <svg class="hidden w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+                        </svg>
+                    </div>
+                    <span class="text-sm font-semibold tracking-wider text-neutral-200 uppercase">Scoutmind</span>
                 </div>
-                <h1 class="text-2xl font-semibold">Log in to your account</h1>
-                <p class="mt-2 text-sm text-slate-400">Enter your email and password below to log in.</p>
+
+                <!-- Form Header -->
+                <div>
+                    <h1 class="text-xl font-bold tracking-tight text-white">Log In</h1>
+                    <p class="text-xs text-neutral-400 mt-1">Masuk ke sistem administrator Scoutmind.</p>
+                </div>
+
+                @if($errors->any())
+                    <div class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3.5 py-2.5 text-xs text-rose-400">
+                        {{ $errors->first() }}
+                    </div>
+                @endif
+
+                <!-- (Google login removed) -->
+
+                <!-- Form Login Manual -->
+                <form method="POST" action="{{ url('/admin/login') }}" @submit="isSubmitting = true" class="space-y-4">
+                    @csrf
+
+                    <!-- Role Dropdown -->
+                    <div>
+                        <label class="block text-[11px] font-medium text-neutral-300 mb-1.5">Role / Jabatan</label>
+                        <div class="relative">
+                            <select name="role" x-model="selectedRole" required 
+                                class="w-full rounded-xl bg-neutral-900 border border-neutral-800 px-3.5 py-2.5 text-xs text-neutral-200 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition appearance-none cursor-pointer">
+                                <option value="" disabled class="text-neutral-500">Pilih Role</option>
+                                <option value="super_admin" class="bg-neutral-900 text-neutral-200">Super Admin</option>
+                                <option value="pembina" class="bg-neutral-900 text-neutral-200">Pembina</option>
+                                <option value="dewan_ambalan" class="bg-neutral-900 text-neutral-200">Dewan Ambalan</option>
+                                <option value="bendahara" class="bg-neutral-900 text-neutral-200">Bendahara</option>
+                            </select>
+                            <div class="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Input Email -->
+                    <div>
+                        <label class="block text-[11px] font-medium text-neutral-300 mb-1.5">Email</label>
+                        <input type="email" name="email" value="{{ old('email') }}" required 
+                            class="w-full rounded-xl bg-neutral-900 border border-neutral-800 px-3.5 py-2.5 text-xs text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition" 
+                            placeholder="Masukkan email" />
+                    </div>
+
+                    <!-- Input Password -->
+                    <div>
+                        <label class="block text-[11px] font-medium text-neutral-300 mb-1.5">Password</label>
+                        <div class="relative">
+                            <input :type="showPassword ? 'text' : 'password'" name="password" required 
+                                class="w-full rounded-xl bg-neutral-900 border border-neutral-800 px-3.5 py-2.5 text-xs text-neutral-200 placeholder-neutral-600 focus:outline-none focus:border-purple-500 focus:ring-1 focus:ring-purple-500 transition pr-9" 
+                                placeholder="••••••••" />
+                            
+                            <button type="button" @click="showPassword = !showPassword" class="absolute right-3 top-1/2 -translate-y-1/2 text-neutral-500 hover:text-neutral-300 transition">
+                                <svg x-show="!showPassword" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
+                                <svg x-show="showPassword" x-cloak class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858-5.908a10.02 10.02 0 013.982-.863c4.478 0 8.268 2.943 9.542 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21M3 3l18 18"/></svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Submit Button -->
+                    <button type="submit" 
+                            :disabled="isSubmitting"
+                            class="w-full rounded-xl bg-white py-2.5 text-xs font-semibold text-neutral-950 hover:bg-neutral-200 transition duration-200 active:scale-[0.98] shadow-sm !mt-6 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60">
+                        <span x-show="!isSubmitting">Log In</span>
+                        <span x-show="isSubmitting" x-cloak class="flex items-center gap-2">
+                            <svg class="animate-spin h-3.5 w-3.5 text-neutral-950" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            Memproses...
+                        </span>
+                    </button>
+                </form>
+
             </div>
 
-            @if($errors->any())
-                <div class="mb-4 rounded-xl bg-red-600/10 px-4 py-3 text-sm text-red-200">
-                    {{ $errors->first() }}
-                </div>
-            @endif
-
-            <form method="POST" action="{{ url('/admin/login') }}">
-                @csrf
-                <div class="space-y-5">
-                    <label class="block text-sm font-medium text-slate-300">
-                        Email address
-                        <input type="email" name="email" required class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-white/50 focus:ring-2 focus:ring-white/10" placeholder="email@example.com" />
-                    </label>
-                    <label class="block text-sm font-medium text-slate-300">
-                        Password
-                        <input type="password" name="password" required class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none focus:border-white/50 focus:ring-2 focus:ring-white/10" placeholder="Password" />
-                    </label>
-                    <button class="w-full rounded-2xl bg-white py-3 text-sm font-semibold text-slate-950 transition hover:bg-slate-100">Log in</button>
-                </div>
-            </form>
         </div>
+
     </div>
+
     @livewireScripts
 </body>
 </html>

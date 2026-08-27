@@ -19,5 +19,22 @@ class PetugasAbsensi extends Model
         'is_approved',
         'is_active',
         'terakhir_melakukan',
+        'jumlah_rekam',
     ];
+
+    /**
+     * Cast fields to native types
+     */
+    protected $casts = [
+        'jumlah_rekam' => 'integer',
+    ];
+
+    /**
+     * Relasi ke model AttendanceRecord berdasarkan NTA
+     */
+    public function attendanceRecords()
+    {
+        // Parameter: (ModelTujuan, FK_di_AttendanceRecord, PK_di_PetugasAbsensi)
+        return $this->hasMany(AttendanceRecord::class, 'petugas_nta', 'nta');
+    }
 }

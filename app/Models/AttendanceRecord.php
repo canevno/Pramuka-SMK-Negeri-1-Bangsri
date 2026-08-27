@@ -9,6 +9,8 @@ class AttendanceRecord extends Model
 {
     use HasFactory;
 
+    protected $table = 'attendances'; // Hubungkan ke tabel attendances
+
     protected $fillable = [
         'user_id',
         'participant_id',

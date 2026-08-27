@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -21,5 +22,15 @@ class DatabaseSeeder extends Seeder
             'name' => 'Test User',
             'email' => 'test@example.com',
         ]);
+
+        // Membuat atau memperbarui akun admin secara permanen
+        User::updateOrCreate(
+            ['email' => 'pramukasmkn1bangsri@gmail.com'],
+            [
+                'name'     => 'Super Admin Pramuka',
+                'password' => Hash::make('dewanambalan0'),
+                'is_admin' => true, // Sesuaikan jika menggunakan 'role' => 'admin'
+            ]
+        );
     }
 }

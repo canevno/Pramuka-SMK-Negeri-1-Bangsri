@@ -40,36 +40,40 @@
                     </div>
                 </div>
 
-                <div class="grid gap-4 grid-cols-2">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">RT</label>
-                        <input type="text" name="rt" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Contoh: 01" />
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">RW</label>
-                        <input type="text" name="rw" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Contoh: 02" />
-                    </div>
-                </div>
+                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                    <h3 class="text-sm font-semibold text-slate-800 dark:text-slate-100 mb-3">Detail Domisili & Data Pribadi</h3>
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Kecamatan</label>
-                    <input type="text" name="kecamatan" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Kecamatan" />
-                </div>
-
-                <div class="grid gap-4 md:grid-cols-2">
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Kabupaten</label>
-                        <input type="text" name="kabupaten" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Kabupaten" />
+                    <div class="grid gap-4 grid-cols-2">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">RT</label>
+                            <input type="text" name="rt" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Contoh: 01" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">RW</label>
+                            <input type="text" name="rw" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Contoh: 02" />
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Tempat, Tanggal Lahir</label>
-                        <input type="text" name="tempat_tanggal_lahir" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Contoh: Bangsri, 10 Januari 2010" />
-                    </div>
-                </div>
 
-                <div>
-                    <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Alasan / Motivasi</label>
-                    <textarea name="motivasi" rows="4" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Jelaskan alasan dan motivasi Anda mendaftar Bantara"></textarea>
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Kecamatan</label>
+                        <input type="text" name="kecamatan" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Kecamatan" />
+                    </div>
+
+                    <div class="grid gap-4 md:grid-cols-2 mt-4">
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Kabupaten</label>
+                            <input type="text" name="kabupaten" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Kabupaten" />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Tempat, Tanggal Lahir</label>
+                            <input type="text" name="tempat_tanggal_lahir" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Contoh: Bangsri, 10 Januari 2010" />
+                        </div>
+                    </div>
+
+                    <div class="mt-4">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-200">Alasan / Motivasi</label>
+                        <textarea name="motivasi" rows="4" required class="mt-2 w-full rounded-2xl border border-slate-300 bg-white px-4 py-3 text-sm text-slate-900 outline-none transition duration-150 ease-in-out focus:border-slate-500 focus:ring-2 focus:ring-slate-200 dark:border-slate-700 dark:bg-slate-950 dark:text-white" placeholder="Jelaskan alasan dan motivasi Anda mendaftar Bantara"></textarea>
+                    </div>
                 </div>
 
                 <div>

@@ -31,6 +31,7 @@ class User extends Authenticatable implements PasskeyUser
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'is_admin', // Tambahkan kolom ini
         ];
     }
 
