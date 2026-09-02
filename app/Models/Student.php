@@ -9,10 +9,11 @@ class Student extends Model
 {
     use HasFactory;
 
-    // Tambahkan properti ini
     protected $fillable = [
         'nama',
-        'kelas',
+        'kelas_asal',
+        'sangga',
+        'sub_sangga',
         'ambalan',
     ];
 }

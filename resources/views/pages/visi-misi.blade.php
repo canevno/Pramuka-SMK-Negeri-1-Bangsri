@@ -1,6 +1,6 @@
-﻿
+@extends('layouts.frontend')
 
-<?php $__env->startSection('content'); ?>
+@section('content')
 <div x-data="{ 
     activeTab: 'kepanduan-dunia',
     changeTab(tabName) {
@@ -14,12 +14,12 @@
             
             <!-- SIDEBAR KIRI -->
             <aside class="order-2 lg:order-1 lg:col-span-4 xl:col-span-3 lg:sticky lg:top-28 self-start z-10">
-                <nav class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                <nav class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm space-y-3">
                     
-                    <!-- Kategori: Sejarah -->
+                    <!-- Kategori: Profil -->
                     <div class="border-b border-slate-100 pb-2">
                         <span class="block px-3 py-1.5 text-base font-bold text-slate-950">
-                            Sejarah
+                            Profil
                         </span>
                         <div class="mt-0.5 space-y-0.5 pl-3">
                             <button @click="changeTab('kepanduan-dunia')" 
@@ -42,27 +42,42 @@
                                 class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition">
                                 AD - ART Munas 2023
                             </button>
+                            <button @click="changeTab('lambang')" 
+                                :class="activeTab === 'lambang' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
+                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition">
+                                Lambang
+                            </button>
+                            <button @click="changeTab('hymne-mars')" 
+                                :class="activeTab === 'hymne-mars' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
+                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition">
+                                Hymne & Mars
+                            </button>
+                            <button @click="changeTab('uu-pramuka')" 
+                                :class="activeTab === 'uu-pramuka' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
+                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition leading-snug">
+                                Undang-undang Nomor 12 Tahun 2010 Tentang Gerakan Pramuka
+                            </button>
                         </div>
                     </div>
 
-                    <!-- Menu Utama Lainnya -->
-                    <button @click="changeTab('lambang')" 
-                        :class="activeTab === 'lambang' ? 'bg-slate-100 text-slate-950' : 'text-slate-950 hover:bg-slate-50'"
-                        class="w-full text-left border-b border-slate-100 px-3 py-2.5 text-base font-bold transition">
-                        Lambang
-                    </button>
-
-                    <button @click="changeTab('hymne-mars')" 
-                        :class="activeTab === 'hymne-mars' ? 'bg-slate-100 text-slate-950' : 'text-slate-950 hover:bg-slate-50'"
-                        class="w-full text-left border-b border-slate-100 px-3 py-2.5 text-base font-bold transition">
-                        Hymne dan Mars
-                    </button>
-
-                    <button @click="changeTab('uu-pramuka')" 
-                        :class="activeTab === 'uu-pramuka' ? 'bg-slate-100 text-slate-950' : 'text-slate-950 hover:bg-slate-50'"
-                        class="w-full text-left px-3 py-2.5 text-base font-bold leading-snug transition">
-                        Undang-undang Nomor 12 Tahun 2010 Tentang Gerakan Pramuka
-                    </button>
+                    <!-- Kategori: Visi & Misi -->
+                    <div>
+                        <span class="block px-3 py-1.5 text-base font-bold text-slate-950">
+                            Visi & Misi
+                        </span>
+                        <div class="mt-0.5 space-y-0.5 pl-3">
+                            <button @click="changeTab('visi-misi-kwarnas')" 
+                                :class="activeTab === 'visi-misi-kwarnas' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
+                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition">
+                                Visi & Misi Kwarnas
+                            </button>
+                            <button @click="changeTab('visi-misi-pangkalan')" 
+                                :class="activeTab === 'visi-misi-pangkalan' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
+                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition">
+                                Visi & Misi Pangkalan
+                            </button>
+                        </div>
+                    </div>
 
                 </nav>
             </aside>
@@ -78,7 +93,7 @@
                     
                     <div class="mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-2 shadow-sm sm:max-w-[460px]">
                         <div class="h-[180px] overflow-hidden rounded-xl bg-slate-100 sm:h-[210px]">
-                            <img src="<?php echo e(asset('images/download.jpg')); ?>" 
+                            <img src="{{ asset('images/download.jpg') }}" 
                                  alt="Kepanduan Dunia - Baden Powell" 
                                  class="h-full w-full object-contain object-center">
                         </div>
@@ -151,7 +166,7 @@
                     </h2>
 
                     <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-                        <img src="<?php echo e(asset('images/kepanduan indonesia.jpg')); ?>" 
+                        <img src="{{ asset('images/kepanduan indonesia.jpg') }}" 
                              alt="Kepanduan Indonesia" 
                              class="mx-auto h-auto w-auto max-h-[280px] object-cover sm:max-h-[320px]">
                     </div>
@@ -191,7 +206,7 @@
                     </h2>
 
                     <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-                        <img src="<?php echo e(asset('images/gerakanpramuka.jpg')); ?>" 
+                        <img src="{{ asset('images/gerakanpramuka.jpg') }}" 
                              alt="Gerakan Pramuka" 
                              class="mx-auto h-auto w-auto max-h-[240px] object-contain sm:max-h-[280px]">
                     </div>
@@ -280,7 +295,7 @@
                         <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm">
                             <div class="flex justify-center mb-6">
                                 <img
-                                    src="<?php echo e(asset('images/Tunas Kelapa.jpg')); ?>"
+                                    src="{{ asset('images/Tunas Kelapa.jpg') }}"
                                     alt="Lambang Tunas Kelapa Pramuka"
                                     class="h-auto max-h-[180px] w-auto object-contain drop-shadow-md sm:max-h-[220px]"
                                 >
@@ -368,7 +383,7 @@
 
                             <!-- Audio Player Hymne -->
                             <audio controls class="w-full rounded-lg pt-2">
-                                <source src="<?php echo e(asset('Hymne-Satya-Darma-Pramuka.mp3')); ?>" type="audio/mpeg">
+                                <source src="{{ asset('Hymne-Satya-Darma-Pramuka.mp3') }}" type="audio/mpeg">
                                 Browser Anda tidak mendukung pemutar audio.
                             </audio>
                         </div>
@@ -395,9 +410,9 @@
                                 Jayalah Pramuka Jayalah Indonesia
                             </p>
 
-                            <!-- Audio Player Mars (Di Bawah Teks Lagu) -->
+                            <!-- Audio Player Mars -->
                             <audio controls class="w-full rounded-lg pt-2">
-                                <source src="<?php echo e(asset('Mars-Jayalah-Pramuka.mp3')); ?>" type="audio/mpeg">
+                                <source src="{{ asset('Mars-Jayalah-Pramuka.mp3') }}" type="audio/mpeg">
                                 Browser Anda tidak mendukung pemutar audio.
                             </audio>
                         </div>
@@ -554,10 +569,213 @@
                     </div>
                 </section>
 
+
+                <!-- 8. Visi & Misi Kwarnas -->
+                <section x-show="activeTab === 'visi-misi-kwarnas'" x-cloak class="pb-2 sm:pb-12 space-y-6">
+                    <!-- Judul + Logo Kwarnas -->
+                    <div class="flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-6">
+                        <img src="{{ asset('kwarnaslogo.png') }}" 
+                             alt="Logo Kwarnas" 
+                             class="h-28 sm:h-40 w-auto object-contain shrink-0 order-1 sm:order-2">
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
+                            Visi, Misi, Dan Tujuan Kwartir Nasional (Kwarnas)
+                        </h2>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-6 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
+                        
+                        <!-- VISI -->
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-bold text-slate-900">
+                                Visi Pengembangan Gerakan Pramuka
+                            </h3>
+
+                            <p>
+                                Gerakan Pramuka sebagai organisasi pendidikan nonformal yang turut berperan dalam pendidikan kaum muda Indonesia. Tantangan utama yang dihadapi adalah bagaimana menempatkan Pramuka sebagai bagian penting dalam lingkungan strategis Indonesia serta memposisikan kegiatan Pramuka sebagai <em>centre of excellence</em> bagi para pemuda.
+                            </p>
+
+                            <p>
+                                Gerakan Pramuka merupakan bagian dari sistem pendidikan nasional yang termasuk ke dalam jalur pendidikan nonformal yang berupaya membentuk kepribadian kaum muda yang berakhlak mulia, berjiwa patriotik, taat hukum, disiplin, menjunjung tinggi nilai-nilai luhur bangsa dan memiliki kecakapan hidup. Melalui kegiatan Gerakan Pramuka diharapkan karakter dan kepribadian kaum muda dapat dibina dan dikembangkan guna turut serta dalam pembangunan nasional.
+                            </p>
+
+                            <p>
+                                Dalam hal ini, Gerakan Pramuka menjadi wadah pembentukan karakter dan kepribadian kaum muda. Berdasarkan hal tersebut, dalam upaya Penyusunan Arah Kebijakan Gerakan Pramuka Indonesia Tahun 2014–2045 ditetapkan Visi Gerakan Pramuka yang akan diwujudkan selama 25 tahun ke depan, yaitu: <strong>”Gerakan Pramuka Wadah Utama Pembentukan Kader Pemimpin Bangsa”</strong>.
+                            </p>
+                        </div>
+
+                        <!-- MISI -->
+                        <div class="space-y-4 pt-4 border-t border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-900">
+                                Misi Perencanaan dan Pengembangan Gerakan Pramuka
+                            </h3>
+
+                            <p>
+                                Gerakan Pramuka sebagaimana diamanatkan dalam Undang-Undang RI Nomor 12 Tahun 2010 tentang Gerakan Pramuka memiliki tugas berat sebagai wahana negara dan bangsa dalam rangka menyiapkan kader-kader muda pemimpin bangsa di masa depan.
+                            </p>
+
+                            <p>
+                                Tugas ini sangat berat jika hanya dipikul sendiri oleh Gerakan Pramuka. Dalam praktiknya, tentu saja memerlukan dukungan seluruh pemangku kepentingan negara dan bangsa agar cita-cita bersama tersebut dapat terwujud dengan seksama, sistematis, dan terstruktur.
+                            </p>
+
+                            <p>
+                                Keluaran yang dihasilkan oleh Gerakan Pramuka harus memenuhi kualifikasi objektif yang menjadi bekal kader pramuka dalam mengarungi tantangan lokal, nasional, regional, dan global di semua lini kehidupan yang akan dijalaninya.
+                            </p>
+
+                            <p>
+                                Dalam kaca mata Gerakan Pramuka, kualifikasi itu berwujud pada empat hal yaitu karakter, kecakapan hidup, bela negara, dan kerelawanan. Keempat hal ini adalah modal fundamental bagi seorang calon pemimpin bangsa dan negara di masa depan.
+                            </p>
+
+                            <p>
+                                Untuk itu, kualitas keluaran Gerakan Pramuka harus dippproses melalui serangkaian program, kegiatan, dan latihan-latihan keorganisasian yang terus menerus tanpa henti.
+                            </p>
+
+                            <p class="font-semibold text-slate-900">
+                                Gerakan Pramuka menetapkan Misi:
+                            </p>
+
+                            <ol class="list-decimal pl-6 space-y-2 text-slate-700">
+                                <li>Mewujudkan Sistem Pendidikan Kepramukaan yang Mampu Menjawab tantangan Lingkungan Strategis Bangsa dan Menghasilkan Pemimpin-pemimpin Bangsa yang Berkualitas sesuai Satya dan Darma Pramuka.</li>
+                                <li>Mewujudkan sistem keorganisasian dan kepengelolaan Gerakan Pramuka yang menyeimbangkan voluntarisme dan profesionalisme, modern, dan melayani seluruh pemangku kepentingan kepramukaan.</li>
+                                <li>Mewujudkan kapasitas keuangan, usaha, dan aset Gerakan Pramuka yang memenuhi kebutuhan penyelenggaraan pendidikan kepramukaan dan memiliki kemandirian mendasar bagi keberlanjutan Gerakan Pramuka.</li>
+                                <li>Mewujudkan kiprah dan pengabdian Gerakan Pramuka kepada masyarakat, bangsa, dan negara secara maksimal melalui pendekatan informatika, komunikasi publik dan semangat kerelewanan yang berkelanjutan.</li>
+                            </ol>
+
+                            <p>
+                                Misi Gerakan Pramuka ini mempersiapkan kaum muda untuk menjadi pemimpin yang berkarakter dan berbudi pekerti luhur sebagai generasi penerus bangsa yang menjadi penentu arah kebijakan pembangunan nasional, mengedepankan pendidikan watak, kepribadian, dan budi pekerti luhur serta memberikan pembekalan kecakapan hidup agar menjadi kader pembangunan yang handal guna menghadapi tantangan persaingan global dengan berlandaskan sistem nilai Satya dan Darma Pramuka.
+                            </p>
+                        </div>
+
+                        <!-- TUJUAN -->
+                        <div class="space-y-4 pt-4 border-t border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-900">
+                                Tujuan Pengembangan Gerakan Pramuka
+                            </h3>
+
+                            <p>
+                                Gerakan Pramuka bertujuan untuk melahirkan lapisan dan barisan pemimpin bangsa Indonesia yang sesuai dengan Satya dan Darma Pramuka, mengingat situasi dan kondisi bangsa yang semakin terbelah secara sosial, ekonomi, dan politik.
+                            </p>
+
+                            <p>
+                                Karakteristik dari pemimpin yang akan dilahirkan adalah berkarakter, berkecakapan, bela negara, dan berkerelawan yang tinggi. Berkenaan dengan hal tersebut, maka ditetapkan tujuan, diantaranya:
+                            </p>
+
+                            <ol class="list-decimal pl-6 space-y-2 text-slate-700">
+                                <li>Gerakan Pramuka memiliki ketahanan diri (<em>scout resilience</em>) yang ditopang dengan infrastruktur minimum yang berkelanjutan.</li>
+                                <li>Gerakan Pramuka menjadi paling unggul dalam pendidikan nonformal di Indonesia.</li>
+                                <li>Gerakan Pramuka menjadi reservoir yang strategis bagi bangsa dan negara Indonesia dalam mengamalkan nilai-nilai Pancasila.</li>
+                                <li>Gerakan Pramuka memiliki citra yang positif dan mampu bekerjasama dengan seluruh pemangku kepentingan secara konstitusional dan terintegrasi.</li>
+                                <li>Gerakan Pramuka memiliki kelembagaan, sumberdaya manusia, dan produktivitas yang bermutu. Gerakan Pramuka menyiapkan kader pemimpin bangsa yang berakhlak mulia.</li>
+                            </ol>
+
+                            <p>
+                                Berdasarkan tujuan pengembangan Gerakan Pramuka, kaum muda dibentuk menjadi pramuka yang memiliki kepribadian yang beriman, bertakwa, berahlak mulia, berjiwa patriotik, taat hukum, disiplin, menjunjung tinggi nilai-nilai luhur bangsa, berkecakapan hidup, sehat jasmani dan rohani untuk diciptakan sebagai pemimpin yang berkarakter dan berbudi pekerti luhur dalam upaya pembangunan bangsa dan negara.
+                            </p>
+
+                            <p>
+                                Tujuan tersebut menjadi cita-cita Gerakan Pramuka yang mengarah kepada upaya pembentukan karakter dan kepribadian dengan menjunjung tinggi persatuan dan kesatuan bangsa Indonesia.
+                            </p>
+                        </div>
+
+                    </div>
+                </section>
+
+
+                <!-- 9. Visi & Misi Pangkalan / Ambalan -->
+                <section x-show="activeTab === 'visi-misi-pangkalan'" x-cloak class="pb-2 sm:pb-12 space-y-6">
+                    <!-- Judul + Dual Logo Ambalan (Bersebelahan) -->
+                    <div class="flex flex-col sm:flex-row items-center sm:justify-between gap-4 sm:gap-6">
+                        <!-- Container Dua Logo Bersebelahan -->
+                        <div class="flex items-center justify-center gap-3 sm:gap-4 shrink-0 order-1 sm:order-2">
+                            <img src="{{ asset('images/logos/aflogo.png') }}" 
+                                 alt="Logo Ambalan Putra" 
+                                 class="h-24 sm:h-36 w-auto object-contain">
+                            <img src="{{ asset('images/logos/dslogo.png') }}" 
+                                 alt="Logo Ambalan Putri" 
+                                 class="h-24 sm:h-36 w-auto object-contain">
+                        </div>
+                        
+                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
+                            Visi, Misi, Dan Tujuan Ambalan Pangkalan
+                        </h2>
+                    </div>
+
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-6 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
+                        
+                        <!-- VISI -->
+                        <div class="space-y-4">
+                            <h3 class="text-xl font-bold text-slate-900">
+                                Visi Ambalan
+                            </h3>
+
+                            <p>
+                                Ambalan Penegak Pangkalan bertekad menjadi wadah pembinaan generasi muda yang unggul, berkarakter, dan berdaya saing tinggi di tingkat pangkalan maupun lingkungan masyarakat. Melalui pendidikan kepramukaan yang berkesinambungan, Ambalan berkomitmen membentuk Pramuka Penegak yang tangguh, mandiri, dan berjiwa kepemimpinan.
+                            </p>
+
+                            <p>
+                                Berlandaskan asas Pancasila serta Kode Kehormatan Pramuka, Ambalan berusaha mengarahkan seluruh potensi anggotanya agar siap menjadi pelopor kebaikan, inovasi, dan pengabdian bagi lingkungan sekolah serta masyarakat sekitar.
+                            </p>
+
+                            <p>
+                                Berdasarkan semangat tersebut, ditetapkan Visi Ambalan Pangkalan, yaitu: <strong>”Mewujudkan Pramuka Penegak yang Berkarakter Luhur, Cerdas, Mandiri, Berwawasan Global, serta Berlandaskan Tri Satya dan Dasa Darma.”</strong>
+                            </p>
+                        </div>
+
+                        <!-- MISI -->
+                        <div class="space-y-4 pt-4 border-t border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-900">
+                                Misi Ambalan
+                            </h3>
+
+                            <p>
+                                Untuk mewujudkan visi tersebut, Ambalan Penegak menjalankan serangkaian misi strategis yang berfokus pada pengembangan kualitas karakter, keterampilan teknis kepramukaan, dan jiwa kepemimpinan setiap anggota.
+                            </p>
+
+                            <p class="font-semibold text-slate-900">
+                                Ambalan Pangkalan menetapkan Misi:
+                            </p>
+
+                            <ol class="list-decimal pl-6 space-y-2 text-slate-700">
+                                <li>Meningkatkan kualitas keimanan dan ketakwaan kepada Tuhan Yang Maha Esa melalui pengamalan Kode Kehormatan Pramuka dalam kehidupan sehari-hari.</li>
+                                <li>Menyelenggarakan kegiatan kepramukaan yang interaktif, edukatif, inovatif, dan menantang di alam terbuka berbasis kecakapan hidup (<em>life skills</em>).</li>
+                                <li>Membina potensi kepemimpinan, kedisiplinan, dan jiwa kewirausahaan (<em>scoutpreneurship</em>) anggota Ambalan guna menghadapi tantangan zaman.</li>
+                                <li>Mengembangkan sikap kepedulian sosial, kerelawanan, dan bakti masyarakat demi terwujudnya hubungan yang harmonis dengan lingkungan pangkalan dan masyarakat.</li>
+                                <li>Membangun tata kelola organisasi Ambalan yang tertib, transparan, modern, dan berorientasi pada persaudaraan bakti.</li>
+                            </ol>
+
+                            <p>
+                                Pelaksanaan misi ini diharapkan mampu membentuk anggota Ambalan yang siap melangkah ke jenjang Penegak Bantara, Laksana, hingga mencapai tingkatan Pramuka Garuda.
+                            </p>
+                        </div>
+
+                        <!-- TUJUAN -->
+                        <div class="space-y-4 pt-4 border-t border-slate-100">
+                            <h3 class="text-xl font-bold text-slate-900">
+                                Tujuan Ambalan
+                            </h3>
+
+                            <p>
+                                Pembinaan dan kegiatan di Ambalan Pangkalan diarahkan untuk meletakkan pondasi kepemimpinan yang kuat pada diri setiap Penegak. Tujuan utama yang ingin dicapai meliputi:
+                            </p>
+
+                            <ol class="list-decimal pl-6 space-y-2 text-slate-700">
+                                <li>Membentuk anggota Penegak yang beriman, bertakwa, berakhlak mulia, dan berjiwa patriotik.</li>
+                                <li>Mencetak calon pemimpin muda yang memiliki kedisiplinan tinggi, tanggung jawab, serta kecakapan berorganisasi.</li>
+                                <li>Meningkatkan keterampilan kepramukaan (<em>scout skill</em>) dan wawasan kebangsaan seluruh anggota Ambalan.</li>
+                                <li>Menghasilkan Pramuka Garuda yang mampu menjadi teladan baik di lingkungan sekolah maupun masyarakat luas.</li>
+                                <li>Menciptakan iklim persaudaraan yang erat antar-anggota Penegak, Dewan Ambalan, dan Pembina Pangkalan.</li>
+                            </ol>
+
+                            <p>
+                                Dengan tercapainya tujuan tersebut, Ambalan Pangkalan diharapkan terus mencetak kader-kader bangsa yang siap mengabdi demi kemajuan Indonesia.
+                            </p>
+                        </div>
+
+                    </div>
+                </section>
+
             </main>
 
         </div>
     </div>
 </div>
-<?php $__env->stopSection(); ?>
-<?php echo $__env->make('layouts.frontend', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views/pages/about.blade.php ENDPATH**/ ?>
+@endsection

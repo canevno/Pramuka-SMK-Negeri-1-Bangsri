@@ -393,6 +393,18 @@
                     class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 placeholder-slate-400 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:placeholder-slate-500 dark:focus:border-emerald-500 dark:focus:ring-emerald-500" 
                     placeholder="X MPLB 1">
             </div>
+
+            <!-- PILIHAN JENIS KELAMIN PETUGAS -->
+            <div>
+                <label class="mb-1.5 block text-xs font-semibold text-slate-700 dark:text-slate-300">Jenis Kelamin / Absensi Petugas</label>
+                <select name="jenis_kelamin" required 
+                    class="w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 transition-colors focus:border-emerald-500 focus:outline-none focus:ring-1 focus:ring-emerald-500 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 dark:focus:border-emerald-500 dark:focus:ring-emerald-500">
+                    <option value="" disabled selected>-- Pilih Jenis Kelamin --</option>
+                    <option value="L">Laki-Laki (Putra / PA)</option>
+                    <option value="P">Perempuan (Putri / PI)</option>
+                </select>
+            </div>
+
             <div class="flex items-center justify-end gap-3 pt-2">
                 <button type="button" onclick="document.getElementById('modalTambahPetugas').classList.add('hidden')" class="rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 transition-colors hover:bg-slate-50 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700">
                     Batal
@@ -404,7 +416,6 @@
         </form>
     </div>
 </div>
-
 <!-- ========================================== -->
 <!-- JAVASCRIPT -->
 <!-- ========================================== -->

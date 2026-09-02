@@ -16,6 +16,7 @@ class PetugasAbsensi extends Model
         'nama',
         'nta',
         'kelas_petugas',
+        'jenis_kelamin', // Penambahan kolom jenis kelamin
         'is_approved',
         'is_active',
         'terakhir_melakukan',

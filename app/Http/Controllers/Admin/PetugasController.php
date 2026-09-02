@@ -74,18 +74,23 @@ class PetugasController extends Controller
 
     public function storePetugas(Request $request)
     {
+        // Tambahkan validasi jenis_kelamin
         $request->validate([
             'nama'          => 'required|string',
             'nta'           => 'required|string|unique:petugas_absensis,nta',
             'kelas_petugas' => 'required|string',
+            'jenis_kelamin' => 'required|in:L,P',
         ]);
 
+        // Simpan jenis_kelamin ke database
         $petugas = PetugasAbsensi::create([
             'nama'          => trim($request->nama),
             'nta'           => trim($request->nta),
             'kelas_petugas' => trim($request->kelas_petugas),
+            'jenis_kelamin' => $request->jenis_kelamin,
             'is_approved'   => true,
             'is_active'     => true,
+            'jumlah_rekam'  => 0,
         ]);
 
         Notification::create([

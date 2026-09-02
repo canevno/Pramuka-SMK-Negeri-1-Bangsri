@@ -5,132 +5,166 @@
     <h1 class="text-2xl font-bold mb-4 text-center">Absensi Anggota Kelas X</h1>
 
     @if(session('absensi_success'))
-        <div id="absensi-toast" class="fixed top-4 right-4 z-50 max-w-sm w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-lg text-slate-900 transition-all duration-300 ease-out opacity-0 translate-x-3">
+        <div id="absensi-toast" class="fixed top-4 right-4 z-50 max-w-sm w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-lg text-slate-900 transition-all duration-300 ease-out">
             <div class="flex items-center justify-between gap-3">
-                <p class="text-sm font-semibold text-slate-900">Submit Success</p>
+                <p class="text-sm font-semibold text-slate-900">{{ session('absensi_success') }}</p>
                 <button type="button" id="absensi-toast-close" class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none">×</button>
             </div>
         </div>
     @endif
 
-    @if(session('absensi_verified'))
-        <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-            <p class="text-sm text-green-900">
-                Terverifikasi sebagai petugas absensi: <strong>{{ session('absensi_verified.name') }}</strong> (Kelas <strong>{{ session('absensi_verified.kelas') }}</strong>)
-            </p>
-            <form method="POST" action="{{ route('absensi.forget') }}">
+    {{-- TAHAP 1: VERIFIKASI PETUGAS ABSENSI --}}
+    @if(! session()->has('absensi_verified'))
+        <div class="max-w-md mx-auto bg-white p-6 rounded-xl shadow-md border border-slate-100">
+            <h2 class="text-xl font-bold mb-1 text-slate-800">Verifikasi Petugas Absensi</h2>
+            <p class="text-xs text-slate-500 mb-5">Silakan masukkan NTA dan pilih Sangga Anda untuk melanjutkan ke form absensi.</p>
+            
+            @if(session('absensi_verify_error'))
+                <div class="bg-red-50 border border-red-200 text-red-700 text-sm p-3 rounded-lg mb-4">
+                    {{ session('absensi_verify_error') }}
+                </div>
+            @endif
+
+            <form action="{{ route('absensi.verify') }}" method="POST" class="space-y-4">
                 @csrf
-                <button type="submit" class="px-3 py-1 text-xs bg-red-600 hover:bg-red-700 text-white font-medium rounded transition">Logout Verifikasi</button>
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">NTA Petugas <span class="text-red-500">*</span></label>
+                    <input type="text" name="nta" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: 12345678" value="{{ old('nta') }}">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Pilih Sangga <span class="text-red-500">*</span></label>
+                    <select name="sangga" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                        <option value="" disabled selected>-- Pilih Sangga --</option>
+                        @if(isset($sanggaList) && count($sanggaList) > 0)
+                            @foreach($sanggaList as $sanggaItem)
+                                <option value="{{ $sanggaItem }}">{{ $sanggaItem }}</option>
+                            @endforeach
+                        @else
+                            <option value="Perintis">Perintis</option>
+                            <option value="Penegas">Penegas</option>
+                            <option value="Pencoba">Pencoba</option>
+                            <option value="Pendobrak">Pendobrak</option>
+                            <option value="Pelaksana">Pelaksana</option>
+                        @endif
+                    </select>
+                </div>
+
+                <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white py-2.5 rounded-lg font-semibold text-sm transition shadow-sm mt-2">
+                    Verifikasi & Lanjut Tahap 2
+                </button>
+            </form>
+        </div>
+
+    {{-- TAHAP 2: INPUT ABSENSI --}}
+    @else
+        @php
+            $officerAmbalan = session('absensi_verified.ambalan', $selectedAmbalan ?? '');
+            $ambalanLabel = ($officerAmbalan === 'PA' || strtolower($officerAmbalan) === 'putra') ? 'Putra (PA)' : (($officerAmbalan === 'PI' || strtolower($officerAmbalan) === 'putri') ? 'Putri (PI)' : 'Umum');
+        @endphp
+
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 bg-emerald-50 p-4 border border-emerald-200 rounded-xl">
+            <div>
+                <p class="text-sm text-emerald-900">
+                    Petugas Aktif: <strong>{{ session('absensi_verified.name') }}</strong> 
+                    <span class="text-xs text-emerald-700">
+                        (NTA: {{ session('absensi_verified.nta') }} | Sangga: <strong>{{ session('absensi_verified.sangga') }}</strong> | Ambalan: <strong>{{ $ambalanLabel }}</strong>)
+                    </span>
+                </p>
+            </div>
+            <form action="{{ route('absensi.logoutPetugas') }}" method="POST">
+                @csrf
+                <button type="submit" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition font-medium">Ganti Petugas</button>
             </form>
         </div>
 
         <form method="POST" action="{{ route('absensi.submit') }}" id="absensi-form" class="space-y-4 bg-white dark:bg-gray-800 p-2.5 sm:p-6 rounded-lg shadow-sm">
             @csrf
 
-            {{-- Hidden fallbacks to ensure server receives expected fields even if JS is disabled --}}
-            <input type="hidden" name="bulan" id="hidden_bulan" value="{{ $bulanAktif ?? '' }}">
-            <input type="hidden" name="tanggal" id="hidden_tanggal" value="{{ $tanggalAktif ?? '' }}">
-            <input type="hidden" name="tahun" id="hidden_tahun" value="{{ $tahunAktif ?? '' }}">
-            <input type="hidden" name="participant_kelas" id="hidden_participant_kelas" value="{{ $namaKelas ?? '' }}">
-            <input type="hidden" name="participant_ambalan" id="hidden_participant_ambalan" value="{{ $ambalan ?? '' }}">
-            
+            <input type="hidden" name="participant_ambalan" value="{{ $officerAmbalan }}">
+
             {{-- Date Inputs --}}
             <div class="grid grid-cols-3 gap-3">
                 <div class="relative">
-                    <button type="button" id="bulanDropdownTrigger" aria-haspopup="listbox" aria-expanded="false" class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-left text-sm text-slate-900 shadow-sm transition duration-150 ease-in-out hover:border-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200">
+                    <button type="button" id="bulanDropdownTrigger" aria-haspopup="listbox" aria-expanded="false" class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-left text-sm text-slate-900 shadow-sm transition hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200">
                         <span class="dropdown-label">Bulan</span>
                     </button>
-                    <input type="hidden" name="bulan" id="bulanDropdownValue" value="" required>
+                    <input type="hidden" name="bulan" id="bulanDropdownValue" value="">
                     <div class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-slate-500">
-                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                            <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.292l3.71-4.06a.75.75 0 111.1 1.02l-4.25 4.657a.75.75 0 01-1.1 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                        </svg>
+                        <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.292l3.71-4.06a.75.75 0 111.1 1.02l-4.25 4.657a.75.75 0 01-1.1 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                     </div>
                     <div id="bulanDropdownOptions" class="absolute z-30 mt-2 hidden w-full max-h-60 overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                         @foreach(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'] as $m)
-                            <button type="button" data-bulan="{{ $m }}" class="bulan-option w-full px-4 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:outline-none">
+                            <button type="button" data-bulan="{{ $m }}" class="bulan-option w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 focus:outline-none">
                                 {{ $m }}
                             </button>
                         @endforeach
                     </div>
                 </div>
 
-                <input id="input_tanggal" name="tanggal" type="number" min="1" max="31" placeholder="Tanggal" autocomplete="off" aria-label="Tanggal" required class="border border-slate-300 px-3 py-2 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-slate-200 focus:border-slate-400 focus:outline-none" />
-                
-                <input id="input_tahun" name="tahun" type="number" min="2000" max="2100" placeholder="Tahun" autocomplete="off" aria-label="Tahun" required class="border border-slate-300 px-3 py-2 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-slate-200 focus:border-slate-400 focus:outline-none" />
+                <input id="input_tanggal" name="tanggal" type="number" min="1" max="31" placeholder="Tanggal" autocomplete="off" required class="border border-slate-300 px-3 py-2 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-slate-200 focus:outline-none" value="{{ date('j') }}" />
+                <input id="input_tahun" name="tahun" type="number" min="2000" max="2100" placeholder="Tahun" autocomplete="off" required class="border border-slate-300 px-3 py-2 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-slate-200 focus:outline-none" value="{{ date('Y') }}" />
             </div>
 
-            {{-- Class & Ambalan Dropdowns --}}
-            <div class="grid grid-cols-1 gap-3 mt-4 sm:grid-cols-[auto_1fr_1fr] sm:items-center">
-                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Kelas</span>
+            {{-- Sub Sangga Dropdown --}}
+            <div class="grid grid-cols-1 gap-3 mt-4 sm:grid-cols-[auto_1fr] sm:items-center">
+                <span class="text-sm font-medium text-slate-700 dark:text-slate-200">Sub Sangga</span>
                 
                 <div class="relative">
-                    <button type="button" id="kelasDropdownTrigger" aria-haspopup="listbox" aria-expanded="false" class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 shadow-sm transition duration-150 ease-in-out hover:border-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 flex items-center justify-between">
-                        <span class="dropdown-label truncate">Pilih Kelas</span>
+                    <button type="button" id="subSanggaDropdownTrigger" aria-haspopup="listbox" aria-expanded="false" class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 shadow-sm hover:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 flex items-center justify-between">
+                        <span class="dropdown-label truncate">Pilih Sub Sangga</span>
                         <span class="pointer-events-none flex items-center text-slate-500 ml-3">
-                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.292l3.71-4.06a.75.75 0 111.1 1.02l-4.25 4.657a.75.75 0 01-1.1 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                            </svg>
+                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.292l3.71-4.06a.75.75 0 111.1 1.02l-4.25 4.657a.75.75 0 01-1.1 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                         </span>
                     </button>
-                    <input type="hidden" name="participant_kelas" id="kelasDropdownValue" value="" required>
-                    <div id="kelasDropdownOptions" class="absolute z-30 mt-2 hidden w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg ring-1 ring-black ring-opacity-5">
+                    <input type="hidden" name="participant_sub_sangga" id="subSanggaDropdownValue" value="">
+                    <div id="subSanggaDropdownOptions" class="absolute z-30 mt-2 hidden w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg ring-1 ring-black ring-opacity-5">
                         @php
-                            $petugasKelas = session('absensi_verified.kelas');
-                            $listKelas = ['X PPLG 1', 'X PPLG 2', 'X AKL 1', 'X AKL 2', 'X TO 1', 'X TO 2', 'X PM 1', 'X PM 2', 'X MPLB 1', 'X MPLB 2', 'X MPLB 3'];
-                            $filteredKelas = $petugasKelas ? [$petugasKelas] : $listKelas;
+                            $namaSanggaAktif = session('absensi_verified.sangga', 'Sangga');
+                            $rawSubList = collect($roster ?? [])->pluck('sub_sangga')->filter()->unique()->values();
+                            if($rawSubList->isEmpty()) {
+                                $rawSubList = collect(['1', '2', '3', '4', '5']);
+                            }
                         @endphp
-                        @foreach($filteredKelas as $kelas)
-                            <button type="button" data-kelas="{{ $kelas }}" class="kelas-option w-full px-4 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:outline-none">
-                                {{ $kelas }}
-                            </button>
-                        @endforeach
-                    </div>
-                </div>
-
-                <div class="relative">
-                    <button type="button" id="ambalanDropdownTrigger" aria-haspopup="listbox" aria-expanded="false" class="w-full rounded-lg border border-slate-300 bg-white px-4 py-2 text-sm text-slate-900 shadow-sm transition duration-150 ease-in-out hover:border-slate-400 focus:border-slate-400 focus:outline-none focus:ring-2 focus:ring-slate-200 flex items-center justify-between">
-                        <span class="dropdown-label truncate">Ambalan</span>
-                        <span class="pointer-events-none flex items-center text-slate-500 ml-3">
-                            <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                                <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.292l3.71-4.06a.75.75 0 111.1 1.02l-4.25 4.657a.75.75 0 01-1.1 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
-                            </svg>
-                        </span>
-                    </button>
-                    <input type="hidden" name="participant_ambalan" id="ambalanDropdownValue" value="" required>
-                    <div id="ambalanDropdownOptions" class="absolute z-30 mt-2 hidden w-full overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                        @foreach(['Putra', 'Putri'] as $ambalan)
-                            <button type="button" data-ambalan="{{ $ambalan }}" class="ambalan-option w-full px-4 py-2 text-left text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:outline-none">
-                                {{ $ambalan }}
+                        @foreach($rawSubList as $subItem)
+                            @php
+                                $cleanNumber = preg_replace('/[^0-9]/', '', $subItem);
+                                $displayLabel = $cleanNumber ? ($namaSanggaAktif . ' ' . $cleanNumber) : $subItem;
+                            @endphp
+                            <button type="button" data-subsangga="{{ $subItem }}" data-display="{{ $displayLabel }}" class="subsangga-option w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 focus:outline-none">
+                                {{ $displayLabel }}
                             </button>
                         @endforeach
                     </div>
                 </div>
             </div>
 
-            {{-- Attendance Roster --}}
+            {{-- Table Roster --}}
             <div id="absensi-roster-section" class="hidden">
                 <div class="overflow-x-auto mt-4 sm:rounded-lg">
                     <table class="w-full table-fixed sm:table-auto divide-y divide-gray-200">
                         <thead>
                             <tr class="bg-gray-50">
-                                <th class="w-[45%] sm:w-auto px-1.5 sm:px-3 py-2 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">Nama</th>
-                                <th class="w-[35%] sm:w-auto px-0.5 sm:px-3 py-2 text-center text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
-                                <th class="w-[20%] sm:w-auto px-0.5 sm:px-3 py-2 text-center text-[10px] sm:text-xs font-medium text-gray-500 uppercase tracking-wider">Iuran</th>
+                                <th class="w-[45%] sm:w-auto px-1.5 sm:px-3 py-2 text-left text-[10px] sm:text-xs font-medium text-gray-500 uppercase">Nama</th>
+                                <th class="w-[35%] sm:w-auto px-0.5 sm:px-3 py-2 text-center text-[10px] sm:text-xs font-medium text-gray-500 uppercase">Keterangan</th>
+                                <th class="w-[20%] sm:w-auto px-0.5 sm:px-3 py-2 text-center text-[10px] sm:text-xs font-medium text-gray-500 uppercase">Iuran</th>
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             @foreach($roster as $student)
-                                <tr class="attendance-row hover:bg-slate-50" data-row-kelas="{{ $student['kelas'] }}" data-row-ambalan="{{ $student['ambalan'] }}">
+                                <tr class="attendance-row hover:bg-slate-50" 
+                                    data-row-subsangga="{{ $student['sub_sangga'] }}" 
+                                    data-row-sangga="{{ $student['sangga'] }}" 
+                                    data-row-ambalan="{{ $student['ambalan'] }}">
                                     <td class="px-1.5 sm:px-3 py-2 sm:py-3 text-[11px] sm:text-sm text-gray-800">
-                                        <div class="font-medium leading-tight break-words pr-1 sm:pr-0">{{ $student['name'] }}</div>
-                                        {{-- DIPINDAHKAN KE DALAM TD SINI AGAR VALID HTML --}}
+                                        <div class="font-medium leading-tight break-words">{{ $student['name'] }}</div>
+                                        <div class="text-[10px] text-slate-400">Kelas: {{ $student['kelas'] }} | {{ $student['sangga'] }} {{ $student['sub_sangga'] }}</div>
                                         <input type="hidden" name="participant_name[{{ $student['id'] }}]" value="{{ $student['name'] }}">
                                     </td>
                                     <td class="px-0.5 sm:px-3 py-2 sm:py-3">
                                         <div class="grid grid-cols-4 gap-[2px] sm:gap-2">
                                             @foreach(['Hadir' => 'H', 'Izin' => 'I', 'Sakit' => 'S', 'Alpha' => 'A'] as $status => $label)
-                                                <label class="toggle-label cursor-pointer rounded sm:rounded-md border border-gray-300 bg-white flex items-center justify-center px-0.5 py-1 sm:px-2 sm:py-1 text-[9px] sm:text-xs font-medium text-slate-700 transition-colors whitespace-nowrap min-w-0">
+                                                <label class="toggle-label cursor-pointer rounded border border-gray-300 bg-white flex items-center justify-center px-0.5 py-1 sm:px-2 sm:py-1 text-[9px] sm:text-xs font-medium text-slate-700 transition-colors">
                                                     <input type="radio" name="status[{{ $student['id'] }}]" value="{{ $status }}" class="sr-only toggle-radio" {{ $status === 'Hadir' ? 'checked' : '' }} required>
                                                     {{ $label }}
                                                 </label>
@@ -139,11 +173,11 @@
                                     </td>
                                     <td class="px-0.5 sm:px-3 py-2 sm:py-3">
                                         <div class="grid grid-cols-2 gap-[2px] sm:gap-2">
-                                            <label class="toggle-label cursor-pointer rounded sm:rounded-md border border-gray-300 bg-white flex items-center justify-center px-0.5 py-1 sm:px-2 sm:py-1 text-[9px] sm:text-xs font-medium text-slate-700 transition-colors whitespace-nowrap min-w-0">
+                                            <label class="toggle-label cursor-pointer rounded border border-gray-300 bg-white flex items-center justify-center px-0.5 py-1 sm:px-2 sm:py-1 text-[9px] sm:text-xs font-medium text-slate-700 transition-colors">
                                                 <input type="radio" name="iuran[{{ $student['id'] }}]" value="Ya" class="sr-only toggle-radio" checked required>
                                                 Ya
                                             </label>
-                                            <label class="toggle-label cursor-pointer rounded sm:rounded-md border border-gray-300 bg-white flex items-center justify-center px-0.5 py-1 sm:px-2 sm:py-1 text-[9px] sm:text-xs font-medium text-slate-700 transition-colors whitespace-nowrap min-w-0">
+                                            <label class="toggle-label cursor-pointer rounded border border-gray-300 bg-white flex items-center justify-center px-0.5 py-1 sm:px-2 sm:py-1 text-[9px] sm:text-xs font-medium text-slate-700 transition-colors">
                                                 <input type="radio" name="iuran[{{ $student['id'] }}]" value="Tidak" class="sr-only toggle-radio" required>
                                                 Tidak
                                             </label>
@@ -152,52 +186,21 @@
                                 </tr>
                             @endforeach
                             <tr id="absensi-empty-row" class="hidden bg-white">
-                                <td colspan="3" class="px-3 py-6 text-center text-sm text-slate-500">Belum / tidak ada daftar</td>
+                                <td colspan="3" class="px-3 py-6 text-center text-sm text-slate-500">Belum / tidak ada daftar anggota untuk Sub Sangga ini</td>
                             </tr>
                         </tbody>
                     </table>
                 </div>
 
-                <div id="absensi-helper-text" class="mt-3 text-sm text-slate-600">Silahkan cek kembali kebenaran data yang Anda masukkan sebelum di-submit.</div>
-                <div id="absensi-submit-button" class="mt-3 flex flex-col items-stretch gap-3 sm:flex-row sm:justify-end sm:items-center">
-                    <button type="submit" class="w-full sm:w-auto px-4 py-2 bg-slate-800 hover:bg-slate-900 text-white font-medium rounded-lg transition">Submit Kelas</button>
+                <div id="absensi-submit-button" class="mt-4 flex justify-end">
+                    <button type="submit" class="w-full sm:w-auto px-5 py-2.5 bg-slate-800 hover:bg-slate-900 text-white font-medium rounded-lg transition shadow">Submit Absensi</button>
                 </div>
             </div>
 
-            <div id="absensi-no-data" class="mt-3 text-sm text-slate-600 hidden">Belum / tidak ada daftar</div>
+            <div id="absensi-no-data" class="mt-4 text-center py-6 text-sm text-slate-500 bg-slate-50 rounded-lg border border-dashed border-slate-200">
+                Silahkan pilih Sub Sangga terlebih dahulu.
+            </div>
         </form>
-
-    @else
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-sm">
-            <p class="mb-4 text-sm text-slate-700 dark:text-slate-300">
-                Verifikasi petugas terlebih dahulu dengan memasukkan <strong>Nama Petugas, Kelas X Yang Di Absen, dan NTA Petugas</strong>.
-            </p>
-
-            @if(session('absensi_verify_error'))
-                <div class="mb-3 p-3 bg-red-50 border border-red-200 text-sm text-red-600 rounded-lg">
-                    {{ session('absensi_verify_error') }}
-                </div>
-            @endif
-
-            <form method="POST" action="{{ route('absensi.verify') }}" class="space-y-3">
-                @csrf
-                <div>
-                    <label for="verify_name" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nama Petugas</label>
-                    <input id="verify_name" name="name" type="text" autocomplete="name" required class="w-full border border-slate-300 px-3 py-2 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-slate-200 focus:border-slate-400 focus:outline-none" />
-                </div>
-                <div>
-                    <label for="verify_kelas" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Kelas yang diabsen</label>
-                    <input id="verify_kelas" name="kelas" type="text" autocomplete="off" required class="w-full border border-slate-300 px-3 py-2 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-slate-200 focus:border-slate-400 focus:outline-none" />
-                </div>
-                <div>
-                    <label for="verify_nta" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">NTA Petugas</label>
-                    <input id="verify_nta" name="nta" type="text" autocomplete="off" required class="w-full border border-slate-300 px-3 py-2 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-slate-200 focus:border-slate-400 focus:outline-none" />
-                </div>
-                <div class="flex justify-end pt-2">
-                    <button type="submit" class="px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-medium rounded-lg text-sm transition">Verifikasi</button>
-                </div>
-            </form>
-        </div>
     @endif
 </div>
 @endsection
@@ -205,6 +208,16 @@
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Toast Auto-Close & Dismiss Logic
+    const toast = document.getElementById('absensi-toast');
+    const toastCloseBtn = document.getElementById('absensi-toast-close');
+    if (toast) {
+        if (toastCloseBtn) {
+            toastCloseBtn.addEventListener('click', () => toast.remove());
+        }
+        setTimeout(() => toast.remove(), 4000);
+    }
+
     const toggleLabels = document.querySelectorAll('.toggle-label');
     function updateToggleStyles() {
         toggleLabels.forEach(label => {
@@ -221,18 +234,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.querySelectorAll('.toggle-radio').forEach(radio => {
         radio.addEventListener('change', function () {
-            // Logika Otomatisasi Iuran berdasarkan Keterangan Absensi
             if (this.name.startsWith('status[')) {
                 const tr = this.closest('tr');
                 if (tr) {
                     if (this.value !== 'Hadir') {
-                        // Jika Izin / Sakit / Alpha -> Otomatis "Tidak"
-                        const iuranTidakRadio = tr.querySelector('input[name^="iuran["][value="Tidak"]');
-                        if (iuranTidakRadio) iuranTidakRadio.checked = true;
+                        const iuranTidak = tr.querySelector('input[name^="iuran["][value="Tidak"]');
+                        if (iuranTidak) iuranTidak.checked = true;
                     } else {
-                        // Jika dikembalikan ke "Hadir" -> Otomatis "Ya"
-                        const iuranYaRadio = tr.querySelector('input[name^="iuran["][value="Ya"]');
-                        if (iuranYaRadio) iuranYaRadio.checked = true;
+                        const iuranYa = tr.querySelector('input[name^="iuran["][value="Ya"]');
+                        if (iuranYa) iuranYa.checked = true;
                     }
                 }
             }
@@ -241,23 +251,18 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     updateToggleStyles();
 
-    const kelasDropdownTrigger = document.getElementById('kelasDropdownTrigger');
-    const kelasDropdownOptions = document.getElementById('kelasDropdownOptions');
-    const kelasDropdownValue = document.getElementById('kelasDropdownValue');
-    const ambalanDropdownTrigger = document.getElementById('ambalanDropdownTrigger');
-    const ambalanDropdownOptions = document.getElementById('ambalanDropdownOptions');
-    const ambalanDropdownValue = document.getElementById('ambalanDropdownValue');
+    const subSanggaDropdownTrigger = document.getElementById('subSanggaDropdownTrigger');
+    const subSanggaDropdownOptions = document.getElementById('subSanggaDropdownOptions');
+    const subSanggaDropdownValue = document.getElementById('subSanggaDropdownValue');
+
     const bulanDropdownTrigger = document.getElementById('bulanDropdownTrigger');
     const bulanDropdownOptions = document.getElementById('bulanDropdownOptions');
     const bulanDropdownValue = document.getElementById('bulanDropdownValue');
 
     function updateDropdownLabel(trigger, label) {
+        if (!trigger) return;
         const labelSpan = trigger.querySelector('.dropdown-label');
-        if (labelSpan) {
-            labelSpan.textContent = label;
-        } else {
-            trigger.textContent = label;
-        }
+        if (labelSpan) labelSpan.textContent = label;
     }
 
     function setupCustomDropdown(trigger, optionsContainer, valueInput, optionClass, datasetKey) {
@@ -266,22 +271,20 @@ document.addEventListener('DOMContentLoaded', function () {
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
             const isHidden = optionsContainer.classList.contains('hidden');
-            
-            [kelasDropdownOptions, ambalanDropdownOptions, bulanDropdownOptions].forEach(opt => opt && opt.classList.add('hidden'));
+            [subSanggaDropdownOptions, bulanDropdownOptions].forEach(opt => opt && opt.classList.add('hidden'));
             
             if (isHidden) {
                 optionsContainer.classList.remove('hidden');
                 trigger.setAttribute('aria-expanded', 'true');
-            } else {
-                trigger.setAttribute('aria-expanded', 'false');
             }
         });
 
         optionsContainer.querySelectorAll(optionClass).forEach(button => {
             button.addEventListener('click', () => {
                 const selectedValue = button.dataset[datasetKey];
+                const displayLabel = button.dataset.display || selectedValue;
                 valueInput.value = selectedValue;
-                updateDropdownLabel(trigger, selectedValue);
+                updateDropdownLabel(trigger, displayLabel);
                 optionsContainer.classList.add('hidden');
                 trigger.setAttribute('aria-expanded', 'false');
                 filterRosterRows();
@@ -289,42 +292,31 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    setupCustomDropdown(kelasDropdownTrigger, kelasDropdownOptions, kelasDropdownValue, '.kelas-option', 'kelas');
-    setupCustomDropdown(ambalanDropdownTrigger, ambalanDropdownOptions, ambalanDropdownValue, '.ambalan-option', 'ambalan');
+    setupCustomDropdown(subSanggaDropdownTrigger, subSanggaDropdownOptions, subSanggaDropdownValue, '.subsangga-option', 'subsangga');
     setupCustomDropdown(bulanDropdownTrigger, bulanDropdownOptions, bulanDropdownValue, '.bulan-option', 'bulan');
 
     document.addEventListener('click', (event) => {
         [
-            { trigger: kelasDropdownTrigger, opts: kelasDropdownOptions },
-            { trigger: ambalanDropdownTrigger, opts: ambalanDropdownOptions },
+            { trigger: subSanggaDropdownTrigger, opts: subSanggaDropdownOptions },
             { trigger: bulanDropdownTrigger, opts: bulanDropdownOptions }
         ].forEach(({ trigger, opts }) => {
             if (opts && trigger && !trigger.contains(event.target) && !opts.contains(event.target)) {
                 opts.classList.add('hidden');
-                trigger.setAttribute('aria-expanded', 'false');
             }
         });
     });
 
-    if (kelasDropdownOptions) {
-        const availableKelas = kelasDropdownOptions.querySelectorAll('.kelas-option');
-        if (availableKelas.length === 1) {
-            const lockedClass = availableKelas[0].dataset.kelas;
-            kelasDropdownValue.value = lockedClass;
-            updateDropdownLabel(kelasDropdownTrigger, lockedClass);
-
-            if (kelasDropdownTrigger) {
-                kelasDropdownTrigger.classList.add('bg-slate-100', 'cursor-not-allowed', 'opacity-70');
-                kelasDropdownTrigger.style.pointerEvents = 'none';
-                const arrowIcon = kelasDropdownTrigger.querySelector('svg');
-                if (arrowIcon) arrowIcon.style.display = 'none';
-            }
-        }
+    // Default bulan ke bulan saat ini
+    if (bulanDropdownValue) {
+        const months = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+        const currentMonthName = months[new Date().getMonth()];
+        bulanDropdownValue.value = currentMonthName;
+        updateDropdownLabel(bulanDropdownTrigger, currentMonthName);
     }
 
     function filterRosterRows() {
-        const selectedKelas = kelasDropdownValue ? kelasDropdownValue.value.trim().toLowerCase() : '';
-        const selectedAmbalan = ambalanDropdownValue ? ambalanDropdownValue.value.trim().toLowerCase() : '';
+        const selectedSubSangga = (subSanggaDropdownValue ? subSanggaDropdownValue.value : '').trim().toLowerCase();
+
         const rows = document.querySelectorAll('.attendance-row');
         const emptyRow = document.getElementById('absensi-empty-row');
         const rosterSection = document.getElementById('absensi-roster-section');
@@ -332,66 +324,47 @@ document.addEventListener('DOMContentLoaded', function () {
         let visibleCount = 0;
 
         rows.forEach(row => {
-            const rowKelas = (row.dataset.rowKelas || '').trim().toLowerCase();
-            const rowAmbalan = (row.dataset.rowAmbalan || '').trim().toLowerCase();
-            const visible = selectedKelas !== '' && selectedAmbalan !== '' && rowKelas === selectedKelas && rowAmbalan === selectedAmbalan;
+            const rowSub = (row.dataset.rowSubsangga || '').trim().toLowerCase();
+            const rowSangga = (row.dataset.rowSangga || '').trim().toLowerCase();
 
-            row.style.display = visible ? '' : 'none';
+            const rowSubNumber = rowSub.replace(/[^0-9]/g, '');
+            const rowSanggaNumber = rowSangga.replace(/[^0-9]/g, '');
+            const selectedSubNumber = selectedSubSangga.replace(/[^0-9]/g, '');
 
-            // Aktifkan input jika visible, dan nonaktifkan jika tersembunyi
+            const matchSub = (selectedSubSangga !== '') && (
+                rowSub === selectedSubSangga ||
+                (rowSubNumber !== '' && rowSubNumber === selectedSubNumber) ||
+                (rowSanggaNumber !== '' && rowSanggaNumber === selectedSubNumber) ||
+                rowSub.includes(selectedSubSangga)
+            );
+
+            row.style.display = matchSub ? '' : 'none';
             row.querySelectorAll('input').forEach(input => {
-                input.disabled = !visible;
+                input.disabled = !matchSub;
             });
 
-            if (visible) visibleCount++;
+            if (matchSub) visibleCount++;
         });
 
         if (emptyRow) {
             emptyRow.classList.toggle('hidden', visibleCount > 0);
         }
 
-        const hasSelection = selectedKelas !== '' && selectedAmbalan !== '';
+        const hasSelection = selectedSubSangga !== '';
         const hasData = hasSelection && visibleCount > 0;
 
         if (rosterSection) rosterSection.classList.toggle('hidden', !hasData);
-        if (noDataMessage) noDataMessage.classList.toggle('hidden', !hasSelection || hasData);
+        if (noDataMessage) {
+            noDataMessage.classList.toggle('hidden', hasData);
+            if (hasSelection && visibleCount === 0) {
+                noDataMessage.textContent = 'Belum / tidak ada data anggota untuk Sub Sangga ini.';
+            } else if (!hasSelection) {
+                noDataMessage.textContent = 'Silahkan pilih Sub Sangga terlebih dahulu.';
+            }
+        }
     }
 
     filterRosterRows();
-
-    const toast = document.getElementById('absensi-toast');
-    const closeBtn = document.getElementById('absensi-toast-close');
-
-    if (toast) {
-        requestAnimationFrame(() => {
-            toast.classList.remove('opacity-0', 'translate-x-3');
-            toast.classList.add('opacity-100', 'translate-x-0');
-        });
-
-        function hideToast() {
-            toast.classList.remove('opacity-100', 'translate-x-0');
-            toast.classList.add('opacity-0', 'translate-x-3');
-            toast.addEventListener('transitionend', () => toast.remove(), { once: true });
-        }
-
-        if (closeBtn) closeBtn.addEventListener('click', hideToast);
-        setTimeout(hideToast, 2500);
-    }
-});
-</script>
-<script>
-// Disable submit button after click to prevent duplicate submissions
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('#absensi-form');
-    if (form) {
-        form.addEventListener('submit', function (e) {
-            const btnSubmit = this.querySelector('button[type="submit"]');
-            if (btnSubmit) {
-                btnSubmit.disabled = true;
-                btnSubmit.innerText = 'Menyimpan...';
-            }
-        });
-    }
 });
 </script>
 @endpush

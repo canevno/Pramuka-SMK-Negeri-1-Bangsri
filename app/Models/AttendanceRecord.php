@@ -9,25 +9,22 @@ class AttendanceRecord extends Model
 {
     use HasFactory;
 
-    protected $table = 'attendances'; // Hubungkan ke tabel attendances
-
     protected $fillable = [
-        'user_id',
+        'bulan',
+        'tanggal',
+        'tahun',
         'participant_id',
         'participant_name',
         'participant_kelas',
         'participant_ambalan',
         'status',
         'iuran',
-        'bulan',
-        'tanggal',
-        'tahun',
+        'petugas_name',
+        'petugas_kelas',
+        'petugas_nta',
         'week_label',
         'month_key',
         'year_key',
         'record_date',
-        'petugas_name',
-        'petugas_kelas',
-        'petugas_nta',
     ];
 }

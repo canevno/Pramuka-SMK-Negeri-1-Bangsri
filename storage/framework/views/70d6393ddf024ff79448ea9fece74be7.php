@@ -3,11 +3,15 @@
     <div class="border-b border-slate-300 dark:border-slate-500 transition-colors duration-200">
         <div class="mx-auto max-w-full px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-center h-16 gap-4 relative">
-                <!-- Left: Ambalan Logos -->
-                <div class="absolute left-0 flex items-center gap-6">
-                    <!-- Ambalan 1 Logo -->
+                <!-- Mobile: School Logo + Text -->
+                <div class="absolute left-0 flex items-center justify-center gap-2 lg:hidden">
+                    <img src="<?php echo e(asset('images/logos/smklogo.png')); ?>" alt="Logo SMK" class="h-11 w-11 object-contain bg-transparent p-0 shadow-none">
+                    <span class="text-[12px] font-black uppercase tracking-wide text-slate-900 leading-none">Pramuka ESKASABA</span>
+                </div>
+
+                <!-- Desktop: Ambalan Logos -->
+                <div class="absolute left-0 hidden items-center gap-6 lg:flex">
                     <img src="/images/logos/aflogo.png" alt="Ambalan 1" class="h-10 w-10 object-contain hover:opacity-80 transition-opacity" title="Ambalan 1">
-                    <!-- Ambalan 2 Logo -->
                     <img src="/images/logos/dslogo.png" alt="Ambalan 2" class="h-10 w-10 object-contain hover:opacity-80 transition-opacity" title="Ambalan 2">
                 </div>
 
@@ -128,8 +132,8 @@
                             class="absolute left-0 top-full z-50 mt-2 w-48 rounded-none border border-slate-300 bg-white p-2 shadow-lg dark:border-slate-600 dark:bg-gray-900"
                         >
                             <a href="<?php echo e(route('about')); ?>" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Sejarah</a>
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Visi &amp; Misi</a>
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Ambalan</a>
+                            <a href="<?php echo e(route('visi-misi')); ?>" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Visi &amp; Misi</a>
+                            <a href="<?php echo e(route('ambalan')); ?>" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Ambalan</a>
                         </div>
                     </div>
                     <div
@@ -342,8 +346,8 @@
                         </button>
                         <div x-show="mobileProfilOpen" x-transition class="space-y-1 border-t border-slate-200 dark:border-slate-800 px-4 py-2">
                             <a href="<?php echo e(route('about')); ?>" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Sejarah</a>
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Visi &amp; Misi</a>
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Ambalan</a>
+                            <a href="<?php echo e(route('visi-misi')); ?>" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Visi &amp; Misi</a>
+                            <a href="<?php echo e(route('ambalan')); ?>" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Ambalan</a>
                         </div>
                     </div>
 

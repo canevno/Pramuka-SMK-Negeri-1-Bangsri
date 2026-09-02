@@ -97,6 +97,7 @@
                         <th class="px-4 py-3">NAMA PETUGAS</th>
                         <th class="px-4 py-3">NTA</th>
                         <th class="px-4 py-3">KELAS PETUGAS</th>
+                        <th class="px-4 py-3">ABSENSI PETUGAS</th>
                         <th class="px-4 py-3">KEAKTIFAN</th>
                         <th class="px-4 py-3">TERAKHIR MELAKUKAN</th>
                         <th class="px-4 py-3 text-center">JUMLAH REKAM</th>
@@ -108,6 +109,11 @@
                             <td class="px-4 py-3 font-semibold text-slate-800 dark:text-white">{{ $item->nama }}</td>
                             <td class="px-4 py-3 font-mono text-slate-500 dark:text-gray-400">{{ $item->nta }}</td>
                             <td class="px-4 py-3">{{ $item->kelas_petugas }}</td>
+                            <td class="px-4 py-3">
+                                <span class="px-2.5 py-1 rounded-lg text-[11px] font-semibold {{ strtoupper($item->jenis_kelamin) === 'L' ? 'bg-blue-100 text-blue-700 dark:bg-blue-950/60 dark:text-blue-400' : 'bg-pink-100 text-pink-700 dark:bg-pink-950/60 dark:text-pink-400' }}">
+                                    {{ strtoupper($item->jenis_kelamin) === 'L' ? 'Laki-Laki (PA)' : 'Perempuan (PI)' }}
+                                </span>
+                            </td>
                             <td class="px-4 py-3">
                                 <button 
                                     type="button" 
@@ -129,7 +135,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-8 text-center text-slate-400">Belum ada data petugas.</td>
+                            <td colspan="7" class="px-4 py-8 text-center text-slate-400">Belum ada data petugas.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -162,6 +168,17 @@
                             <label class="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1">Kelas Petugas</label>
                             <input type="text" wire:model="kelas_petugas" required class="w-full px-3 py-2 text-xs border rounded-xl bg-slate-50 dark:bg-gray-700 border-slate-200 dark:border-gray-600 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500" placeholder="X MPLB 1">
                             @error('kelas_petugas') <span class="text-[10px] text-red-500 mt-0.5 block">{{ $message }}</span> @enderror
+                        </div>
+
+                        <!-- JENIS KELAMIN / ABSENSI PETUGAS (DITAMBAHKAN) -->
+                        <div>
+                            <label class="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1">Jenis Kelamin / Absensi Petugas</label>
+                            <select wire:model="jenis_kelamin" required class="w-full px-3 py-2 text-xs border rounded-xl bg-slate-50 dark:bg-gray-700 border-slate-200 dark:border-gray-600 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                                <option value="">-- Pilih Jenis Kelamin --</option>
+                                <option value="L">Laki-Laki (Putra / PA)</option>
+                                <option value="P">Perempuan (Putri / PI)</option>
+                            </select>
+                            @error('jenis_kelamin') <span class="text-[10px] text-red-500 mt-0.5 block">{{ $message }}</span> @enderror
                         </div>
 
                         <div class="flex justify-end gap-2 pt-2">

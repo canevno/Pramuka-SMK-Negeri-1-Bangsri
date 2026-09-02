@@ -4,8 +4,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\DashboardController;
-use App\Http\Controllers\AbsensiController;
-use App\Http\Controllers\Admin\AttendanceController;
+use App\Http\Controllers\AttendanceController;
+use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
 use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\PendaftaranAdminController;
 use App\Http\Controllers\Admin\PetugasController;
@@ -19,6 +19,8 @@ use App\Http\Controllers\Auth\GoogleController;
 
 Route::view('/', 'pages.home')->name('home');
 Route::view('/tentang-kami', 'pages.about')->name('about');
+Route::view('/visi-misi', 'pages.visi-misi')->name('visi-misi');
+Route::view('/ambalan', 'pages.ambalan')->name('ambalan');
 Route::view('/pengurus-aktif', 'pages.active-board')->name('active-board');
 Route::view('/alumni', 'pages.alumni')->name('alumni');
 Route::view('/prestasi', 'pages.achievement')->name('achievement');
@@ -106,6 +108,25 @@ Route::post('/pendaftaran-laksana', function (Request $request) {
 
 /*
 |--------------------------------------------------------------------------
+| Public Absensi Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('absensi')->name('absensi.')->group(function () {
+    Route::get('/', [AttendanceController::class, 'index'])->name('index');
+    Route::post('/verify', [AttendanceController::class, 'verifyPetugas'])->name('verify');
+    Route::post('/submit', [AttendanceController::class, 'submit'])->name('submit');
+    Route::post('/logout-petugas', [AttendanceController::class, 'logoutPetugas'])->name('logoutPetugas');
+    Route::post('/logout', [AttendanceController::class, 'logoutPetugas'])->name('logout_petugas'); // Alias fleksibel
+
+    Route::post('/forget', function () {
+        session()->forget(['absensi_verified', 'absensi_petugas_id']);
+        return redirect()->route('absensi.index');
+    })->name('forget');
+});
+
+/*
+|--------------------------------------------------------------------------
 | Authenticated User Routes
 |--------------------------------------------------------------------------
 */
@@ -123,7 +144,8 @@ require __DIR__.'/settings.php';
 */
 
 Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
-Route::post('/admin/login', [AdminAuthController::class, 'login']);
+Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login'); // Fallback untuk middleware auth
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 /*
@@ -141,17 +163,17 @@ Route::prefix('admin')
             return redirect()->route('admin.absensi');
         })->name('dashboard');
 
-        // Attendance Routes
+        // Attendance Admin Routes
         Route::prefix('absensi')->group(function () {
-            Route::get('/', [AttendanceController::class, 'index'])->name('absensi');
-            Route::post('/', [AttendanceController::class, 'store'])->name('absensi.store');
+            Route::get('/', [AdminAttendanceController::class, 'adminIndex'])->name('absensi');
+            Route::post('/', [AdminAttendanceController::class, 'store'])->name('absensi.store');
             
-            Route::get('/detail-data', [AttendanceController::class, 'getDetailData'])->name('absensi.detail-data');
-            Route::get('/detail', [AttendanceController::class, 'getDetailData'])->name('absensi.detail');
+            Route::get('/detail-data', [AdminAttendanceController::class, 'getDetailData'])->name('absensi.detail-data');
+            Route::get('/detail', [AdminAttendanceController::class, 'getDetailData'])->name('absensi.detail');
             
-            Route::get('/export', [AttendanceController::class, 'exportExcel'])->name('absensi.export');
-            Route::get('/export-word/{id?}', [AttendanceController::class, 'exportWord'])->name('absensi.exportWord');
-            Route::get('/{id}', [AttendanceController::class, 'show'])->name('absensi.show');
+            Route::get('/export', [AdminAttendanceController::class, 'exportExcel'])->name('absensi.export');
+            Route::get('/export-word/{id?}', [AdminAttendanceController::class, 'exportWord'])->name('absensi.exportWord');
+            Route::get('/{id}', [AdminAttendanceController::class, 'show'])->name('absensi.show');
         });
 
         // Module Routes
@@ -186,21 +208,4 @@ Route::prefix('admin')
             Route::post('/{id}/read', [PetugasController::class, 'markNotificationRead'])->name('read');
         });
 
-    }); // <-- PERBAIKAN: Penutup Admin Area Route Group yang tadinya bocor
-
-/*
-|--------------------------------------------------------------------------
-| Public Absensi Routes
-|--------------------------------------------------------------------------
-*/
-
-Route::prefix('absensi')->name('absensi.')->group(function () {
-    Route::get('/', [AbsensiController::class, 'index'])->name('index');
-    Route::post('/verify', [AbsensiController::class, 'verify'])->name('verify');
-    Route::post('/submit', [AbsensiController::class, 'submit'])->name('submit');
-    
-    Route::post('/forget', function () {
-        session()->forget(['absensi_verified', 'absensi_petugas_id']);
-        return redirect()->route('absensi.index');
-    })->name('forget');
-});
+    });
