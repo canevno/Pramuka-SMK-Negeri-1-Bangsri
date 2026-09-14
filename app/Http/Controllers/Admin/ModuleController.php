@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\DewanAmbalan;
 use App\Models\GalleryItem;
 use App\Models\Pembina;
 use Illuminate\Http\Request;
@@ -49,7 +50,7 @@ class ModuleController extends Controller
         $validated = $request->validate([
             'title' => 'required|string|max:255',
             'category' => 'required|string|max:100',
-            'group' => 'nullable|string|in:putra,putri,umum',
+            'location' => 'nullable|string|max:255',
             'image' => 'nullable',
             'description' => 'nullable|string',
             'alt_text' => 'nullable|string|max:255',
@@ -65,10 +66,27 @@ class ModuleController extends Controller
             $imagePath = 'storage/' . $storedPath;
         }
 
+        $imagePath = preg_replace('#^/?public/?#', '', $imagePath ?? '');
+        $imagePath = str_replace('\\', '/', (string) $imagePath);
+        $imagePath = preg_replace('#^/?storage/?#', 'storage/', $imagePath);
+
+        if (str_starts_with($imagePath, 'public/')) {
+            $imagePath = preg_replace('#^public/#', '', $imagePath);
+        }
+
+        if (str_starts_with($imagePath, '/')) {
+            $imagePath = ltrim($imagePath, '/');
+        }
+
+        if ($imagePath === '') {
+            $imagePath = 'images/gallery/default.jpg';
+        }
+
         $galleryItem = GalleryItem::query()->create([
             'title' => $validated['title'],
             'category' => $validated['category'],
-            'group' => $validated['group'] ?? 'umum',
+            'group' => 'umum',
+            'location' => $validated['location'] ?? null,
             'image' => $imagePath,
             'description' => $validated['description'] ?? null,
             'alt_text' => $validated['alt_text'] ?? $validated['title'],
@@ -147,7 +165,7 @@ class ModuleController extends Controller
             'email' => 'nullable|email|max:255',
             'status' => 'nullable|string|max:50',
             'bio' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
             'photo_url' => 'nullable|string|max:255',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
@@ -191,6 +209,83 @@ class ModuleController extends Controller
         return redirect()->route('admin.pembina')->with('success', 'Data pembina berhasil dihapus.');
     }
 
+    public function dewanAmbalan()
+    {
+        $members = Schema::hasTable('dewan_ambalans')
+            ? DewanAmbalan::query()
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get()
+            : collect();
+
+        return view('admin.modules.dewan-ambalan', [
+            'title' => 'Kelola Dewan Ambalan',
+            'description' => 'Kelola data dewan ambalan yang tampil di halaman depan.',
+            'publicRoute' => route('dewan-ambalan'),
+            'publicLabel' => 'Lihat Halaman Dewan Ambalan',
+            'members' => $members,
+            'stats' => [
+                'total' => $members->count(),
+                'aktif' => $members->where('is_active', true)->count(),
+                'nonaktif' => $members->where('is_active', false)->count(),
+                'kontak' => $members->filter(fn ($item) => ! empty($item->phone) || ! empty($item->email))->count(),
+            ],
+        ]);
+    }
+
+    public function storeDewanAmbalan(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'status' => 'nullable|string|max:50',
+            'bio' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
+            'photo_url' => 'nullable|string|max:255',
+            'is_active' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $photoUrl = $validated['photo_url'] ?? null;
+
+        if ($request->hasFile('photo')) {
+            $storedPath = $request->file('photo')->store('dewan-ambalan', 'public');
+            $photoUrl = 'storage/' . $storedPath;
+        }
+
+        DewanAmbalan::query()->create([
+            'name' => trim($validated['name']),
+            'jabatan' => trim($validated['jabatan']),
+            'phone' => $validated['phone'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'status' => $validated['status'] ?? 'Aktif',
+            'bio' => $validated['bio'] ?? null,
+            'photo_url' => $photoUrl,
+            'is_active' => (bool) ($validated['is_active'] ?? true),
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+        ]);
+
+        return redirect()->route('admin.dewan-ambalan')->with('success', 'Data dewan ambalan berhasil ditambahkan.');
+    }
+
+    public function toggleDewanAmbalan(DewanAmbalan $dewanAmbalan)
+    {
+        $dewanAmbalan->is_active = ! $dewanAmbalan->is_active;
+        $dewanAmbalan->status = $dewanAmbalan->is_active ? 'Aktif' : 'Non-Aktif';
+        $dewanAmbalan->save();
+
+        return redirect()->route('admin.dewan-ambalan')->with('success', 'Status dewan ambalan berhasil diperbarui.');
+    }
+
+    public function deleteDewanAmbalan(DewanAmbalan $dewanAmbalan)
+    {
+        $dewanAmbalan->delete();
+
+        return redirect()->route('admin.dewan-ambalan')->with('success', 'Data dewan ambalan berhasil dihapus.');
+    }
+
     public function anggota()
     {
         $query = \App\Models\Student::query();
@@ -206,10 +301,10 @@ class ModuleController extends Controller
         $anggota = $query->get();
 
         return view('admin.modules.anggota', [
-            'title' => 'Kelola Anggota',
-            'description' => 'Lihat dan kelola anggota Pramuka yang terdaftar.',
-            'publicRoute' => route('active-board'),
-            'publicLabel' => 'Lihat Halaman Anggota',
+            'title' => 'Kelola Anggota Dewan',
+            'description' => 'Lihat dan kelola data anggota dewan yang tampil di halaman depan.',
+            'publicRoute' => route('anggota-dewan'),
+            'publicLabel' => 'Lihat Halaman Anggota Dewan',
             'anggota' => $anggota,
             'stats' => [
                 'total' => $anggota->count(),
@@ -230,7 +325,7 @@ class ModuleController extends Controller
             'ambalan' => 'nullable|in:PA,PI',
             'jabatan' => 'nullable|string|max:100',
             'status' => 'nullable|string|max:50',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -253,7 +348,7 @@ class ModuleController extends Controller
             'sort_order' => (int) ($validated['sort_order'] ?? 0),
         ]);
 
-        return redirect()->route('admin.anggota')->with('success', 'Data anggota berhasil ditambahkan.');
+        return redirect()->route('admin.anggota')->with('success', 'Data anggota dewan berhasil ditambahkan.');
     }
 
     public function toggleAnggota(\App\Models\Student $student)
@@ -262,7 +357,7 @@ class ModuleController extends Controller
         $student->status = $student->is_active ? 'Aktif' : 'Non-Aktif';
         $student->save();
 
-        return redirect()->route('admin.anggota')->with('success', 'Status anggota berhasil diperbarui.');
+        return redirect()->route('admin.anggota')->with('success', 'Status anggota dewan berhasil diperbarui.');
     }
 
     public function updateAnggota(Request $request, \App\Models\Student $student)
@@ -275,7 +370,7 @@ class ModuleController extends Controller
             'ambalan' => 'nullable|in:PA,PI',
             'jabatan' => 'nullable|string|max:100',
             'status' => 'nullable|string|max:50',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
         ]);
@@ -307,21 +402,21 @@ class ModuleController extends Controller
 
         $student->save();
 
-        return redirect()->route('admin.anggota')->with('success', 'Data anggota berhasil diperbarui.');
+        return redirect()->route('admin.anggota')->with('success', 'Data anggota dewan berhasil diperbarui.');
     }
 
     public function deleteAnggota(\App\Models\Student $student)
     {
         $student->delete();
 
-        return redirect()->route('admin.anggota')->with('success', 'Data anggota berhasil dihapus.');
+        return redirect()->route('admin.anggota')->with('success', 'Data anggota dewan berhasil dihapus.');
     }
 
     public function deleteAllAnggota()
     {
         \App\Models\Student::query()->delete();
 
-        return redirect()->route('admin.anggota')->with('success', 'Semua data anggota berhasil dihapus.');
+        return redirect()->route('admin.anggota')->with('success', 'Semua data anggota dewan berhasil dihapus.');
     }
 
     public function prestasi()

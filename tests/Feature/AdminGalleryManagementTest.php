@@ -25,7 +25,7 @@ test('admin can create a gallery album', function () {
     $response = $this->post(route('admin.gallery.store'), [
         'title' => 'Latihan Camping',
         'category' => 'pelatihan',
-        'group' => 'putra',
+        'location' => 'Lapangan SMK Negeri 1 Bangsri',
         'date' => '2026-09-08',
         'description' => 'Kegiatan camping bersama anggota.',
         'image' => 'images/gallery/demo.jpg',
@@ -37,6 +37,6 @@ test('admin can create a gallery album', function () {
     $this->assertDatabaseHas('gallery_items', [
         'title' => 'Latihan Camping',
         'category' => 'pelatihan',
-        'group' => 'putra',
+        'location' => 'Lapangan SMK Negeri 1 Bangsri',
     ]);
 });

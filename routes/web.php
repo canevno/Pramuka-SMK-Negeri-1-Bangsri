@@ -35,8 +35,96 @@ Route::get('/pembina', function () {
 
     return view('pages.pembina', compact('pembinas', 'dewanAnggota'));
 })->name('pembina');
-Route::view('/dewan-kehormatan', 'pages.dewan-kehormatan')->name('dewan-kehormatan');
-Route::view('/dewan-ambalan', 'pages.dewan-ambalan')->name('dewan-ambalan');
+
+Route::get('/dewan-kehormatan', function () {
+    $members = [
+        [
+            'name' => 'Ketua Dewan Kehormatan',
+            'jabatan' => 'Ketua',
+            'status' => 'Utama',
+            'photo_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800',
+            'description' => 'Mengawasi integritas, etika, dan penegakan kode kehormatan Pramuka dalam setiap keputusan organisasi.',
+        ],
+        [
+            'name' => 'Wakil Ketua Dewan Kehormatan',
+            'jabatan' => 'Wakil Ketua',
+            'status' => 'Pendamping',
+            'photo_url' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800',
+            'description' => 'Mendukung evaluasi etika dan memastikan keputusan kehormatan berjalan adil dan konsisten.',
+        ],
+        [
+            'name' => 'Sekretaris Dewan Kehormatan',
+            'jabatan' => 'Sekretaris',
+            'status' => 'Dokumentasi',
+            'photo_url' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800',
+            'description' => 'Mengelola agenda, catatan keputusan, dan pendokumentasian proses evaluasi kehormatan.',
+        ],
+    ];
+
+    return view('pages.dewan-kehormatan', ['members' => $members]);
+})->name('dewan-kehormatan');
+
+Route::get('/dewan-ambalan', function () {
+    $members = \Illuminate\Support\Facades\Schema::hasTable('dewan_ambalans')
+        ? \App\Models\DewanAmbalan::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($member) {
+                return [
+                    'name' => $member->name,
+                    'jabatan' => $member->jabatan,
+                    'status' => $member->status,
+                    'photo_url' => $member->photo_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600',
+                    'description' => $member->bio ?: 'Anggota aktif yang mendorong program kerja dan pembinaan ambalan.',
+                ];
+            })
+            ->all()
+        : [];
+
+    return view('pages.dewan-ambalan', ['members' => $members]);
+})->name('dewan-ambalan');
+
+Route::get('/anggota-dewan', function () {
+    $dewanAnggota = \Illuminate\Support\Facades\Schema::hasTable('students')
+        ? \App\Models\Student::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('nama')
+            ->get()
+        : collect();
+
+    return view('pages.anggota-dewan', compact('dewanAnggota'));
+})->name('anggota-dewan');
+
+Route::get('/mitra', function () {
+    $partners = [
+        [
+            'name' => 'Kwartir Ranting',
+            'jabatan' => 'Pendamping Organisasi',
+            'status' => 'Resmi',
+            'photo_url' => 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800',
+            'description' => 'Mendukung koordinasi program, pembinaan, serta pelaksanaan kegiatan kepramukaan di tingkat ranting.',
+        ],
+        [
+            'name' => 'Instansi Pendidikan',
+            'jabatan' => 'Kolaborator Program',
+            'status' => 'Strategis',
+            'photo_url' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800',
+            'description' => 'Menghubungkan kegiatan ambalan dengan proses pembelajaran, pelatihan, dan pengembangan sekolah.',
+        ],
+        [
+            'name' => 'Komunitas Lingkungan',
+            'jabatan' => 'Mitra Sosial',
+            'status' => 'Terlibat',
+            'photo_url' => 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=800',
+            'description' => 'Bersama-sama menyelenggarakan aksi peduli lingkungan, kebersamaan, dan pengabdian masyarakat.',
+        ],
+    ];
+
+    return view('pages.mitra', ['partners' => $partners]);
+})->name('mitra');
 
 Route::get('/pengurus-aktif', function () {
     $hasStudentsTable = \Illuminate\Support\Facades\Schema::hasTable('students');
@@ -112,29 +200,79 @@ Route::get('/search', function (Illuminate\Http\Request $request) {
 
     $pages = [
         ['title' => 'Beranda', 'route' => route('home'), 'keywords' => 'beranda utama home'],
+        ['title' => 'Absensi', 'route' => route('absensi.index'), 'keywords' => 'absensi kehadiran siswa daftar hadir'],
         ['title' => 'Tentang Kami', 'route' => route('about'), 'keywords' => 'tentang kami sejarah profil'],
         ['title' => 'Visi & Misi', 'route' => route('visi-misi'), 'keywords' => 'visi misi tujuan program'],
         ['title' => 'Ambalan', 'route' => route('ambalan'), 'keywords' => 'ambalan gugus pramuka satuan'],
+        ['title' => 'Pembina', 'route' => route('pembina'), 'keywords' => 'pembina pembimbing ketua pengurus'],
+        ['title' => 'Dewan Kehormatan', 'route' => route('dewan-kehormatan'), 'keywords' => 'dewan kehormatan pengurus organisasi'],
+        ['title' => 'Dewan Ambalan', 'route' => route('dewan-ambalan'), 'keywords' => 'dewan ambalan pengurus ambalan'],
+        ['title' => 'Pengurus Aktif', 'route' => route('active-board'), 'keywords' => 'pengurus aktif anggota dewan'],
+        ['title' => 'Alumni', 'route' => route('alumni'), 'keywords' => 'alumni mantan anggota'],
+        ['title' => 'Prestasi', 'route' => route('achievement'), 'keywords' => 'prestasi juara lomba tingkat nasional daerah'],
+        ['title' => 'Prestasi Ranting', 'route' => route('prestasi.ranting'), 'keywords' => 'prestasi ranting juara lomba tingkat ranting'],
+        ['title' => 'Prestasi Cabang', 'route' => route('prestasi.cabang'), 'keywords' => 'prestasi cabang juara lomba tingkat cabang'],
+        ['title' => 'Prestasi Jateng', 'route' => route('prestasi.jateng'), 'keywords' => 'prestasi jateng juara lomba provinsi'],
+        ['title' => 'Prestasi Nasional', 'route' => route('prestasi.nasional'), 'keywords' => 'prestasi nasional juara lomba nasional'],
+        ['title' => 'Event', 'route' => route('event'), 'keywords' => 'event agenda kegiatan'],
+        ['title' => 'Artikel', 'route' => route('article'), 'keywords' => 'artikel tulisan informasi edukasi'],
         ['title' => 'Berita', 'route' => route('news'), 'keywords' => 'berita informasi kegiatan'],
         ['title' => 'Galeri', 'route' => route('gallery'), 'keywords' => 'galeri foto dokumentasi acara'],
-        ['title' => 'Event', 'route' => route('event'), 'keywords' => 'event agenda kegiatan'],
-        ['title' => 'Prestasi', 'route' => route('achievement'), 'keywords' => 'prestasi juara lomba'],
         ['title' => 'Pendaftaran Bantara', 'route' => route('pendaftaran-bantara'), 'keywords' => 'bantara pendaftaran calon anggota'],
         ['title' => 'Pendaftaran Laksana', 'route' => route('pendaftaran-laksana'), 'keywords' => 'laksana pendaftaran calon anggota'],
         ['title' => 'Kontak', 'route' => route('contact'), 'keywords' => 'kontak hubungi cs'],
     ];
 
     $results = [];
+    $bestMatch = null;
+    $bestScore = -1;
 
     if ($q !== '') {
         $needle = mb_strtolower($q);
 
         foreach ($pages as $page) {
-            $haystack = mb_strtolower($page['title'] . ' ' . $page['keywords']);
+            $title = mb_strtolower($page['title']);
+            $keywords = mb_strtolower($page['keywords']);
+            $haystack = $title . ' ' . $keywords;
+            $score = 0;
+
+            if ($title === $needle) {
+                $score += 100;
+            }
+
+            if (str_starts_with($title, $needle)) {
+                $score += 40;
+            }
+
+            if (str_contains($title, $needle)) {
+                $score += 25;
+            }
+
+            if (str_contains($keywords, $needle)) {
+                $score += 15;
+            }
 
             if (str_contains($haystack, $needle)) {
-                $results[] = $page;
+                $score += 10;
             }
+
+            if ($score > 0) {
+                $results[] = [
+                    'title' => $page['title'],
+                    'route' => $page['route'],
+                    'keywords' => $page['keywords'],
+                    'score' => $score,
+                ];
+
+                if ($score > $bestScore) {
+                    $bestScore = $score;
+                    $bestMatch = $page['route'];
+                }
+            }
+        }
+
+        if ($bestMatch) {
+            return redirect()->to($bestMatch);
         }
     }
 
@@ -278,6 +416,11 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\EnsureUserIsAdmin::c
     Route::post('/admin/pembina/{pembina}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'togglePembina'])->name('admin.pembina.toggle');
     Route::delete('/admin/pembina/{pembina}', [\App\Http\Controllers\Admin\ModuleController::class, 'deletePembina'])->name('admin.pembina.delete');
 
+    Route::get('/admin/dewan-ambalan', [\App\Http\Controllers\Admin\ModuleController::class, 'dewanAmbalan'])->name('admin.dewan-ambalan');
+    Route::post('/admin/dewan-ambalan/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeDewanAmbalan'])->name('admin.dewan-ambalan.store');
+    Route::post('/admin/dewan-ambalan/{dewanAmbalan}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleDewanAmbalan'])->name('admin.dewan-ambalan.toggle');
+    Route::delete('/admin/dewan-ambalan/{dewanAmbalan}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteDewanAmbalan'])->name('admin.dewan-ambalan.delete');
+
     Route::get('/admin/anggota', [\App\Http\Controllers\Admin\ModuleController::class, 'anggota'])->name('admin.anggota');
     Route::post('/admin/anggota/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeAnggota'])->name('admin.anggota.store');
     Route::delete('/admin/anggota/delete-all', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteAllAnggota'])->name('admin.anggota.delete-all');
@@ -298,14 +441,39 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\EnsureUserIsAdmin::c
     Route::post('/admin/prestasi/store', function (Illuminate\Http\Request $request) {
         $request->validate([
             'title' => 'required|string|max:255',
-            'category' => 'required|string|max:255',
+            'category' => ['required', 'string', 'in:Tingkat Ranting,Tingkat Cabang,Tingkat Jateng,Tingkat Nasional'],
             'year' => 'required|integer|min:2000|max:2100',
             'winner' => 'required|string|max:255',
+            'winner_social_link' => 'nullable|url|max:255',
             'description' => 'required|string',
-            'image' => 'nullable|string|max:255',
+            'image' => 'nullable',
+            'image_path' => 'nullable|string|max:255',
         ]);
 
-        App\Support\AchievementStore::add($request->only(['title', 'category', 'year', 'winner', 'description', 'image']));
+        $imagePath = $request->input('image_path', $request->input('image', 'images/achievement/prestasi1.jpg'));
+        $winnerSocialLink = $request->input('winner_social_link', '');
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file = $request->file('image');
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]+/', '-', strtolower(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))) . '.' . $file->getClientOriginalExtension();
+            $directory = public_path('images/achievement');
+
+            if (! is_dir($directory)) {
+                mkdir($directory, 0777, true);
+            }
+
+            $file->move($directory, $filename);
+            $imagePath = 'images/achievement/' . $filename;
+        }
+
+        if (is_string($imagePath) && trim($imagePath) === '') {
+            $imagePath = 'images/achievement/prestasi1.jpg';
+        }
+
+        App\Support\AchievementStore::add($request->only(['title', 'category', 'year', 'winner', 'description']) + [
+            'image' => $imagePath,
+            'winner_social_link' => $winnerSocialLink,
+        ]);
 
         return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil ditambahkan.');
     })->name('admin.prestasi.store');

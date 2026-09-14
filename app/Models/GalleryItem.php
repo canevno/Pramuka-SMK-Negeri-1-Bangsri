@@ -15,6 +15,7 @@ class GalleryItem extends Model
         'title',
         'category',
         'group',
+        'location',
         'image',
         'description',
         'alt_text',

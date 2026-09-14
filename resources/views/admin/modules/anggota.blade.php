@@ -29,7 +29,7 @@
 
     <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
         <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Total Anggota</p>
+            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Total Dewan</p>
             <p class="mt-2 text-2xl font-bold text-slate-900">{{ $stats['total'] ?? 0 }}</p>
             <p class="mt-1 text-[11px] text-slate-500">Semua data</p>
         </div>
@@ -53,7 +53,7 @@
     <div class="flex items-center justify-between gap-3">
         <div></div>
         @if(($anggota ?? collect())->isNotEmpty())
-            <form action="{{ route('admin.anggota.delete-all') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus semua anggota? Tindakan ini tidak bisa dibatalkan.');">
+            <form action="{{ route('admin.anggota.delete-all') }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus semua anggota dewan? Tindakan ini tidak bisa dibatalkan.');">
                 @csrf
                 @method('DELETE')
                 <button type="submit" class="rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-xs font-semibold text-rose-700 hover:bg-rose-100">
@@ -99,7 +99,7 @@
                                         Edit
                                     </button>
 
-                                    <form action="{{ route('admin.anggota.delete', $item) }}" method="POST" onsubmit="return confirm('Hapus anggota ini?');">
+                                    <form action="{{ route('admin.anggota.delete', $item) }}" method="POST" onsubmit="return confirm('Hapus anggota dewan ini?');">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-[10px] font-semibold text-rose-700 hover:bg-rose-100">
@@ -146,7 +146,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada data anggota.</td>
+                            <td colspan="5" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada data anggota dewan.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -156,7 +156,7 @@
 
     <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
         <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-slate-900">Formulir Anggota</h3>
+            <h3 class="text-lg font-semibold text-slate-900">Formulir Anggota Dewan</h3>
             <span class="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold text-emerald-700">Siap diproses</span>
         </div>
 
@@ -165,7 +165,7 @@
 
             <label class="block md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Nama lengkap</span>
-                <input type="text" name="nama" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Masukkan nama anggota" required>
+                <input type="text" name="nama" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Masukkan nama anggota dewan" required>
             </label>
 
             <label class="block">
@@ -211,13 +211,13 @@
             </label>
 
             <div class="md:col-span-2">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Foto anggota</span>
+                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Foto anggota dewan</span>
                 <input type="file" name="photo" accept="image/*" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500">
             </div>
 
             <div class="md:col-span-2 flex justify-end">
                 <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">
-                    Simpan Anggota
+                    Simpan Anggota Dewan
                 </button>
             </div>
         </form>

@@ -18,11 +18,39 @@
 
 @php
     $resolveImage = function ($path) {
-        if (!$path) {
+        if (empty($path)) {
             return asset('images/gallery/default.jpg');
         }
 
-        return str_starts_with($path, 'http') ? $path : asset($path);
+        $normalized = trim((string) $path);
+        $normalized = str_replace('\\', '/', $normalized);
+        $normalized = ltrim($normalized, '/');
+
+        if (str_starts_with($normalized, 'http')) {
+            return $normalized;
+        }
+
+        if (str_starts_with($normalized, 'public/')) {
+            $normalized = preg_replace('#^public/#', '', $normalized);
+        }
+
+        if (str_starts_with($normalized, 'storage/')) {
+            return asset($normalized);
+        }
+
+        if (str_starts_with($normalized, 'gallery/')) {
+            return \Illuminate\Support\Facades\Storage::url($normalized);
+        }
+
+        if (str_contains($normalized, '/storage/')) {
+            return asset(ltrim($normalized, '/'));
+        }
+
+        if (str_contains($normalized, 'storage/')) {
+            return asset($normalized);
+        }
+
+        return asset($normalized);
     };
 @endphp
 
@@ -75,7 +103,7 @@
                         <th class="w-20 p-4">Media</th>
                         <th class="p-4">Judul</th>
                         <th class="p-4">Kategori</th>
-                        <th class="p-4">Kelompok</th>
+                        <th class="p-4">Lokasi</th>
                         <th class="p-4 text-center">Status</th>
                         <th class="p-4 text-center">Tampilan</th>
                         <th class="p-4">Tanggal</th>
@@ -87,7 +115,7 @@
                     @forelse($items as $item)
                         <tr
                             class="transition hover:bg-gray-50/60 dark:hover:bg-gray-800/30"
-                            data-search="{{ strtolower(trim(($item->title ?? '') . ' ' . ($item->alt_text ?? '') . ' ' . ($item->category ?? '') . ' ' . ($item->is_published ? 'publik' : 'draft') . ' ' . ($item->is_featured ? 'beranda' : ''))) }}"
+                            data-search="{{ strtolower(trim(($item->title ?? '') . ' ' . ($item->alt_text ?? '') . ' ' . ($item->category ?? '') . ' ' . ($item->location ?? '') . ' ' . ($item->is_published ? 'publik' : 'draft') . ' ' . ($item->is_featured ? 'beranda' : ''))) }}"
                         >
                             <td class="p-4">
                                 <button
@@ -118,8 +146,8 @@
                             </td>
 
                             <td class="p-4">
-                                <span class="rounded-md border border-violet-200 bg-violet-50 px-2.5 py-1 font-medium text-violet-600 dark:border-violet-900 dark:bg-violet-950/40 dark:text-violet-400">
-                                    {{ $item->group === 'putra' ? 'Putra' : ($item->group === 'putri' ? 'Putri' : 'Umum') }}
+                                <span class="text-gray-600 dark:text-gray-300">
+                                    {{ $item->location ?: '—' }}
                                 </span>
                             </td>
 
@@ -292,20 +320,16 @@
                 </div>
 
                 <div>
-                    <label for="group" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">
-                        Kelompok Ambalan <span class="text-red-500">*</span>
-                    </label>
-                    <select
-                        id="group"
-                        name="group"
-                        required
+                    <label for="location" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">Lokasi</label>
+                    <input
+                        type="text"
+                        id="location"
+                        name="location"
+                        value="{{ old('location') }}"
+                        placeholder="Contoh: Lapangan SMK Negeri 1 Bangsri"
                         class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                     >
-                        <option value="putra" {{ old('group', 'putra') == 'putra' ? 'selected' : '' }}>Putra</option>
-                        <option value="putri" {{ old('group') == 'putri' ? 'selected' : '' }}>Putri</option>
-                        <option value="umum" {{ old('group') == 'umum' ? 'selected' : '' }}>Umum</option>
-                    </select>
-                    @error('group')
+                    @error('location')
                         <p class="mt-1 text-red-500">{{ $message }}</p>
                     @enderror
                 </div>

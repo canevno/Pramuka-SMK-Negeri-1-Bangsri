@@ -15,6 +15,7 @@ class AchievementStore
                 'category' => 'Tingkat Kwarcab Jepara',
                 'year' => 2026,
                 'winner' => 'Muhammad Gilang Ramadhan',
+                'winner_social_link' => '',
                 'description' => 'Prestasi membanggakan dalam kegiatan Garuda Berprestasi putra penegak.',
                 'image' => 'images/achievement/prestasi1.jpg',
             ],
@@ -23,6 +24,7 @@ class AchievementStore
                 'category' => 'Tingkat Nasional',
                 'year' => 2025,
                 'winner' => 'Nafa Anjani',
+                'winner_social_link' => '',
                 'description' => 'Karya infografis terbaik yang menonjolkan semangat kepedulian lingkungan.',
                 'image' => 'images/achievement/prestasi1.jpg',
             ],
@@ -77,6 +79,7 @@ class AchievementStore
             'category' => $input['category'] ?? 'Umum',
             'year' => $input['year'] ?? now()->year,
             'winner' => $input['winner'] ?? 'Anggota',
+            'winner_social_link' => $input['winner_social_link'] ?? ($input['winner_link'] ?? ''),
             'description' => $input['description'] ?? '',
             'image' => $input['image'] ?? 'images/achievement/prestasi1.jpg',
         ]));
@@ -95,12 +98,15 @@ class AchievementStore
 
     protected static function normalize(array $item): array
     {
+        $winnerSocialLink = $item['winner_social_link'] ?? ($item['winner_link'] ?? '');
+
         return [
             'id' => (int) ($item['id'] ?? 0),
             'title' => trim((string) ($item['title'] ?? 'Prestasi Baru')),
             'category' => trim((string) ($item['category'] ?? 'Umum')),
             'year' => (int) ($item['year'] ?? now()->year),
             'winner' => trim((string) ($item['winner'] ?? 'Anggota')),
+            'winner_social_link' => trim((string) $winnerSocialLink),
             'description' => trim((string) ($item['description'] ?? '')),
             'image' => trim((string) ($item['image'] ?? 'images/achievement/prestasi1.jpg')),
         ];
@@ -109,12 +115,22 @@ class AchievementStore
     protected static function matchesLevel(string $category, string $level): bool
     {
         $categoryText = strtolower(trim($category));
+        $categoryText = preg_replace('/[^a-z0-9]+/', ' ', $categoryText) ?? $categoryText;
+        $categoryText = preg_replace('/\s+/', ' ', $categoryText) ?? $categoryText;
 
         return match ($level) {
-            'ranting' => str_contains($categoryText, 'ranting') || str_contains($categoryText, 'tingkat ranting') || str_contains($categoryText, 'ranting sekolah'),
-            'cabang' => str_contains($categoryText, 'cabang') || str_contains($categoryText, 'tingkat cabang'),
-            'jateng' => str_contains($categoryText, 'jateng') || str_contains($categoryText, 'jawa tengah') || str_contains($categoryText, 'tingkat jateng') || str_contains($categoryText, 'daerah'),
-            'nasional' => str_contains($categoryText, 'nasional') || str_contains($categoryText, 'tingkat nasional'),
+            'ranting' => str_contains($categoryText, 'tingkat ranting')
+                || str_contains($categoryText, 'ranting')
+                || str_contains($categoryText, 'ranting sekolah'),
+            'cabang' => str_contains($categoryText, 'tingkat cabang')
+                || str_contains($categoryText, 'cabang')
+                || str_contains($categoryText, 'tingkat cabang sekolah'),
+            'jateng' => str_contains($categoryText, 'tingkat jateng')
+                || str_contains($categoryText, 'jateng')
+                || str_contains($categoryText, 'jawa tengah')
+                || str_contains($categoryText, 'daerah'),
+            'nasional' => str_contains($categoryText, 'tingkat nasional')
+                || str_contains($categoryText, 'nasional'),
             default => false,
         };
     }

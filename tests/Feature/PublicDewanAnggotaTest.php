@@ -1,6 +1,7 @@
 <?php
 
 use App\Models\Student;
+use App\Models\User;
 
 it('shows active dewan anggota from the student data source', function () {
     Student::query()->delete();
@@ -26,4 +27,9 @@ it('shows active dewan anggota from the student data source', function () {
         ->assertSee('Rizki Dewan')
         ->assertSee('Ketua Dewan Ambalan')
         ->assertDontSee('Santi Tidak Aktif');
+
+    $this->actingAs(User::factory()->create(['email' => 'admin-anggota-dewan@example.com', 'is_admin' => true]))
+        ->get(route('admin.anggota'))
+        ->assertOk()
+        ->assertSee('Anggota Dewan');
 });

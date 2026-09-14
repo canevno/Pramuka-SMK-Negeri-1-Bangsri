@@ -3,54 +3,84 @@
 <?php $__env->startSection('content'); ?>
 <?php
     $activeMembers = collect($dewanAnggota ?? [])->where('is_active', true)->sortBy(fn ($item) => [$item->sort_order ?? 0, $item->nama ?? ''])->values();
+    $selectedMemberId = $activeMembers->isNotEmpty() ? 0 : 'null';
 ?>
 
-<div class="min-h-screen bg-slate-50 px-4 py-10 text-slate-900 sm:px-6 lg:px-8">
-    <div class="mx-auto max-w-7xl">
-        <div class="mb-8 text-center">
-            <p class="text-xs font-bold uppercase tracking-[0.28em] text-emerald-700">Struktur Organisasi</p>
-            <h1 class="mt-3 text-3xl font-extrabold tracking-tight text-slate-900 sm:text-4xl">Anggota Dewan</h1>
-            <p class="mx-auto mt-3 max-w-2xl text-sm text-slate-600 sm:text-base">
-                Daftar anggota dewan yang aktif dan terdaftar dalam struktur kepengurusan periode berjalan.
-            </p>
+<div class="bg-slate-50 text-slate-900 pt-8 pb-16 min-h-screen" x-data="{ selectedMember: <?php echo e($selectedMemberId); ?> }">
+    <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+            <aside class="order-2 lg:order-1 lg:col-span-4 xl:col-span-3 lg:sticky lg:top-32 self-start z-10">
+                <nav class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm">
+                    <div>
+                        <span class="block px-3 py-1 text-base font-bold text-slate-950 mb-1 border-b border-slate-100 pb-2">
+                            Organisasi
+                        </span>
+                        <div class="space-y-1 mt-2">
+                            <a href="<?php echo e(route('pembina')); ?>" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('pembina') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>"><span>Pembina</span></a>
+                            <a href="<?php echo e(route('dewan-kehormatan')); ?>" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('dewan-kehormatan') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>"><span>Dewan Kehormatan</span></a>
+                            <a href="<?php echo e(route('dewan-ambalan')); ?>" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('dewan-ambalan') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>"><span>Dewan Ambalan</span></a>
+                            <a href="<?php echo e(route('anggota-dewan')); ?>" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('anggota-dewan') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>"><span>Anggota Dewan</span></a>
+                            <a href="<?php echo e(route('mitra')); ?>" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('mitra') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>"><span>Mitra</span></a>
+                            <a href="<?php echo e(route('alumni')); ?>" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('alumni') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>"><span>Alumni</span></a>
+                        </div>
+                    </div>
+                </nav>
+            </aside>
+
+            <main class="order-1 lg:order-2 lg:col-span-8 xl:col-span-9">
+                <div class="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm">
+                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-6 text-center lg:text-left">
+                        Anggota Dewan
+                    </h1>
+
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activeMembers->isEmpty()): ?>
+                        <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">
+                            Belum ada data anggota dewan yang aktif untuk ditampilkan.
+                        </div>
+                    <?php else: ?>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $activeMembers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                                <?php
+                                    $image = $item->photo_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600';
+                                    $description = trim((string) ($item->bio ?? $item->description ?? '')) ?: 'Anggota aktif yang berperan dalam pengelolaan dan pembinaan organisasi.';
+                                ?>
+
+                                <div @click="selectedMember = (selectedMember === <?php echo e($index); ?> ? null : <?php echo e($index); ?>)"
+                                    :class="selectedMember === <?php echo e($index); ?>
+
+                                        ? 'bg-[#183a2d] border-[#183a2d] ring-2 ring-[#183a2d]'
+                                        : 'bg-white border-slate-200 hover:border-slate-300'"
+                                    class="relative rounded-xl border p-1.5 cursor-pointer transition-all duration-300 select-none shadow-sm lg:scale-[0.96] lg:hover:scale-[0.97]">
+                                    <div class="relative overflow-hidden rounded-lg aspect-square bg-slate-100">
+                                        <img src="<?php echo e($image); ?>" alt="<?php echo e($item->nama); ?>" class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition duration-300">
+
+
+                                    </div>
+
+                                    <div class="px-2 pt-2.5 pb-1">
+                                        <h3 class="font-bold text-sm sm:text-base leading-tight transition-colors"
+                                            :class="selectedMember === <?php echo e($index); ?> ? 'text-white' : 'text-slate-900'">
+                                            <?php echo e($item->nama); ?>
+
+                                        </h3>
+                                        <p class="text-xs transition-colors mt-0.5"
+                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-emerald-300' : 'text-slate-500'">
+                                            <?php echo e($item->jabatan ?: 'Anggota Dewan'); ?>
+
+                                        </p>
+                                        <p class="mt-2 text-[11px] leading-relaxed transition-colors"
+                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-emerald-100' : 'text-slate-600'">
+                                            <?php echo e(Str::limit($description, 110)); ?>
+
+                                        </p>
+                                    </div>
+                                </div>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                        </div>
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+            </main>
         </div>
-
-        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activeMembers->isEmpty()): ?>
-            <div class="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center text-slate-500 shadow-sm">
-                Belum ada data anggota dewan yang aktif untuk ditampilkan.
-            </div>
-        <?php else: ?>
-            <div class="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $activeMembers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                    <?php
-                        $image = $item->photo_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=800';
-                    ?>
-
-                    <article class="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition duration-200 hover:-translate-y-1 hover:shadow-md">
-                        <div class="relative h-64 overflow-hidden bg-slate-100">
-                            <img src="<?php echo e($image); ?>" alt="<?php echo e($item->nama); ?>" class="h-full w-full object-cover">
-                            <span class="absolute right-3 top-3 rounded-full bg-emerald-500/90 px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide text-white">
-                                <?php echo e($item->status ?? 'Aktif'); ?>
-
-                            </span>
-                        </div>
-
-                        <div class="space-y-3 p-5">
-                            <div>
-                                <h2 class="text-xl font-bold text-slate-900"><?php echo e($item->nama); ?></h2>
-                                <p class="mt-1 text-sm font-medium text-emerald-700"><?php echo e($item->jabatan ?: 'Anggota Dewan'); ?></p>
-                            </div>
-
-                            <div class="space-y-1 text-sm text-slate-600">
-                                <p><span class="font-semibold text-slate-800">Kelas:</span> <?php echo e($item->kelas_asal ?: '-'); ?></p>
-                                <p><span class="font-semibold text-slate-800">Sangga:</span> <?php echo e($item->sangga ?: '-'); ?></p>
-                                <p><span class="font-semibold text-slate-800">Sub Sangga:</span> <?php echo e($item->sub_sangga ?: '-'); ?></p>
-                            </div>
-                        </div>
-                    </article>
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
-            </div>
-        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
     </div>
 </div>
 <?php $__env->stopSection(); ?>

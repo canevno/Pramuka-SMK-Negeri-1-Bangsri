@@ -113,15 +113,30 @@
 
             <div class="md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Foto pembina</span>
-                <div id="pembina-upload-box" class="flex min-h-40 cursor-pointer flex-col items-center justify-center rounded-2xl border-2 border-dashed border-slate-300 bg-white px-6 py-6 text-center transition hover:border-indigo-400 hover:bg-indigo-50/40">
-                    <input id="pembina-photo-input" type="file" name="photo" accept="image/*" class="hidden">
-                    <svg class="mb-3 h-10 w-10 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-                        <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16.5V18a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 18v-1.5" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                    <p class="text-sm font-medium text-slate-700">Tarik foto ke sini atau <span class="text-indigo-600">klik untuk pilih</span></p>
-                    <p class="mt-1 text-xs text-slate-500">PNG, JPG, WEBP maksimal 2 MB</p>
-                    <p id="pembina-file-name" class="mt-3 hidden text-xs font-medium text-emerald-600"></p>
+                <div id="pembina-upload-box" class="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-3 transition-all duration-200 hover:border-indigo-400 hover:bg-indigo-50/80">
+                    <div id="pembina-empty-state" class="flex min-h-[170px] flex-col items-center justify-center gap-3 rounded-xl border border-slate-200/80 bg-white/70 px-4 py-5 text-center shadow-inner">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 shadow-sm">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16.5V18a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 18v-1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-700">Tarik foto ke sini</p>
+                            <p class="mt-1 text-[11px] text-slate-500">atau klik untuk memilih file</p>
+                        </div>
+                        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-600">PNG • JPG • WEBP</span>
+                    </div>
+
+                    <div id="pembina-preview-wrap" class="hidden overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                        <img id="pembina-preview" alt="Preview foto pembina" class="h-[170px] w-full object-cover" />
+                        <div class="flex items-center justify-between gap-3 border-t border-slate-200 px-3 py-2">
+                            <span id="pembina-file-name" class="truncate text-xs font-medium text-slate-700"></span>
+                            <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700">Preview</span>
+                        </div>
+                    </div>
                 </div>
+
+                <input id="pembina-photo-input" type="file" name="photo" accept="image/*" class="hidden">
             </div>
 
             <label class="block">
@@ -176,47 +191,71 @@
         const uploadBox = document.getElementById('pembina-upload-box');
         const input = document.getElementById('pembina-photo-input');
         const fileLabel = document.getElementById('pembina-file-name');
+        const previewWrap = document.getElementById('pembina-preview-wrap');
+        const previewImage = document.getElementById('pembina-preview');
+        const emptyState = document.getElementById('pembina-empty-state');
 
-        if (!uploadBox || !input || !fileLabel) {
+        if (!uploadBox || !input || !fileLabel || !previewWrap || !previewImage || !emptyState) {
             return;
         }
 
-        const openPicker = () => input.click();
+        const updatePreview = (file) => {
+            if (!file || !file.type.startsWith('image/')) {
+                previewWrap.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                fileLabel.textContent = '';
+                return;
+            }
 
-        uploadBox.addEventListener('click', openPicker);
+            const objectUrl = URL.createObjectURL(file);
+            previewImage.src = objectUrl;
+            previewWrap.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            fileLabel.textContent = file.name;
+
+            previewImage.onload = function () {
+                URL.revokeObjectURL(objectUrl);
+            };
+        };
+
+        uploadBox.addEventListener('click', function (event) {
+            if (event.target.closest('button') || event.target.closest('a')) {
+                return;
+            }
+            input.click();
+        });
 
         ['dragenter', 'dragover'].forEach((eventName) => {
             uploadBox.addEventListener(eventName, function (event) {
                 event.preventDefault();
-                uploadBox.classList.add('border-indigo-400', 'bg-indigo-50/60');
+                uploadBox.classList.add('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.remove('border-slate-300');
             });
         });
 
         ['dragleave', 'drop'].forEach((eventName) => {
             uploadBox.addEventListener(eventName, function (event) {
                 event.preventDefault();
-                uploadBox.classList.remove('border-indigo-400', 'bg-indigo-50/60');
+                uploadBox.classList.remove('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.add('border-slate-300');
             });
         });
 
         uploadBox.addEventListener('drop', function (event) {
-            const files = event.dataTransfer?.files;
+            event.preventDefault();
+            const files = event.dataTransfer && event.dataTransfer.files;
             if (files && files.length) {
+                const file = files[0];
+                if (!file.type.startsWith('image/')) {
+                    return;
+                }
                 input.files = files;
-                fileLabel.textContent = files[0].name;
-                fileLabel.classList.remove('hidden');
+                updatePreview(file);
             }
         });
 
         input.addEventListener('change', function () {
-            const file = this.files && this.files[0];
-            if (file) {
-                fileLabel.textContent = file.name;
-                fileLabel.classList.remove('hidden');
-            } else {
-                fileLabel.textContent = '';
-                fileLabel.classList.add('hidden');
-            }
+            updatePreview(this.files && this.files[0]);
         });
     });
 </script>

@@ -6,23 +6,23 @@
 
 @section('content')
 <div class="space-y-6">
-    <!-- Header Section -->
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between rounded-2xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
-        <div>
-            <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Modul Admin</p>
-            <h2 class="mt-1 text-2xl font-bold text-slate-900 dark:text-white">{{ $title }}</h2>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">{{ $description }}</p>
-        </div>
+    <div class="rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-900 p-6 text-white shadow-sm dark:border-slate-700">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-300">Modul Admin</p>
+                <h2 class="mt-2 text-2xl font-bold text-white">{{ $title }}</h2>
+                <p class="mt-2 text-sm text-slate-300">{{ $description }}</p>
+            </div>
 
-        @if(!empty($publicRoute) && !empty($publicLabel))
-            <a href="{{ $publicRoute }}" target="_blank" class="inline-flex items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50 hover:text-slate-900 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300 dark:hover:bg-slate-700 dark:hover:text-white">
-                <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                {{ $publicLabel }}
-            </a>
-        @endif
+            @if(!empty($publicRoute) && !empty($publicLabel))
+                <a href="{{ $publicRoute }}" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/15">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+                    {{ $publicLabel }}
+                </a>
+            @endif
+        </div>
     </div>
 
-    <!-- Success Message -->
     @if(session('success'))
         <div class="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
             <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
@@ -30,7 +30,6 @@
         </div>
     @endif
 
-    <!-- Stats Grid -->
     @php
         $stats = [
             ['label' => 'Total Prestasi', 'value' => count($achievements ?? []), 'caption' => 'Data tersimpan', 'icon' => 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'],
@@ -40,58 +39,63 @@
         ];
     @endphp
 
-    <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         @foreach($stats as $stat)
-            <div class="rounded-xl border border-slate-200 bg-white p-5 transition hover:border-slate-300 dark:border-slate-800 dark:bg-slate-900 dark:hover:border-slate-700">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center justify-between">
-                    <p class="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">{{ $stat['label'] }}</p>
-                    <div class="rounded-lg bg-slate-100 p-2 text-slate-600 dark:bg-slate-800 dark:text-slate-400">
-                        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $stat['icon'] }}"></path></svg>
+                    <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">{{ $stat['label'] }}</p>
+                    <div class="rounded-xl bg-slate-100 p-2.5 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $stat['icon'] }}"></path></svg>
                     </div>
                 </div>
-                <p class="mt-3 text-3xl font-bold text-slate-900 dark:text-white">{{ $stat['value'] }}</p>
+                <p class="mt-4 text-3xl font-bold text-slate-900 dark:text-white">{{ $stat['value'] }}</p>
                 <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $stat['caption'] }}</p>
             </div>
         @endforeach
     </div>
 
-    <!-- Main Content: Table & Form -->
-    <div class="grid gap-6 xl:grid-cols-3">
-        
-        <!-- Data Table (Takes 2 columns on XL) -->
-        <div class="xl:col-span-2 rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-            <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-800">
-                <h3 class="text-base font-semibold text-slate-900 dark:text-white">Daftar Prestasi</h3>
-                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Kelola data pencapaian yang telah diinput.</p>
+    <div class="grid gap-6 xl:grid-cols-[1.6fr_0.9fr]">
+        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="flex items-center justify-between border-b border-slate-200 px-5 py-4 dark:border-slate-800">
+                <div>
+                    <h3 class="text-base font-semibold text-slate-900 dark:text-white">Daftar Prestasi</h3>
+                    <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Kelola data pencapaian yang sudah masuk.</p>
+                </div>
+                <span class="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 dark:bg-slate-800 dark:text-slate-300">
+                    {{ count($achievements ?? []) }} Item
+                </span>
             </div>
+
             <div class="overflow-x-auto">
-                <table class="w-full text-left text-sm text-slate-600 dark:text-slate-300">
-                    <thead class="bg-slate-50 text-xs uppercase tracking-wider text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
+                <table class="min-w-full text-left text-sm text-slate-600 dark:text-slate-300">
+                    <thead class="bg-slate-50 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
                         <tr>
-                            <th class="px-6 py-3 font-semibold">Judul Prestasi</th>
-                            <th class="px-6 py-3 font-semibold">Kategori</th>
-                            <th class="px-6 py-3 font-semibold">Tahun</th>
-                            <th class="px-6 py-3 font-semibold">Pemenang</th>
-                            <th class="px-6 py-3 text-right font-semibold">Aksi</th>
+                            <th class="px-5 py-3">Judul</th>
+                            <th class="px-5 py-3">Kategori</th>
+                            <th class="px-5 py-3">Tahun</th>
+                            <th class="px-5 py-3">Pemenang</th>
+                            <th class="px-5 py-3 text-right">Aksi</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                         @forelse($achievements ?? [] as $achievement)
-                            <tr class="transition hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                                <td class="px-6 py-4 font-medium text-slate-900 dark:text-white">{{ $achievement['title'] }}</td>
-                                <td class="px-6 py-4">
-                                    <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+                            <tr class="align-top transition hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                                <td class="px-5 py-4">
+                                    <div class="font-semibold text-slate-900 dark:text-white">{{ $achievement['title'] }}</div>
+                                </td>
+                                <td class="px-5 py-4">
+                                    <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
                                         {{ $achievement['category'] }}
                                     </span>
                                 </td>
-                                <td class="px-6 py-4">{{ $achievement['year'] }}</td>
-                                <td class="px-6 py-4">{{ $achievement['winner'] }}</td>
-                                <td class="px-6 py-4 text-right">
+                                <td class="px-5 py-4">{{ $achievement['year'] }}</td>
+                                <td class="px-5 py-4 text-slate-700 dark:text-slate-300">{{ $achievement['winner'] }}</td>
+                                <td class="px-5 py-4 text-right">
                                     <form method="POST" action="{{ route('admin.prestasi.delete', $achievement['id']) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus prestasi ini? Tindakan ini tidak dapat dibatalkan.')" class="inline">
                                         @csrf
                                         @method('DELETE')
-                                        <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-medium text-red-600 transition hover:bg-red-50 hover:text-red-700 dark:hover:bg-red-500/10 dark:hover:text-red-400">
-                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                        <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-[11px] font-medium text-red-600 transition hover:border-red-300 hover:bg-red-100 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/15">
+                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                             Hapus
                                         </button>
                                     </form>
@@ -113,57 +117,162 @@
             </div>
         </div>
 
-        <!-- Quick Add Form (Takes 1 column on XL) -->
-        <div class="rounded-xl border border-slate-200 bg-white dark:border-slate-800 dark:bg-slate-900">
-            <div class="border-b border-slate-200 px-6 py-4 dark:border-slate-800">
+        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
+            <div class="border-b border-slate-200 px-5 py-4 dark:border-slate-800">
                 <h3 class="text-base font-semibold text-slate-900 dark:text-white">Tambah Prestasi</h3>
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Isi detail pencapaian baru.</p>
             </div>
-            
-            <form method="POST" action="{{ route('admin.prestasi.store') }}" class="p-6 space-y-5">
+
+            <form method="POST" action="{{ route('admin.prestasi.store') }}" enctype="multipart/form-data" class="space-y-5 p-5">
                 @csrf
 
                 <div>
-                    <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Judul Prestasi <span class="text-red-500">*</span></label>
-                    <input type="text" name="title" required class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Contoh: Juara 1 Lomba Pionering" />
+                    <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Judul Prestasi <span class="text-red-500">*</span></label>
+                    <input type="text" name="title" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Contoh: Juara 1 Lomba Pionering" />
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid gap-4 sm:grid-cols-2">
                     <div>
-                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Kategori <span class="text-red-500">*</span></label>
-                        <input type="text" name="category" required class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Tingkat Ranting" />
+                        <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Kategori <span class="text-red-500">*</span></label>
+                        <select name="category" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                            <option value="">Pilih tingkat prestasi</option>
+                            <option value="Tingkat Ranting">Tingkat Ranting</option>
+                            <option value="Tingkat Cabang">Tingkat Cabang</option>
+                            <option value="Tingkat Jateng">Tingkat Jateng</option>
+                            <option value="Tingkat Nasional">Tingkat Nasional</option>
+                        </select>
                     </div>
                     <div>
-                        <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Tahun <span class="text-red-500">*</span></label>
-                        <input type="number" name="year" value="{{ now()->year }}" required min="2000" max="2100" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+                        <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Tahun <span class="text-red-500">*</span></label>
+                        <input type="number" name="year" value="{{ now()->year }}" required min="2000" max="2100" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
                     </div>
                 </div>
 
                 <div>
-                    <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Pemenang / Peserta <span class="text-red-500">*</span></label>
-                    <input type="text" name="winner" required class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Nama anggota atau regu" />
+                    <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Pemenang / Peserta <span class="text-red-500">*</span></label>
+                    <input type="text" name="winner" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Nama anggota atau regu" />
                 </div>
 
                 <div>
-                    <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Deskripsi <span class="text-red-500">*</span></label>
-                    <textarea rows="3" name="description" required class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Tuliskan deskripsi singkat pencapaian..."></textarea>
+                    <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Link Media Sosial Pemenang</label>
+                    <input type="url" name="winner_social_link" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="https://instagram.com/username" />
+                    <p class="mt-1 text-[11px] text-slate-400">Kosongkan jika tidak ingin dihubungkan ke media sosial.</p>
                 </div>
 
                 <div>
-                    <label class="mb-1.5 block text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">URL Gambar</label>
-                    <input type="text" name="image" value="images/achievement/prestasi1.jpg" class="w-full rounded-lg border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="images/achievement/..." />
-                    <p class="mt-1 text-[11px] text-slate-400">Biarkan default jika tidak ada gambar khusus.</p>
+                    <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Deskripsi <span class="text-red-500">*</span></label>
+                    <textarea rows="4" name="description" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Tuliskan deskripsi singkat pencapaian..."></textarea>
                 </div>
 
-                <div class="pt-2">
-                    <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-lg bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
-                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Simpan Prestasi
-                    </button>
+                <div>
+                    <input type="hidden" name="image_path" value="images/achievement/prestasi1.jpg">
+                    <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Gambar Prestasi</label>
+
+                    <div id="prestasi-upload-box" class="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-3 transition-all duration-200 hover:border-indigo-400 hover:bg-indigo-50/80 dark:border-slate-700 dark:from-slate-800/90 dark:via-slate-900 dark:to-indigo-950/60 dark:hover:border-indigo-500">
+                        <div id="prestasi-empty-state" class="flex min-h-[170px] flex-col items-center justify-center gap-3 rounded-xl border border-slate-200/80 bg-white/70 px-4 py-5 text-center shadow-inner dark:border-slate-700 dark:bg-slate-950/30">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 shadow-sm dark:bg-indigo-500/10 dark:text-indigo-300">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
+                            </div>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-700 dark:text-slate-100">Tarik gambar ke sini</p>
+                                <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">atau klik untuk memilih file</p>
+                            </div>
+                            <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-600 dark:bg-slate-800 dark:text-slate-300">JPG • PNG • WEBP</span>
+                        </div>
+
+                        <div id="prestasi-preview-wrap" class="hidden overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-950/40">
+                            <img id="prestasi-preview" alt="Preview prestasi" class="h-[170px] w-full object-cover" />
+                            <div class="flex items-center justify-between gap-3 border-t border-slate-200 px-3 py-2 dark:border-slate-700">
+                                <span id="prestasi-file-name" class="truncate text-xs font-medium text-slate-700 dark:text-slate-200"></span>
+                                <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">Preview</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <input id="prestasi-image-input" type="file" name="image" accept="image/*" class="hidden" />
+                    <p class="mt-2 text-[11px] text-slate-400">Biarkan default jika tidak ada gambar khusus.</p>
                 </div>
+
+                <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                    Simpan Prestasi
+                </button>
             </form>
         </div>
-
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadBox = document.getElementById('prestasi-upload-box');
+        const input = document.getElementById('prestasi-image-input');
+        const fileLabel = document.getElementById('prestasi-file-name');
+        const previewWrap = document.getElementById('prestasi-preview-wrap');
+        const previewImage = document.getElementById('prestasi-preview');
+        const emptyState = document.getElementById('prestasi-empty-state');
+
+        if (!uploadBox || !input || !fileLabel || !previewWrap || !previewImage || !emptyState) {
+            return;
+        }
+
+        const updatePreview = (file) => {
+            if (!file || !file.type.startsWith('image/')) {
+                previewWrap.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                fileLabel.textContent = '';
+                return;
+            }
+
+            const objectUrl = URL.createObjectURL(file);
+            previewImage.src = objectUrl;
+            previewWrap.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            fileLabel.textContent = file.name;
+
+            previewImage.onload = function () {
+                URL.revokeObjectURL(objectUrl);
+            };
+        };
+
+        uploadBox.addEventListener('click', function (event) {
+            if (event.target.closest('button') || event.target.closest('a')) {
+                return;
+            }
+            input.click();
+        });
+
+        ['dragenter', 'dragover'].forEach((eventName) => {
+            uploadBox.addEventListener(eventName, function (event) {
+                event.preventDefault();
+                uploadBox.classList.add('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.remove('border-slate-300');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach((eventName) => {
+            uploadBox.addEventListener(eventName, function (event) {
+                event.preventDefault();
+                uploadBox.classList.remove('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.add('border-slate-300');
+            });
+        });
+
+        uploadBox.addEventListener('drop', function (event) {
+            event.preventDefault();
+            const files = event.dataTransfer && event.dataTransfer.files;
+            if (files && files.length) {
+                const file = files[0];
+                if (!file.type.startsWith('image/')) {
+                    return;
+                }
+                input.files = files;
+                updatePreview(file);
+            }
+        });
+
+        input.addEventListener('change', function () {
+            updatePreview(this.files && this.files[0]);
+        });
+    });
+</script>
 @endsection 

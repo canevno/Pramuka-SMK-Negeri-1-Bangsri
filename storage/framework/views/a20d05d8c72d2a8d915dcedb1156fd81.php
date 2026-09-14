@@ -17,41 +17,35 @@
                             Organisasi
                         </span>
                         <div class="space-y-1 mt-2">
-                            <button @click="activeTab = 'pembina'"
-                                :class="activeTab === 'pembina' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
-                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition flex items-center justify-between">
+                            <a href="<?php echo e(route('pembina')); ?>"
+                                class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('pembina') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>">
                                 <span>Pembina</span>
-                            </button>
+                            </a>
 
-                            <button @click="activeTab = 'dewan-kehormatan'"
-                                :class="activeTab === 'dewan-kehormatan' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
-                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition flex items-center justify-between">
+                            <a href="<?php echo e(route('dewan-kehormatan')); ?>"
+                                class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('dewan-kehormatan') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>">
                                 <span>Dewan Kehormatan</span>
-                            </button>
+                            </a>
 
-                            <button @click="activeTab = 'dewan-ambalan'"
-                                :class="activeTab === 'dewan-ambalan' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
-                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition flex items-center justify-between">
+                            <a href="<?php echo e(route('dewan-ambalan')); ?>"
+                                class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('dewan-ambalan') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>">
                                 <span>Dewan Ambalan</span>
-                            </button>
+                            </a>
 
-                            <button @click="activeTab = 'anggota-dewan'"
-                                :class="activeTab === 'anggota-dewan' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
-                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition flex items-center justify-between">
+                            <a href="<?php echo e(route('anggota-dewan')); ?>"
+                                class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('anggota-dewan') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>">
                                 <span>Anggota Dewan</span>
-                            </button>
+                            </a>
 
-                            <button @click="activeTab = 'mitra'"
-                                :class="activeTab === 'mitra' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
-                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition flex items-center justify-between">
+                            <a href="<?php echo e(route('mitra')); ?>"
+                                class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('mitra') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>">
                                 <span>Mitra</span>
-                            </button>
+                            </a>
 
-                            <button @click="activeTab = 'alumni'"
-                                :class="activeTab === 'alumni' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
-                                class="w-full text-left rounded-lg px-3 py-1.5 text-sm font-medium transition flex items-center justify-between">
+                            <a href="<?php echo e(route('alumni')); ?>"
+                                class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 <?php echo e(request()->routeIs('alumni') ? 'bg-slate-100 font-bold text-slate-950' : ''); ?>">
                                 <span>Alumni</span>
-                            </button>
+                            </a>
                         </div>
                     </div>
                 </nav>
@@ -75,50 +69,36 @@
                                         $image = $pembina->photo_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600';
                                     ?>
 
+                                    <?php
+                                        $description = trim((string) ($pembina->bio ?? '')) ?: 'Pembina aktif yang membimbing dan mengarahkan kegiatan Pramuka agar berjalan optimal.';
+                                    ?>
+
                                     <div @click="selectedPembina = (selectedPembina === <?php echo e($pembina->id); ?> ? null : <?php echo e($pembina->id); ?>)"
                                         :class="selectedPembina === <?php echo e($pembina->id); ?>
 
                                             ? 'bg-[#183a2d] border-[#183a2d] ring-2 ring-[#183a2d]'
                                             : 'bg-white border-slate-200 hover:border-slate-300'"
-                                        class="relative rounded-2xl border p-2 cursor-pointer transition-all duration-300 select-none shadow-sm">
-                                        <div class="relative overflow-hidden rounded-xl aspect-square bg-slate-100">
+                                        class="relative rounded-xl border p-1.5 cursor-pointer transition-all duration-300 select-none shadow-sm lg:scale-[0.96] lg:hover:scale-[0.97]">
+                                        <div class="relative overflow-hidden rounded-lg aspect-square bg-slate-100">
                                             <img src="<?php echo e($image); ?>" alt="<?php echo e($pembina->name); ?>" class="w-full h-full object-cover filter grayscale hover:grayscale-0 transition duration-300">
-
-                                            <div x-show="selectedPembina === <?php echo e($pembina->id); ?>"
-                                                 x-transition:enter="transition ease-out duration-200"
-                                                 x-transition:enter-start="opacity-0 scale-95 translate-x-2"
-                                                 x-transition:enter-end="opacity-100 scale-100 translate-x-0"
-                                                 class="absolute top-2.5 right-2.5 bg-[#a3e635] rounded-full py-2 px-1.5 flex flex-col items-center gap-2 shadow-md z-10">
-                                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($pembina->phone)): ?>
-                                                    <a href="tel:<?php echo e(preg_replace('/\s+/', '', $pembina->phone)); ?>" class="text-slate-950 hover:scale-125 transition p-0.5" aria-label="Telepon <?php echo e($pembina->name); ?>">
-                                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M6.6 10.8c1.6 3.1 4.1 5.6 7.2 7.2l2.4-2.4c.3-.3.8-.4 1.2-.2 1.3.4 2.7.6 4.1.6.7 0 1.2.5 1.2 1.2v3.9c0 .7-.5 1.2-1.2 1.2C10.7 21.9 2.1 13.3 2.1 2.4c0-.7.5-1.2 1.2-1.2h3.9c.7 0 1.2.5 1.2 1.2 0 1.4.2 2.8.6 4.1.2.4.1.9-.2 1.2l-2.4 2.4z"/></svg>
-                                                    </a>
-                                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($pembina->email)): ?>
-                                                    <a href="mailto:<?php echo e($pembina->email); ?>" class="text-slate-950 hover:scale-125 transition p-0.5" aria-label="Email <?php echo e($pembina->name); ?>">
-                                                        <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><path d="M20 4H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/></svg>
-                                                    </a>
-                                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-                                            </div>
                                         </div>
 
-                                        <div class="px-2 pt-2.5 pb-1">
-                                            <h3 class="font-bold text-sm sm:text-base leading-tight transition-colors"
+                                        <div class="px-2 pt-2 pb-1">
+                                            <h3 class="font-bold text-sm leading-tight transition-colors"
                                                 :class="selectedPembina === <?php echo e($pembina->id); ?> ? 'text-white' : 'text-slate-900'">
                                                 <?php echo e($pembina->name); ?>
 
                                             </h3>
-                                            <p class="text-xs transition-colors mt-0.5"
+                                            <p class="text-[11px] transition-colors mt-0.5"
                                                :class="selectedPembina === <?php echo e($pembina->id); ?> ? 'text-emerald-300' : 'text-slate-500'">
                                                 <?php echo e($pembina->jabatan); ?>
 
                                             </p>
-                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($pembina->status)): ?>
-                                                <p class="mt-2 text-[10px] font-semibold uppercase tracking-wide <?php echo e($pembina->is_active ? 'text-emerald-400' : 'text-slate-400'); ?>">
-                                                    <?php echo e($pembina->status); ?>
+                                            <p class="mt-2 text-[10.5px] leading-relaxed transition-colors"
+                                               :class="selectedPembina === <?php echo e($pembina->id); ?> ? 'text-emerald-100' : 'text-slate-600'">
+                                                <?php echo e(Str::limit($description, 100)); ?>
 
-                                                </p>
-                                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                                            </p>
                                         </div>
                                     </div>
                                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>

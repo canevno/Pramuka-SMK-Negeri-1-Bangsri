@@ -14,6 +14,7 @@ class Achievement extends Model
         'category',
         'year',
         'winner',
+        'winner_social_link',
         'description',
         'image',
     ];

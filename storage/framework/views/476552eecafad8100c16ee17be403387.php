@@ -7,35 +7,46 @@
         ->limit(10)
         ->get();
 
-    $groupedGalleryItems = [
-        'putra' => $galleryItems->where('group', 'putra')->values(),
-        'putri' => $galleryItems->where('group', 'putri')->values(),
-    ];
-
     $resolveGalleryImage = function ($path) {
         if (empty($path)) {
             return asset('images/gallery/default.jpg');
         }
 
-        if (str_starts_with($path, 'http')) {
-            return $path;
+        $normalized = trim((string) $path);
+        $normalized = str_replace('\\', '/', $normalized);
+        $normalized = ltrim($normalized, '/');
+
+        if (str_starts_with($normalized, 'http')) {
+            return $normalized;
         }
 
-        if (str_starts_with($path, 'storage/')) {
-            return asset($path);
+        if (str_starts_with($normalized, 'public/')) {
+            $normalized = preg_replace('#^public/#', '', $normalized);
         }
 
-        if (str_starts_with($path, 'gallery/')) {
-            return \Illuminate\Support\Facades\Storage::url($path);
+        if (str_starts_with($normalized, 'storage/')) {
+            return asset($normalized);
         }
 
-        return asset($path);
+        if (str_starts_with($normalized, 'gallery/')) {
+            return \Illuminate\Support\Facades\Storage::url($normalized);
+        }
+
+        if (str_contains($normalized, '/storage/')) {
+            return asset(ltrim($normalized, '/'));
+        }
+
+        if (str_contains($normalized, 'storage/')) {
+            return asset($normalized);
+        }
+
+        return asset($normalized);
     };
 ?>
 
 <section class="py-16 md:py-24 bg-slate-50 dark:bg-gray-950 transition-colors duration-200">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-2xl mx-auto mb-12">
+        <div class="text-center max-w-2xl mx-auto mb-8 sm:mb-10 md:mb-12">
             <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white mb-3">
                 Galleri Kegiatan
             </h2>
@@ -45,40 +56,23 @@
         </div>
 
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($galleryItems->isNotEmpty()): ?>
-            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = ['putra' => 'Putra', 'putri' => 'Putri']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $groupKey => $groupLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                <?php $items = $groupedGalleryItems[$groupKey] ?? collect(); ?>
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($items->isNotEmpty()): ?>
-                    <div class="mb-10">
-                        <div class="mb-5 flex items-center justify-between gap-3">
-                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Ambalan <?php echo e($groupLabel); ?></h3>
-                            <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
-                                <?php echo e($items->count()); ?> foto
-                            </span>
-                        </div>
+            <div class="mb-6 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $galleryItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $galleryItem): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                    <?php $imageUrl = $resolveGalleryImage($galleryItem->image); ?>
 
-                        <div class="grid grid-cols-12 gap-4 md:gap-6 mb-6">
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $galleryItem): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                                <?php
-                                    $imageUrl = $resolveGalleryImage($galleryItem->image);
-                                    $isLarge = in_array($index, [0, 1], true);
-                                    $columnSpan = $isLarge ? 'col-span-12 md:col-span-6' : 'col-span-12 sm:col-span-4';
-                                    $height = $isLarge ? 'h-72 sm:h-80 lg:h-[26rem]' : 'h-56 sm:h-64 lg:h-72';
-                                ?>
-
-                                <div class="<?php echo e($columnSpan); ?> overflow-hidden rounded-xl shadow-md border border-slate-200 dark:border-gray-800 bg-neutral-200 dark:bg-neutral-800">
-                                    <img src="<?php echo e($imageUrl); ?>"
-                                         alt="<?php echo e($galleryItem->alt_text ?: $galleryItem->title); ?>"
-                                         class="w-full <?php echo e($height); ?> object-cover transition-transform duration-500 hover:scale-105">
-                                </div>
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                    <div class="group overflow-hidden rounded-2xl border border-slate-200 bg-neutral-200 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-md dark:border-gray-800 dark:bg-neutral-800">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="<?php echo e($imageUrl); ?>"
+                                 alt="<?php echo e($galleryItem->alt_text ?: $galleryItem->title); ?>"
+                                 class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105">
                         </div>
                     </div>
-                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+            </div>
         <?php else: ?>
-            <div class="mb-12 grid grid-cols-12 gap-4 md:gap-6">
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = range(1, 5); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                    <div class="col-span-12 <?php echo e($index <= 2 ? 'md:col-span-6' : 'sm:col-span-4'); ?> overflow-hidden rounded-xl h-72 sm:h-80 lg:h-[26rem] shadow-md border border-slate-200 dark:border-gray-800 bg-slate-200 dark:bg-slate-800 animate-pulse"></div>
+            <div class="mb-12 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-4">
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = range(1, 6); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                    <div class="aspect-[4/3] overflow-hidden rounded-2xl border border-slate-200 bg-slate-200 shadow-sm dark:border-gray-800 dark:bg-slate-800 animate-pulse"></div>
                 <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
             </div>
         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
