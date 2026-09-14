@@ -36,5 +36,7 @@ class FortifyServiceProvider extends ServiceProvider
         Fortify::loginView(function () {
             return View::make('admin.login');
         });
+
+        // Note: Fortify's routes are registered by the package or custom configuration.
     }
 }

@@ -3,6 +3,11 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\GalleryItem;
+use App\Models\Pembina;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 
 class ModuleController extends Controller
 {
@@ -18,12 +23,75 @@ class ModuleController extends Controller
 
     public function gallery()
     {
+        $items = GalleryItem::query()
+            ->orderByDesc('is_featured')
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->get();
+
         return view('admin.modules.gallery', [
             'title' => 'Kelola Galeri',
             'description' => 'Kelola foto dan galeri acara Pramuka.',
             'publicRoute' => route('gallery'),
             'publicLabel' => 'Lihat Halaman Galeri',
+            'items' => $items,
+            'stats' => [
+                'total_album' => $items->count(),
+                'total_foto' => $items->count(),
+                'featured' => $items->where('is_featured', true)->count(),
+                'published' => $items->where('is_published', true)->count(),
+            ],
         ]);
+    }
+
+    public function storeGallery(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'group' => 'nullable|string|in:putra,putri,umum',
+            'image' => 'nullable',
+            'description' => 'nullable|string',
+            'alt_text' => 'nullable|string|max:255',
+            'published_at' => 'nullable|date',
+            'is_published' => 'nullable|boolean',
+            'is_featured' => 'nullable|boolean',
+        ]);
+
+        $imagePath = $validated['image'] ?? 'images/gallery/default.jpg';
+
+        if ($request->hasFile('image')) {
+            $storedPath = $request->file('image')->store('gallery', 'public');
+            $imagePath = 'storage/' . $storedPath;
+        }
+
+        $galleryItem = GalleryItem::query()->create([
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'group' => $validated['group'] ?? 'umum',
+            'image' => $imagePath,
+            'description' => $validated['description'] ?? null,
+            'alt_text' => $validated['alt_text'] ?? $validated['title'],
+            'published_at' => $validated['published_at'] ?? now()->toDateString(),
+            'is_published' => (bool) ($validated['is_published'] ?? true),
+            'is_featured' => (bool) ($validated['is_featured'] ?? false),
+        ]);
+
+        \App\Models\Notification::query()->create([
+            'title' => 'Album galeri ditambahkan',
+            'message' => 'Album "' . $galleryItem->title . '" berhasil ditambahkan ke galeri publik.',
+            'type' => 'success',
+            'is_read' => false,
+        ]);
+
+        return redirect()->route('admin.gallery')->with('success', 'Album galeri berhasil ditambahkan.');
+    }
+
+    public function deleteGallery($id)
+    {
+        GalleryItem::query()->whereKey($id)->delete();
+
+        return redirect()->route('admin.gallery')->with('success', 'Album galeri berhasil dihapus.');
     }
 
     public function agenda()
@@ -48,20 +116,212 @@ class ModuleController extends Controller
 
     public function pembina()
     {
+        $pembinas = Schema::hasTable('pembinas')
+            ? Pembina::query()
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get()
+            : collect();
+
         return view('admin.modules.pembina', [
             'title' => 'Kelola Pembina',
             'description' => 'Kelola data pembina dan penanggung jawab acara.',
+            'publicRoute' => route('pembina'),
+            'publicLabel' => 'Lihat Halaman Pembina',
+            'pembinas' => $pembinas,
+            'stats' => [
+                'total' => $pembinas->count(),
+                'aktif' => $pembinas->where('is_active', true)->count(),
+                'nonaktif' => $pembinas->where('is_active', false)->count(),
+                'kontak' => $pembinas->filter(fn ($item) => ! empty($item->phone) || ! empty($item->email))->count(),
+            ],
         ]);
+    }
+
+    public function storePembina(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'status' => 'nullable|string|max:50',
+            'bio' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'photo_url' => 'nullable|string|max:255',
+            'is_active' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $photoUrl = $validated['photo_url'] ?? null;
+
+        if ($request->hasFile('photo')) {
+            $storedPath = $request->file('photo')->store('pembina', 'public');
+            $photoUrl = 'storage/' . $storedPath;
+        }
+
+        Pembina::query()->create([
+            'name' => trim($validated['name']),
+            'jabatan' => trim($validated['jabatan']),
+            'phone' => $validated['phone'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'status' => $validated['status'] ?? 'Aktif',
+            'bio' => $validated['bio'] ?? null,
+            'photo_url' => $photoUrl,
+            'is_active' => (bool) ($validated['is_active'] ?? true),
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+        ]);
+
+        return redirect()->route('admin.pembina')->with('success', 'Data pembina berhasil ditambahkan.');
+    }
+
+    public function togglePembina(Pembina $pembina)
+    {
+        $pembina->is_active = ! $pembina->is_active;
+        $pembina->status = $pembina->is_active ? 'Aktif' : 'Non-Aktif';
+        $pembina->save();
+
+        return redirect()->route('admin.pembina')->with('success', 'Status pembina berhasil diperbarui.');
+    }
+
+    public function deletePembina(Pembina $pembina)
+    {
+        $pembina->delete();
+
+        return redirect()->route('admin.pembina')->with('success', 'Data pembina berhasil dihapus.');
     }
 
     public function anggota()
     {
+        $query = \App\Models\Student::query();
+
+        if (Schema::hasColumn('students', 'sort_order')) {
+            $query->orderBy('sort_order');
+        }
+
+        if (Schema::hasColumn('students', 'nama')) {
+            $query->orderBy('nama');
+        }
+
+        $anggota = $query->get();
+
         return view('admin.modules.anggota', [
             'title' => 'Kelola Anggota',
             'description' => 'Lihat dan kelola anggota Pramuka yang terdaftar.',
             'publicRoute' => route('active-board'),
             'publicLabel' => 'Lihat Halaman Anggota',
+            'anggota' => $anggota,
+            'stats' => [
+                'total' => $anggota->count(),
+                'aktif' => $anggota->where('is_active', true)->count(),
+                'nonaktif' => $anggota->where('is_active', false)->count(),
+                'jabatan' => $anggota->filter(fn ($item) => ! empty($item->jabatan))->count(),
+            ],
         ]);
+    }
+
+    public function storeAnggota(Request $request)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'kelas_asal' => 'nullable|string|max:50',
+            'sangga' => 'nullable|string|max:100',
+            'sub_sangga' => 'nullable|string|max:100',
+            'ambalan' => 'nullable|in:PA,PI',
+            'jabatan' => 'nullable|string|max:100',
+            'status' => 'nullable|string|max:50',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'is_active' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $photoUrl = null;
+        if ($request->hasFile('photo')) {
+            $photoUrl = 'storage/' . $request->file('photo')->store('anggota', 'public');
+        }
+
+        \App\Models\Student::query()->create([
+            'nama' => trim($validated['nama']),
+            'kelas_asal' => $validated['kelas_asal'] ?? null,
+            'sangga' => $validated['sangga'] ?? null,
+            'sub_sangga' => $validated['sub_sangga'] ?? null,
+            'ambalan' => $validated['ambalan'] ?? null,
+            'jabatan' => $validated['jabatan'] ?? null,
+            'status' => $validated['status'] ?? 'Aktif',
+            'photo_url' => $photoUrl,
+            'is_active' => (bool) ($validated['is_active'] ?? true),
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+        ]);
+
+        return redirect()->route('admin.anggota')->with('success', 'Data anggota berhasil ditambahkan.');
+    }
+
+    public function toggleAnggota(\App\Models\Student $student)
+    {
+        $student->is_active = ! $student->is_active;
+        $student->status = $student->is_active ? 'Aktif' : 'Non-Aktif';
+        $student->save();
+
+        return redirect()->route('admin.anggota')->with('success', 'Status anggota berhasil diperbarui.');
+    }
+
+    public function updateAnggota(Request $request, \App\Models\Student $student)
+    {
+        $validated = $request->validate([
+            'nama' => 'required|string|max:255',
+            'kelas_asal' => 'nullable|string|max:50',
+            'sangga' => 'nullable|string|max:100',
+            'sub_sangga' => 'nullable|string|max:100',
+            'ambalan' => 'nullable|in:PA,PI',
+            'jabatan' => 'nullable|string|max:100',
+            'status' => 'nullable|string|max:50',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'is_active' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo_url'] = 'storage/' . $request->file('photo')->store('anggota', 'public');
+        }
+
+        $student->fill([
+            'nama' => trim($validated['nama']),
+            'kelas_asal' => $validated['kelas_asal'] ?? null,
+            'sangga' => $validated['sangga'] ?? null,
+            'sub_sangga' => $validated['sub_sangga'] ?? null,
+            'ambalan' => $validated['ambalan'] ?? null,
+            'jabatan' => $validated['jabatan'] ?? null,
+            'status' => $validated['status'] ?? ($validated['is_active'] ?? $student->is_active ? 'Aktif' : 'Non-Aktif'),
+            'photo_url' => $validated['photo_url'] ?? $student->photo_url,
+            'is_active' => (bool) ($validated['is_active'] ?? $student->is_active),
+            'sort_order' => (int) ($validated['sort_order'] ?? $student->sort_order ?? 0),
+        ]);
+
+        if ($student->is_active && empty($student->status)) {
+            $student->status = 'Aktif';
+        }
+
+        if (! $student->is_active) {
+            $student->status = 'Non-Aktif';
+        }
+
+        $student->save();
+
+        return redirect()->route('admin.anggota')->with('success', 'Data anggota berhasil diperbarui.');
+    }
+
+    public function deleteAnggota(\App\Models\Student $student)
+    {
+        $student->delete();
+
+        return redirect()->route('admin.anggota')->with('success', 'Data anggota berhasil dihapus.');
+    }
+
+    public function deleteAllAnggota()
+    {
+        \App\Models\Student::query()->delete();
+
+        return redirect()->route('admin.anggota')->with('success', 'Semua data anggota berhasil dihapus.');
     }
 
     public function prestasi()

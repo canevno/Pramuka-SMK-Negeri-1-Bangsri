@@ -4,295 +4,213 @@ namespace App\Http\Controllers;
 
 use App\Models\AttendanceRecord;
 use App\Models\Student;
-use App\Models\PetugasAbsensi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class AttendanceController extends Controller
 {
-    // 1. Tampilan FRONT-END (Siswa / Publik)
-    public function index(Request $request)
+    public function index()
     {
-        $sessionVerified = $request->session()->get('absensi_verified');
+        $ambalan = strtoupper(trim((string) session('absensi_verified.ambalan', 'PA')));
+        $sangga = trim((string) session('absensi_verified.sangga', 'Perintis'));
 
-        $selectedKelas  = $request->query('kelas');
-        $selectedSangga = $sessionVerified['target_sangga'] ?? $sessionVerified['sangga'] ?? $request->query('sangga');
-        
-        // Ambalan DIKUNCI dari session petugas yang terverifikasi
-        $rawPetugasAmbalan = $sessionVerified['ambalan'] ?? $request->query('ambalan');
-        $normalizedAmbalan = $this->normalizeAmbalan($rawPetugasAmbalan);
+        $roster = $this->attendanceRoster($ambalan, $sangga);
+        $sanggaList = $this->sanggaList($ambalan);
 
-        $query = Student::query();
-
-        // 1. FILTER OTOMATIS BERDASARKAN AMBALAN PETUGAS (PA/PI)
-        if (! empty($normalizedAmbalan)) {
-            $query->whereIn('ambalan', $this->getAmbalanVariants($normalizedAmbalan));
-        }
-
-        // 2. FILTER FLEXIBLE SANGGA
-        if (filled($selectedSangga)) {
-            $sanggaBase = trim(preg_replace('/[0-9]/', '', $selectedSangga));
-
-            $query->where(function ($q) use ($selectedSangga, $sanggaBase) {
-                $q->whereRaw('LOWER(sangga) LIKE ?', ['%' . strtolower($selectedSangga) . '%'])
-                  ->orWhereRaw('LOWER(sub_sangga) LIKE ?', ['%' . strtolower($selectedSangga) . '%']);
-
-                if (! empty($sanggaBase)) {
-                    $q->orWhereRaw('LOWER(sangga) LIKE ?', ['%' . strtolower($sanggaBase) . '%'])
-                      ->orWhereRaw('LOWER(sub_sangga) LIKE ?', ['%' . strtolower($sanggaBase) . '%']);
-                }
-            });
-        } elseif (filled($selectedKelas)) {
-            $query->where('kelas_asal', $selectedKelas);
-        }
-
-        $students = $query->get();
-
-        // FALLBACK LOGIC
-        if ($students->isEmpty() && ! empty($normalizedAmbalan)) {
-            $students = Student::whereIn('ambalan', $this->getAmbalanVariants($normalizedAmbalan))->get();
-        } elseif ($students->isEmpty()) {
-            $students = Student::all();
-        }
-
-        $roster = $students->map(function ($student) {
-            return [
-                'id'         => $student->id,
-                'nama'       => $student->nama,
-                'name'       => $student->nama,
-                'kelas'      => $student->kelas_asal ?? $student->kelas ?? '',
-                'sangga'     => $student->sangga ?? '',
-                'sub_sangga' => $student->sub_sangga ?? '',
-                'ambalan'    => $student->ambalan ?? '',
-            ];
-        })->all();
-
-        // AMBIL DATA DINAMIS SANGGA & SUB SANGGA DARI DATABASE
-        $sanggaList = Student::whereNotNull('sangga')
-            ->where('sangga', '!=', '')
-            ->pluck('sangga')
-            ->map(fn($item) => trim(preg_replace('/[0-9]/', '', $item)))
-            ->unique()
-            ->values();
-
-        $subSanggaList = Student::whereNotNull('sub_sangga')
-            ->where('sub_sangga', '!=', '')
-            ->pluck('sub_sangga')
-            ->unique()
-            ->values();
-
-        return view('pages.absensi', [
-            'roster'          => $roster,
-            'students'        => $students,
-            'selectedAmbalan' => $normalizedAmbalan,
-            'selectedKelas'   => $selectedKelas,
-            'selectedSangga'  => $selectedSangga,
-            'sanggaList'      => $sanggaList,
-            'subSanggaList'   => $subSanggaList,
-        ]);
+        return view('pages.absensi', compact('roster', 'sanggaList'));
     }
 
-    // 2. Tampilan ADMIN (Dashboard Admin)
-    public function adminIndex(Request $request)
-    {
-        $selectedAmbalan = $request->query('ambalan');
-        $selectedKelas   = $request->query('kelas');
-
-        $query = Student::query();
-
-        if (filled($selectedAmbalan)) {
-            $normalized = $this->normalizeAmbalan($selectedAmbalan);
-            $query->whereIn('ambalan', $this->getAmbalanVariants($normalized));
-        }
-
-        if (filled($selectedKelas)) {
-            $query->where('kelas_asal', $selectedKelas);
-        }
-
-        $students = $query->get();
-
-        $roster = $students->map(function ($student) {
-            return [
-                'id'         => $student->id,
-                'nama'       => $student->nama,
-                'name'       => $student->nama,
-                'kelas'      => $student->kelas_asal ?? $student->kelas ?? '',
-                'sangga'     => $student->sangga ?? '',
-                'sub_sangga' => $student->sub_sangga ?? '',
-                'ambalan'    => $student->ambalan ?? '',
-            ];
-        })->all();
-
-        return view('admin.absensi', [
-            'roster'          => $roster,
-            'students'        => $students,
-            'selectedAmbalan' => $selectedAmbalan,
-            'selectedKelas'   => $selectedKelas,
-        ]);
-    }
-
-    // 3. SUBMIT ABSENSI
     public function submit(Request $request)
     {
         if (! $request->session()->has('absensi_verified')) {
-            return redirect()->route('absensi.index')->with('absensi_verify_error', 'Silakan verifikasi petugas terlebih dahulu.');
+            return redirect()->route('absensi.index')->with('absensi_verify_error', 'Silakan verifikasi terlebih dahulu.');
         }
 
-        $verifiedSession = $request->session()->get('absensi_verified');
-
-        $statuses         = $request->input('status', []);
+        $statuses = $request->input('status', []);
         $participantNames = $request->input('participant_name', []);
-        $iurans           = $request->input('iuran', []);
-        $bulan            = trim((string) $request->input('bulan', ''));
-        $tanggal          = trim((string) $request->input('tanggal', ''));
-        $tahun            = trim((string) $request->input('tahun', ''));
+        $participantKelas = $request->input('participant_kelas', []);
+        $participantAmbalan = $request->input('participant_ambalan', []);
+        $participantSangga = $request->input('participant_sangga', $request->input('participant_sub_sangga', []));
+        $iurans = $request->input('iuran', []);
+        $iuranAmounts = $request->input('iuran_amount', []);
+        $bulan = trim((string) $request->input('bulan', ''));
+        $tanggal = trim((string) $request->input('tanggal', ''));
+        $tahun = trim((string) $request->input('tahun', ''));
 
-        if ($bulan === '' || $tanggal === '' || $tahun === '' || empty($statuses)) {
-            return redirect()->route('absensi.index')->with('absensi_verify_error', 'Data tanggal atau status kehadiran tidak lengkap.');
+        $participantKelasValue = is_array($participantKelas) ? trim((string) reset($participantKelas)) : trim((string) $participantKelas);
+        $participantAmbalanValue = is_array($participantAmbalan) ? trim((string) reset($participantAmbalan)) : trim((string) $participantAmbalan);
+        $participantSanggaValue = is_array($participantSangga) ? trim((string) reset($participantSangga)) : trim((string) $participantSangga);
+
+        if ($bulan === '' || $tanggal === '' || $tahun === '' || empty($statuses) || $participantKelasValue === '' || $participantAmbalanValue === '' || $participantSanggaValue === '' || empty($iurans)) {
+            return redirect()->route('absensi.index')->with('absensi_verify_error', 'Data absensi tidak lengkap.');
         }
 
-        $studentIds = array_keys($statuses);
-        $students   = Student::whereIn('id', $studentIds)->get()->keyBy('id');
-
-        $rows       = [];
-        $weekLabel  = $this->generateWeekLabel($bulan, $tanggal, $tahun);
-        $monthKey   = $this->generateMonthKey($bulan, $tahun);
-        $yearKey    = (string) $tahun;
+        $rows = [];
+        $weekLabel = $this->generateWeekLabel($bulan, $tanggal, $tahun);
+        $monthKey = $this->generateMonthKey($bulan, $tahun);
+        $yearKey = (string) $tahun;
         $recordDate = $this->generateRecordDate($bulan, $tanggal, $tahun);
 
-        $officerAmbalan = $verifiedSession['ambalan'] ?? '';
-
         foreach ($statuses as $id => $status) {
-            $studentId = (string) $id;
-
-            if (! filled($status) || ! isset($students[$studentId])) {
+            if (! filled($status)) {
                 continue;
             }
 
-            $studentInfo = $students[$studentId];
+            $iuranValue = trim((string) ($iurans[$id] ?? 'Tidak'));
+            $iuranAmountValue = (int) ($iuranAmounts[$id] ?? 0);
+            if ($iuranValue !== 'Tidak' && $iuranAmountValue === 0) {
+                $iuranAmountValue = 2000;
+            }
 
             $rows[] = [
-                'bulan'               => $bulan,
-                'tanggal'             => $tanggal,
-                'tahun'               => $tahun,
-                'participant_id'      => $studentId,
-                'participant_name'    => trim((string) ($participantNames[$studentId] ?? $studentInfo->nama)),
-                'participant_kelas'   => $studentInfo->kelas_asal ?? $studentInfo->kelas ?? '',
-                'participant_ambalan' => $officerAmbalan ?: ($studentInfo->ambalan ?? ''),
-                'status'              => (string) $status,
-                'iuran'               => trim((string) ($iurans[$studentId] ?? 'Tidak')),
-                'petugas_name'        => $verifiedSession['name'] ?? '',
-                'petugas_kelas'       => $verifiedSession['petugas_kelas'] ?? '',
-                'petugas_nta'         => $verifiedSession['nta'] ?? '',
-                'week_label'          => $weekLabel,
-                'month_key'           => $monthKey,
-                'year_key'            => $yearKey,
-                'record_date'         => $recordDate,
-                'created_at'          => now(),
-                'updated_at'          => now(),
+                'bulan' => $bulan,
+                'tanggal' => $tanggal,
+                'tahun' => $tahun,
+                'participant_id' => (string) $id,
+                'participant_name' => trim((string) ($participantNames[$id] ?? 'Unknown')),
+                'participant_kelas' => $participantKelasValue,
+                'participant_ambalan' => $participantAmbalanValue,
+                'participant_sangga' => trim((string) (($participantSangga[$id] ?? $participantSanggaValue) ?: session('absensi_verified.sangga', 'Perintis'))),
+                'status' => (string) $status,
+                'iuran' => $iuranValue,
+                'iuran_amount' => $iuranAmountValue,
+                'petugas_name' => $request->session()->get('absensi_verified.name'),
+                'petugas_kelas' => $request->session()->get('absensi_verified.kelas'),
+                'petugas_nta' => $request->session()->get('absensi_verified.nta'),
+                'week_label' => $weekLabel,
+                'month_key' => $monthKey,
+                'year_key' => $yearKey,
+                'record_date' => $recordDate,
             ];
         }
 
         if (empty($rows)) {
-            return redirect()->route('absensi.index')->with('absensi_verify_error', 'Tidak ada data siswa valid yang dapat disimpan.');
+            return redirect()->route('absensi.index')->with('absensi_verify_error', 'Tidak ada data peserta yang dikirim.');
         }
 
         try {
-            DB::transaction(function () use ($rows) {
-                AttendanceRecord::insert($rows);
-            });
+            foreach ($rows as $row) {
+                AttendanceRecord::create($row);
+            }
         } catch (\Throwable $e) {
             Log::error('Absensi submission failed', [
                 'error' => $e->getMessage(),
-                'rows'  => $rows,
+                'rows' => $rows,
             ]);
 
             return redirect()->route('absensi.index')->with('absensi_verify_error', 'Gagal menyimpan absensi ke database.');
         }
 
-        return redirect()->route('absensi.index')->with('absensi_success', 'Absensi berhasil disimpan!');
+        return redirect()->route('absensi.index')->with('absensi_success', 'Submit berhasil');
     }
 
-    // 4. VERIFIKASI PETUGAS
-    public function verifyPetugas(Request $request)
+    private function attendanceRoster(?string $ambalan = null, ?string $sangga = null): array
     {
-        $sanggaInput = $request->input('sangga') ?? $request->input('target_sangga');
+        $ambalan = $ambalan ? strtoupper(trim($ambalan)) : null;
+        $sangga = $sangga ? trim($sangga) : null;
 
-        $request->validate([
-            'nta' => 'required|string',
-        ]);
+        $query = Student::query();
 
-        if (! $sanggaInput) {
-            return redirect()->back()->with('absensi_verify_error', 'Silakan pilih Sangga terlebih dahulu.');
+        if ($ambalan) {
+            $query->where('ambalan', $ambalan);
         }
 
-        $petugas = PetugasAbsensi::where('nta', trim($request->nta))->first();
-
-        if (! $petugas) {
-            return redirect()->back()->with('absensi_verify_error', 'NTA Petugas tidak ditemukan.');
+        if ($sangga) {
+            $query->whereRaw('UPPER(sangga) = ?', [strtoupper($sangga)]);
         }
 
-        if (isset($petugas->is_approved) && ! $petugas->is_approved) {
-            return redirect()->back()->with('absensi_verify_error', 'Akun petugas belum disetujui oleh admin.');
+        $students = $query
+            ->orderBy('sangga')
+            ->orderBy('sub_sangga')
+            ->orderBy('nama')
+            ->get();
+
+        if ($students->isNotEmpty()) {
+            return $students->map(function (Student $student, int $index) {
+                return [
+                    'id' => $student->id,
+                    'nama' => $student->nama,
+                    'name' => $student->nama,
+                    'kelas' => $student->kelas_asal,
+                    'kelas_asal' => $student->kelas_asal,
+                    'kelas_asal_real' => $student->kelas_asal,
+                    'ambalan' => $student->ambalan,
+                    'sangga' => $student->sangga,
+                    'sub_sangga' => $student->sub_sangga,
+                ];
+            })->all();
         }
 
-        if (isset($petugas->is_active) && ! $petugas->is_active) {
-            return redirect()->back()->with('absensi_verify_error', 'Akun petugas Anda sedang tidak aktif.');
+        $fallbackAmbalan = $ambalan ?: 'PA';
+        $fallbackFile = $fallbackAmbalan === 'PI'
+            ? storage_path('app/Data Kelas X Tahun 2026/ABSENSI PI.csv')
+            : storage_path('app/Data Kelas X Tahun 2026/ABSENSI PA.csv');
+
+        if (! file_exists($fallbackFile)) {
+            return [];
         }
 
-        $rawAmbalan = $petugas->ambalan ?? $petugas->jenis_kelamin ?? $petugas->jk ?? '';
-        $normalizedAmbalan = $this->normalizeAmbalan($rawAmbalan);
+        $rows = [];
+        $currentSangga = null;
+        $currentSubSangga = null;
+        $handle = fopen($fallbackFile, 'r');
 
-        $request->session()->put('absensi_verified', [
-            'id'            => $petugas->id,
-            'name'          => $petugas->nama ?? $petugas->name,
-            'petugas_kelas' => $petugas->kelas_petugas ?? $petugas->kelas ?? '',
-            'nta'           => $petugas->nta,
-            'sangga'        => $sanggaInput,
-            'target_sangga' => $sanggaInput,
-            'ambalan'       => $normalizedAmbalan,
-        ]);
+        while (($line = fgets($handle)) !== false) {
+            $delimiter = str_contains($line, ';') ? ';' : ',';
+            $data = str_getcsv($line, $delimiter);
+            $cellA = isset($data[0]) ? trim($data[0]) : '';
+            $cellB = isset($data[1]) ? trim($data[1]) : '';
+            $cellC = isset($data[2]) ? trim($data[2]) : '';
 
-        return redirect()->back()->with('absensi_success', 'Verifikasi petugas berhasil.');
+            if (preg_match('/^(PERINTIS|PENEGAS|PENCOBA|PENDOBRAK|PELAKSANA)\s+(\d+)\s*(PA|PI)?/i', $cellA, $matches)) {
+                $currentSangga = strtoupper($matches[1]);
+                $currentSubSangga = (string) $matches[2];
+                continue;
+            }
+
+            if (is_numeric($cellA) && $cellB !== '' && strtolower($cellB) !== 'nama lengkap') {
+                if ($sangga && strtoupper($currentSangga ?? '') !== strtoupper($sangga)) {
+                    continue;
+                }
+
+                $rows[] = [
+                    'id' => count($rows) + 1,
+                    'nama' => $cellB,
+                    'name' => $cellB,
+                    'kelas' => $cellC,
+                    'kelas_asal' => $cellC,
+                    'ambalan' => $fallbackAmbalan,
+                    'sangga' => $currentSangga,
+                    'sub_sangga' => $currentSubSangga,
+                ];
+            }
+        }
+
+        fclose($handle);
+
+        return $rows;
     }
 
-    public function verify(Request $request)
+    private function sanggaList(string $ambalan): array
     {
-        return $this->verifyPetugas($request);
-    }
+        $ambalan = strtoupper(trim($ambalan ?: 'PA'));
 
-    public function logoutPetugas(Request $request)
-    {
-        $request->session()->forget('absensi_verified');
+        $sangga = Student::query()
+            ->where('ambalan', $ambalan)
+            ->select('sangga')
+            ->distinct()
+            ->pluck('sangga')
+            ->filter()
+            ->map(fn ($value) => ucfirst(strtolower((string) $value)))
+            ->unique()
+            ->values()
+            ->all();
 
-        return redirect()->route('absensi.index')->with('absensi_success', 'Sesi petugas telah diakhiri.');
-    }
-
-    // HELPER FUNCTIONS
-    private function normalizeAmbalan(?string $value): string
-    {
-        if (empty($value)) return '';
-        $val = strtoupper(trim($value));
-
-        if (str_contains($val, 'PA') || str_contains($val, 'PUTRA') || str_contains($val, 'LAKI') || $val === 'L') {
-            return 'PA';
+        if (! empty($sangga)) {
+            return $sangga;
         }
-        if (str_contains($val, 'PI') || str_contains($val, 'PUTRI') || str_contains($val, 'PEREMPUAN') || $val === 'P') {
-            return 'PI';
-        }
-        return $val;
-    }
 
-    private function getAmbalanVariants(string $normalizedAmbalan): array
-    {
-        if ($normalizedAmbalan === 'PA') {
-            return ['PA', 'Putra', 'putra', 'L', 'Laki-laki', 'Laki-Laki'];
-        }
-        if ($normalizedAmbalan === 'PI') {
-            return ['PI', 'Putri', 'putri', 'P', 'Perempuan'];
-        }
-        return [$normalizedAmbalan];
+        return ['Perintis', 'Penegas', 'Pencoba', 'Pendobrak', 'Pelaksana'];
     }
 
     private function generateWeekLabel(string $bulan, string $tanggal, string $tahun): string
@@ -321,18 +239,18 @@ class AttendanceController extends Controller
     private function monthNumber(string $bulan): string
     {
         $months = [
-            'Januari'   => '01',
-            'Februari'  => '02',
-            'Maret'     => '03',
-            'April'     => '04',
-            'Mei'       => '05',
-            'Juni'      => '06',
-            'Juli'      => '07',
-            'Agustus'   => '08',
+            'Januari' => '01',
+            'Februari' => '02',
+            'Maret' => '03',
+            'April' => '04',
+            'Mei' => '05',
+            'Juni' => '06',
+            'Juli' => '07',
+            'Agustus' => '08',
             'September' => '09',
-            'Oktober'   => '10',
-            'November'  => '11',
-            'Desember'  => '12',
+            'Oktober' => '10',
+            'November' => '11',
+            'Desember' => '12',
         ];
 
         return $months[$bulan] ?? '01';

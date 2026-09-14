@@ -1,0 +1,822 @@
+
+
+<?php $__env->startSection('title', $title ?? 'Manajemen Galeri'); ?>
+<?php $__env->startSection('page-heading', $title ?? 'Manajemen Galeri'); ?>
+<?php $__env->startSection('page-description', $description ?? 'Kelola album galeri, status publikasi, dan tampilan beranda.'); ?>
+
+<?php $__env->startSection('content'); ?>
+<style>
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+</style>
+
+<?php
+    $resolveImage = function ($path) {
+        if (!$path) {
+            return asset('images/gallery/default.jpg');
+        }
+
+        return str_starts_with($path, 'http') ? $path : asset($path);
+    };
+?>
+
+<div class="space-y-4">
+
+    
+    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('success')): ?>
+        <div class="flex items-start justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-300">
+            <p><?php echo e(session('success')); ?></p>
+            <button
+                type="button"
+                onclick="this.closest('div').remove()"
+                class="text-lg leading-none opacity-70 transition hover:opacity-100"
+                aria-label="Tutup notifikasi"
+            >
+                &times;
+            </button>
+        </div>
+    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+    
+    <div class="flex flex-col gap-3 rounded-xl border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-900 sm:flex-row sm:items-center sm:justify-between">
+        <div class="relative w-full sm:max-w-xs">
+            <input
+                type="text"
+                id="searchInput"
+                placeholder="Cari judul, alt text, atau kategori..."
+                class="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-4 text-xs text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+            >
+            <svg class="absolute left-3 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
+            </svg>
+        </div>
+
+        <button
+            type="button"
+            onclick="openFormModal()"
+            class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+        >
+            + Tambah Album
+        </button>
+    </div>
+
+    
+    <div class="overflow-hidden rounded-xl border border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
+        <div class="scrollbar-hide overflow-x-auto">
+            <table id="galleryTable" class="w-full min-w-[760px] text-left text-xs">
+                <thead class="border-b border-gray-200 bg-gray-50 uppercase tracking-wider text-gray-500 dark:border-gray-800 dark:bg-gray-800/50 dark:text-gray-400">
+                    <tr>
+                        <th class="w-20 p-4">Media</th>
+                        <th class="p-4">Judul</th>
+                        <th class="p-4">Kategori</th>
+                        <th class="p-4">Kelompok</th>
+                        <th class="p-4 text-center">Status</th>
+                        <th class="p-4 text-center">Tampilan</th>
+                        <th class="p-4">Tanggal</th>
+                        <th class="p-4 text-right">Aksi</th>
+                    </tr>
+                </thead>
+
+                <tbody class="divide-y divide-gray-100 text-gray-700 dark:divide-gray-800 dark:text-gray-300">
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <tr
+                            class="transition hover:bg-gray-50/60 dark:hover:bg-gray-800/30"
+                            data-search="<?php echo e(strtolower(trim(($item->title ?? '') . ' ' . ($item->alt_text ?? '') . ' ' . ($item->category ?? '') . ' ' . ($item->is_published ? 'publik' : 'draft') . ' ' . ($item->is_featured ? 'beranda' : '')))); ?>"
+                        >
+                            <td class="p-4">
+                                <button
+                                    type="button"
+                                    data-preview-image="<?php echo e(e($resolveImage($item->image))); ?>"
+                                    data-preview-title="<?php echo e(e($item->title)); ?>"
+                                    class="group relative block h-10 w-14 overflow-hidden rounded-lg border border-gray-200 bg-gray-100 dark:border-gray-700 dark:bg-gray-800"
+                                    aria-label="Lihat gambar <?php echo e($item->title); ?>"
+                                >
+                                    <img
+                                        src="<?php echo e($resolveImage($item->image)); ?>"
+                                        alt="<?php echo e($item->alt_text ?: $item->title); ?>"
+                                        loading="lazy"
+                                        class="h-full w-full object-cover"
+                                    >
+                                </button>
+                            </td>
+
+                            <td class="p-4">
+                                <div class="font-semibold text-gray-900 dark:text-white"><?php echo e($item->title); ?></div>
+                                <div class="mt-1 text-[10px] text-gray-400">Alt: <?php echo e($item->alt_text ?: $item->title); ?></div>
+                            </td>
+
+                            <td class="p-4">
+                                <span class="rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 font-medium text-blue-600 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-400">
+                                    <?php echo e(ucfirst($item->category)); ?>
+
+                                </span>
+                            </td>
+
+                            <td class="p-4">
+                                <span class="rounded-md border border-violet-200 bg-violet-50 px-2.5 py-1 font-medium text-violet-600 dark:border-violet-900 dark:bg-violet-950/40 dark:text-violet-400">
+                                    <?php echo e($item->group === 'putra' ? 'Putra' : ($item->group === 'putri' ? 'Putri' : 'Umum')); ?>
+
+                                </span>
+                            </td>
+
+                            <td class="p-4 text-center">
+                                <span class="rounded px-2 py-1 text-[10px] font-bold <?php echo e($item->is_published ? 'bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400'); ?>">
+                                    <?php echo e($item->is_published ? 'Publik' : 'Draft'); ?>
+
+                                </span>
+                            </td>
+
+                            <td class="p-4 text-center">
+                                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($item->is_featured): ?>
+                                    <span class="rounded-md border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[10px] font-semibold text-indigo-600 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-400">
+                                        Beranda
+                                    </span>
+                                <?php else: ?>
+                                    <span class="text-gray-300 dark:text-gray-600">—</span>
+                                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                            </td>
+
+                            <td class="whitespace-nowrap p-4 text-gray-500 dark:text-gray-400">
+                                <?php echo e(\Carbon\Carbon::parse($item->published_at ?? $item->created_at)->translatedFormat('d M Y')); ?>
+
+                            </td>
+
+                            <td class="p-4">
+                                <div class="flex items-center justify-end gap-1">
+                                    <button
+                                        type="button"
+                                        data-copy-link="<?php echo e(e($resolveImage($item->image))); ?>"
+                                        class="rounded-lg p-2 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400"
+                                        title="Salin URL gambar"
+                                        aria-label="Salin URL gambar"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 01-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 011.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 00-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 01-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 00-3.375-3.375h-1.5"/>
+                                        </svg>
+                                    </button>
+
+                                    <form
+                                        method="POST"
+                                        action="<?php echo e(route('admin.gallery.delete', $item->id)); ?>"
+                                        class="inline"
+                                        onsubmit="return confirm('Hapus album ini?')"
+                                    >
+                                        <?php echo csrf_field(); ?>
+                                        <?php echo method_field('DELETE'); ?>
+                                        <button
+                                            type="submit"
+                                            class="rounded-lg p-2 text-gray-500 transition hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400"
+                                            title="Hapus album"
+                                            aria-label="Hapus album"
+                                        >
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                        <tr>
+                            <td colspan="7" class="p-10 text-center">
+                                <svg class="mx-auto h-10 w-10 text-gray-300 dark:text-gray-600" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 15.75l5.586-5.586a2.25 2.25 0 013.182 0l2.756 2.756a2.25 2.25 0 003.182 0L21.75 7.5M2.25 19.5h19.5M18.75 5.25h.008v.008h-.008V5.25Z"/>
+                                </svg>
+                                <p class="mt-3 text-sm font-semibold text-gray-700 dark:text-gray-300">Belum ada album galeri</p>
+                                <p class="mt-1 text-xs text-gray-400">Klik tombol di bawah ini untuk menambahkan album pertama.</p>
+                                <button
+                                    type="button"
+                                    onclick="openFormModal()"
+                                    class="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700"
+                                >
+                                    Tambah Album
+                                </button>
+                            </td>
+                        </tr>
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(count($items ?? []) > 0): ?>
+                        <tr id="noSearchResultRow" class="hidden">
+                            <td colspan="7" class="p-10 text-center text-sm text-gray-500 dark:text-gray-400">
+                                Tidak ada hasil yang cocok dengan pencarian.
+                            </td>
+                        </tr>
+                    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
+<div id="formModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="formModalTitle">
+    <div class="absolute inset-0 bg-slate-950/60" onclick="closeFormModal()"></div>
+
+    <div class="relative flex max-h-[90vh] w-full max-w-2xl flex-col overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900">
+        <div class="flex items-center justify-between border-b border-gray-100 px-5 py-4 dark:border-gray-800">
+            <div>
+                <h3 id="formModalTitle" class="text-sm font-bold text-gray-900 dark:text-white">Tambah Album Galeri</h3>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">Lengkapi data album lalu simpan.</p>
+            </div>
+
+            <button
+                type="button"
+                onclick="closeFormModal()"
+                class="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+                aria-label="Tutup form"
+            >
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="scrollbar-hide overflow-y-auto p-5">
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($errors->any()): ?>
+                <div class="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-xs text-red-700 dark:border-red-900 dark:bg-red-950/40 dark:text-red-300">
+                    <p class="mb-1 font-semibold">Form belum valid:</p>
+                    <ul class="list-inside list-disc space-y-0.5">
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $errors->all(); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $error): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                            <li><?php echo e($error); ?></li>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                    </ul>
+                </div>
+            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+
+            <form
+                method="POST"
+                action="<?php echo e(route('admin.gallery.store')); ?>"
+                enctype="multipart/form-data"
+                class="grid grid-cols-1 gap-4 text-xs md:grid-cols-2"
+            >
+                <?php echo csrf_field(); ?>
+
+                <div class="md:col-span-2">
+                    <label for="title" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">
+                        Judul Album <span class="text-red-500">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="title"
+                        name="title"
+                        value="<?php echo e(old('title')); ?>"
+                        placeholder="Masukkan judul album"
+                        required
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    >
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['title'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p class="mt-1 text-red-500"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+
+                <div>
+                    <label for="category" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">
+                        Kategori <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        id="category"
+                        name="category"
+                        required
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    >
+                        <option value="kegiatan" <?php echo e(old('category', 'kegiatan') == 'kegiatan' ? 'selected' : ''); ?>>Kegiatan</option>
+                        <option value="pelatihan" <?php echo e(old('category') == 'pelatihan' ? 'selected' : ''); ?>>Pelatihan</option>
+                        <option value="acara" <?php echo e(old('category') == 'acara' ? 'selected' : ''); ?>>Event</option>
+                    </select>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['category'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p class="mt-1 text-red-500"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+
+                <div>
+                    <label for="group" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">
+                        Kelompok Ambalan <span class="text-red-500">*</span>
+                    </label>
+                    <select
+                        id="group"
+                        name="group"
+                        required
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    >
+                        <option value="putra" <?php echo e(old('group', 'putra') == 'putra' ? 'selected' : ''); ?>>Putra</option>
+                        <option value="putri" <?php echo e(old('group') == 'putri' ? 'selected' : ''); ?>>Putri</option>
+                        <option value="umum" <?php echo e(old('group') == 'umum' ? 'selected' : ''); ?>>Umum</option>
+                    </select>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['group'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p class="mt-1 text-red-500"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+
+                <div>
+                    <label for="published_at" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">Tanggal</label>
+                    <input
+                        type="date"
+                        id="published_at"
+                        name="published_at"
+                        value="<?php echo e(old('published_at')); ?>"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    >
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['published_at'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p class="mt-1 text-red-500"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="alt_text" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">Alt Text</label>
+                    <input
+                        type="text"
+                        id="alt_text"
+                        name="alt_text"
+                        value="<?php echo e(old('alt_text')); ?>"
+                        placeholder="Deskripsi ringkas gambar untuk aksesibilitas dan SEO"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    >
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['alt_text'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p class="mt-1 text-red-500"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+
+                <div>
+                    <label for="is_published" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">Status Publikasi</label>
+                    <select
+                        id="is_published"
+                        name="is_published"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    >
+                        <option value="1" <?php echo e(old('is_published', '1') == '1' ? 'selected' : ''); ?>>Publik</option>
+                        <option value="0" <?php echo e(old('is_published', '1') == '0' ? 'selected' : ''); ?>>Draft</option>
+                    </select>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['is_published'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p class="mt-1 text-red-500"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+
+                <label class="flex cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800">
+                    <input
+                        type="checkbox"
+                        name="is_featured"
+                        value="1"
+                        <?php echo e(old('is_featured') ? 'checked' : ''); ?>
+
+                        class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600"
+                    >
+                    <span class="font-medium text-gray-700 dark:text-gray-300">Tampilkan di Beranda</span>
+                </label>
+
+                
+                <div class="md:col-span-2">
+                    <span class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">Gambar Album</span>
+
+                    <div
+                        id="imageDropzone"
+                        tabindex="0"
+                        role="button"
+                        aria-label="Unggah gambar album"
+                        class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-5 text-center transition hover:border-indigo-500 hover:bg-indigo-50/40 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-indigo-500 dark:hover:bg-indigo-950/20"
+                    >
+                        <input
+                            type="file"
+                            id="imageFileInput"
+                            name="image"
+                            class="hidden"
+                        >
+
+                        
+                        <div id="dropzonePlaceholder" class="flex flex-col items-center gap-2">
+                            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
+                                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/>
+                                </svg>
+                            </div>
+                            <p class="text-xs font-semibold text-gray-900 dark:text-white">Tarik & lepas gambar di sini</p>
+                            <p class="text-[10px] text-gray-400">atau klik untuk memilih file gambar dari perangkat Anda</p>
+                        </div>
+
+                        
+                        <div id="dropzonePreview" class="hidden w-full flex-col items-center gap-2">
+                            <img
+                                id="dropzonePreviewImage"
+                                src=""
+                                alt="Pratinjau gambar"
+                                class="h-28 w-full rounded-lg object-cover"
+                            >
+                            <div class="flex w-full items-center justify-between gap-2">
+                                <p id="dropzoneFileName" class="truncate text-[10px] text-gray-500 dark:text-gray-400"></p>
+                                <button
+                                    type="button"
+                                    id="dropzoneRemoveBtn"
+                                    class="shrink-0 rounded-md px-2 py-1 text-[10px] font-semibold text-red-600 transition hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/40"
+                                >
+                                    Hapus
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['image'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p class="mt-1 text-red-500"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+
+                <div class="md:col-span-2">
+                    <label for="description" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">Deskripsi Album</label>
+                    <textarea
+                        id="description"
+                        name="description"
+                        rows="4"
+                        placeholder="Tuliskan deskripsi album..."
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                    ><?php echo e(old('description')); ?></textarea>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__errorArgs = ['description'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
+                        <p class="mt-1 text-red-500"><?php echo e($message); ?></p>
+                    <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+                </div>
+
+                <div class="flex items-center justify-end gap-2 border-t border-gray-100 pt-4 dark:border-gray-800 md:col-span-2">
+                    <button
+                        type="button"
+                        onclick="closeFormModal()"
+                        class="rounded-lg px-4 py-2 font-semibold text-gray-600 transition hover:text-gray-800 dark:text-gray-400 dark:hover:text-gray-200"
+                    >
+                        Batal
+                    </button>
+                    <button
+                        type="submit"
+                        class="rounded-lg bg-indigo-600 px-5 py-2 font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+                    >
+                        Simpan
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+<div id="imagePreviewModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="imagePreviewTitle">
+    <div class="absolute inset-0 bg-slate-950/70" onclick="closeImagePreview()"></div>
+
+    <div class="relative w-full max-w-3xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900">
+        <div class="flex items-center justify-between border-b border-gray-100 px-4 py-3 dark:border-gray-800">
+            <h3 id="imagePreviewTitle" class="text-sm font-bold text-gray-900 dark:text-white">Pratinjau Gambar</h3>
+            <button
+                type="button"
+                onclick="closeImagePreview()"
+                class="rounded-lg p-1 text-gray-400 transition hover:bg-gray-100 hover:text-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-300"
+                aria-label="Tutup pratinjau"
+            >
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </button>
+        </div>
+
+        <div class="flex items-center justify-center bg-gray-50 p-4 dark:bg-gray-950/40">
+            <img
+                id="imagePreviewSource"
+                src=""
+                alt="Pratinjau gambar"
+                class="max-h-[70vh] rounded-lg object-contain"
+            >
+        </div>
+    </div>
+</div>
+
+
+<div id="toast" class="fixed bottom-5 right-5 z-[70] hidden rounded-lg bg-emerald-600 px-4 py-3 text-xs font-semibold text-white shadow-lg"></div>
+
+<script>
+    const defaultImage = <?php echo json_encode($resolveImage(null), 15, 512) ?>;
+
+    const searchInput = document.getElementById('searchInput');
+    const galleryTable = document.getElementById('galleryTable');
+    const formModal = document.getElementById('formModal');
+    const imagePreviewModal = document.getElementById('imagePreviewModal');
+    const imagePreviewSource = document.getElementById('imagePreviewSource');
+    const imagePreviewTitle = document.getElementById('imagePreviewTitle');
+
+    const imageDropzone = document.getElementById('imageDropzone');
+    const imageFileInput = document.getElementById('imageFileInput');
+    const dropzonePlaceholder = document.getElementById('dropzonePlaceholder');
+    const dropzonePreview = document.getElementById('dropzonePreview');
+    const dropzonePreviewImage = document.getElementById('dropzonePreviewImage');
+    const dropzoneFileName = document.getElementById('dropzoneFileName');
+    const dropzoneRemoveBtn = document.getElementById('dropzoneRemoveBtn');
+
+    let previewObjectUrl = null;
+    let toastTimer = null;
+
+    function openFormModal() {
+        if (!formModal) return;
+        formModal.classList.remove('hidden');
+        formModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeFormModal() {
+        if (!formModal) return;
+        formModal.classList.add('hidden');
+        formModal.classList.remove('flex');
+
+        if (imagePreviewModal && imagePreviewModal.classList.contains('hidden')) {
+            document.body.style.overflow = '';
+        }
+    }
+
+    function openImagePreview(url, title) {
+        if (!imagePreviewModal || !imagePreviewSource) return;
+
+        imagePreviewSource.src = url || defaultImage;
+        imagePreviewSource.alt = title || 'Pratinjau gambar';
+        imagePreviewTitle.textContent = title || 'Pratinjau Gambar';
+
+        imagePreviewModal.classList.remove('hidden');
+        imagePreviewModal.classList.add('flex');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeImagePreview() {
+        if (!imagePreviewModal) return;
+
+        imagePreviewModal.classList.add('hidden');
+        imagePreviewModal.classList.remove('flex');
+
+        if (formModal && formModal.classList.contains('hidden')) {
+            document.body.style.overflow = '';
+        }
+    }
+
+    function copyImageUrl(url) {
+        if (!url) return;
+
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(url)
+                .then(() => showToast('Tautan gambar berhasil disalin.'))
+                .catch(() => fallbackCopy(url));
+        } else {
+            fallbackCopy(url);
+        }
+    }
+
+    function fallbackCopy(url) {
+        const textarea = document.createElement('textarea');
+        textarea.value = url;
+        textarea.style.position = 'fixed';
+        textarea.style.opacity = '0';
+
+        document.body.appendChild(textarea);
+        textarea.select();
+
+        try {
+            document.execCommand('copy');
+            showToast('Tautan gambar berhasil disalin.');
+        } catch (error) {
+            showToast('Gagal menyalin tautan.', 'error');
+        }
+
+        document.body.removeChild(textarea);
+    }
+
+    function showToast(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        if (!toast) return;
+
+        toast.textContent = message;
+        toast.className = 'fixed bottom-5 right-5 z-[70] rounded-lg px-4 py-3 text-xs font-semibold text-white shadow-lg transition';
+        toast.classList.add(type === 'error' ? 'bg-red-600' : 'bg-emerald-600');
+
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+            toast.classList.add('hidden');
+        }, 2500);
+    }
+
+    function filterTable() {
+        if (!galleryTable || !searchInput) return;
+
+        const keyword = searchInput.value.toLowerCase().trim();
+        const rows = galleryTable.querySelectorAll('tbody tr[data-search]');
+        let visibleCount = 0;
+
+        rows.forEach(row => {
+            const searchValue = (row.dataset.search || '').toLowerCase();
+            const isMatch = searchValue.includes(keyword);
+
+            row.classList.toggle('hidden', !isMatch);
+
+            if (isMatch) {
+                visibleCount++;
+            }
+        });
+
+        const noSearchResultRow = document.getElementById('noSearchResultRow');
+        if (noSearchResultRow) {
+            noSearchResultRow.classList.toggle('hidden', visibleCount > 0);
+        }
+    }
+
+    function formatFileSize(bytes) {
+        if (!bytes) return '0 B';
+
+        const k = 1024;
+        const sizes = ['B', 'KB', 'MB', 'GB'];
+        const i = Math.floor(Math.log(bytes) / Math.log(k));
+
+        return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
+    }
+
+    function handleImageFile(file) {
+        if (!file) return;
+
+        if (previewObjectUrl) {
+            URL.revokeObjectURL(previewObjectUrl);
+        }
+
+        previewObjectUrl = URL.createObjectURL(file);
+        dropzonePreviewImage.src = previewObjectUrl;
+        dropzoneFileName.textContent = file.name + ' • ' + formatFileSize(file.size);
+
+        dropzonePlaceholder.classList.add('hidden');
+        dropzonePreview.classList.remove('hidden');
+        dropzonePreview.classList.add('flex');
+    }
+
+    function clearImageFile() {
+        if (imageFileInput) imageFileInput.value = '';
+
+        if (previewObjectUrl) {
+            URL.revokeObjectURL(previewObjectUrl);
+            previewObjectUrl = null;
+        }
+
+        if (dropzonePreviewImage) dropzonePreviewImage.src = '';
+        if (dropzoneFileName) dropzoneFileName.textContent = '';
+
+        if (dropzonePreview) {
+            dropzonePreview.classList.add('hidden');
+            dropzonePreview.classList.remove('flex');
+        }
+
+        if (dropzonePlaceholder) dropzonePlaceholder.classList.remove('hidden');
+    }
+
+    if (imageDropzone && imageFileInput) {
+        imageDropzone.addEventListener('click', function(event) {
+            if (event.target.closest('#dropzoneRemoveBtn')) return;
+            imageFileInput.click();
+        });
+
+        imageDropzone.addEventListener('keydown', function(event) {
+            if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault();
+                imageFileInput.click();
+            }
+        });
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            imageDropzone.addEventListener(eventName, function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                imageDropzone.classList.add('border-indigo-500', 'bg-indigo-50/70', 'dark:bg-indigo-950/20');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            imageDropzone.addEventListener(eventName, function(event) {
+                event.preventDefault();
+                event.stopPropagation();
+                imageDropzone.classList.remove('border-indigo-500', 'bg-indigo-50/70', 'dark:bg-indigo-950/20');
+            });
+        });
+
+        imageDropzone.addEventListener('drop', function(event) {
+            const file = event.dataTransfer.files && event.dataTransfer.files[0];
+            if (!file) return;
+
+            try {
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(file);
+                imageFileInput.files = dataTransfer.files;
+            } catch (error) {
+                console.warn('Tidak dapat mengatur file input dari drag & drop.', error);
+            }
+
+            handleImageFile(file);
+        });
+
+        imageFileInput.addEventListener('change', function() {
+            handleImageFile(this.files[0]);
+        });
+
+        if (dropzoneRemoveBtn) {
+            dropzoneRemoveBtn.addEventListener('click', function(event) {
+                event.stopPropagation();
+                clearImageFile();
+            });
+        }
+    }
+
+    document.addEventListener('click', function(event) {
+        const previewButton = event.target.closest('[data-preview-image]');
+        if (previewButton) {
+            openImagePreview(previewButton.dataset.previewImage, previewButton.dataset.previewTitle);
+            return;
+        }
+
+        const copyButton = event.target.closest('[data-copy-link]');
+        if (copyButton) {
+            copyImageUrl(copyButton.dataset.copyLink);
+        }
+    });
+
+    if (searchInput) {
+        searchInput.addEventListener('input', filterTable);
+    }
+
+    if (imagePreviewSource) {
+        imagePreviewSource.onerror = function() {
+            this.onerror = null;
+            this.src = defaultImage;
+        };
+    }
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key !== 'Escape') return;
+
+        if (imagePreviewModal && !imagePreviewModal.classList.contains('hidden')) {
+            closeImagePreview();
+            return;
+        }
+
+        if (formModal && !formModal.classList.contains('hidden')) {
+            closeFormModal();
+        }
+    });
+
+    filterTable();
+</script>
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views/admin/modules/gallery.blade.php ENDPATH**/ ?>

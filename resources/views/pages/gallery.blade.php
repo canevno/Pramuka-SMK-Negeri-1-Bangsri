@@ -1,225 +1,182 @@
 @extends('layouts.frontend')
 
-@section('title', 'Galeri Visual — Digital Exhibition')
+@section('title', 'Galeri Visual — Moodboard Exhibition')
 
 @section('content')
+@php
+    $galleryItems = $galleryItems ?? \App\Models\GalleryItem::query()
+        ->where('is_published', true)
+        ->orderByDesc('is_featured')
+        ->orderByDesc('published_at')
+        ->orderByDesc('id')
+        ->get();
 
-<main
-    data-page="gallery"
-    class="w-full bg-white text-neutral-900 selection:bg-neutral-900 selection:text-white overflow-x-hidden"
->
+    $groupedGalleryItems = [
+        'putra' => $galleryItems->where('group', 'putra')->values(),
+        'putri' => $galleryItems->where('group', 'putri')->values(),
+        'umum' => $galleryItems->whereIn('group', ['umum', null, ''])->values(),
+    ];
 
-    {{-- VIEWPORT 1: HERO (QUIET ENTRY) --}}
-    <section id="hero" class="relative w-full h-screen min-h-[650px] flex flex-col justify-center items-center p-6 md:p-12 bg-white text-center overflow-hidden border-b border-neutral-900">
-        {{-- Fullscreen Atmospheric Photo --}}
-        <figure class="absolute inset-0 w-full h-full z-0 overflow-hidden">
-            <img 
-                src="https://images.unsplash.com/photo-1510312305653-8ed496efae75?q=80&w=2000&auto=format&fit=crop" 
-                alt="Suasana fajar perkemahan" 
-                class="w-full h-full object-cover filter grayscale contrast-125 opacity-35"
-                loading="eager"
-            />
-        </figure>
+    $resolveGalleryImage = function ($path) {
+        if (empty($path)) {
+            return asset('images/gallery/default.jpg');
+        }
 
-        {{-- Hero Heading & Subheading --}}
-        <header class="relative z-10 max-w-5xl mx-auto space-y-6">
-            <h1 class="text-5xl md:text-8xl lg:text-9xl font-light tracking-tight uppercase text-white leading-none">
-                Langkah Pertama
+        if (str_starts_with($path, 'http')) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+
+        if (str_starts_with($path, 'gallery/')) {
+            return \Illuminate\Support\Facades\Storage::url($path);
+        }
+
+        return asset($path);
+    };
+@endphp
+
+<main class="w-full min-h-screen bg-[#f4f3ef] dark:bg-gray-950 text-neutral-900 dark:text-white py-10 px-4 sm:px-6 md:px-10 lg:px-16 transition-colors duration-200">
+    <div class="mx-auto max-w-6xl">
+        <div class="mb-8 text-center">
+            <p class="text-xs font-semibold uppercase tracking-[0.28rem] text-amber-600 dark:text-amber-400">Galeri</p>
+            <h1 class="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl md:text-5xl">
+                Dokumentasi Kegiatan Pramuka
             </h1>
-            <p class="text-sm md:text-base font-serif italic text-neutral-400 tracking-wide max-w-md mx-auto">
-                Pameran Visual Pramuka SMK Negeri 1 Bangsri.
-            </p>
-        </header>
-
-        <!-- TODO: Add subtle scroll-down cursor indicator post-presentation -->
-    </section>
-
-    {{-- VIEWPORT 2: FEATURED STORY (SINGLE LANDSCAPE) --}}
-    <section id="featured-story" class="w-full min-h-screen flex flex-col justify-center items-center py-20 px-6 md:px-12 lg:px-20 bg-white border-b border-white-900">
-        <div class="w-full max-w-7xl mx-auto flex flex-col items-center">
-            <figure class="w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-white-900">
-                <img 
-                    src="https://images.unsplash.com/photo-1504280390367-361c6d9f38f4?q=80&w=2000&auto=format&fit=crop" 
-                    alt="Penjelajahan medan luar ruangan" 
-                    class="w-full h-full object-cover filter grayscale contrast-125"
-                    loading="lazy"
-                />
-            </figure>
-
-            <h2 class="text-xs md:text-sm font-mono uppercase tracking-[0.4em] text-white-400 mt-8 text-center">
-                Menembus Belantara
-            </h2>
         </div>
-    </section>
 
-    {{-- VIEWPORT 3: HUMAN SPOTLIGHT (PORTRAIT & HIGH NEGATIVE SPACE) --}}
-    <section id="human-spotlight" class="w-full min-h-screen flex items-center justify-center py-20 px-6 md:px-12 bg-white border-b border-white-900">
-        <div class="w-full max-w-5xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-12 md:gap-20 items-center">
-            <figure class="md:col-span-6 md:col-start-2">
-                <div class="aspect-[3/4] max-w-xs md:max-w-sm mx-auto overflow-hidden bg-white">
-                    <img 
-                        src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=1200&auto=format&fit=crop" 
-                        alt="Potret anggota Pramuka" 
-                        class="w-full h-full object-cover filter grayscale contrast-130"
-                        loading="lazy"
-                    />
-                </div>
-            </figure>
+        @if($galleryItems->isEmpty())
+            <div class="rounded-2xl border border-dashed border-slate-300 bg-white/60 p-10 text-center text-sm text-slate-600 dark:border-slate-700 dark:bg-slate-900/40 dark:text-slate-300">
+                Belum ada foto yang dipublikasikan. Silakan unggah foto dari panel admin terlebih dahulu.
+            </div>
+        @else
+            @foreach(['putra' => 'Ambalan Putra', 'putri' => 'Ambalan Putri', 'umum' => 'Galeri Umum'] as $groupKey => $groupLabel)
+                @php $items = $groupedGalleryItems[$groupKey] ?? collect(); @endphp
+                @if($items->isNotEmpty())
+                    <div class="mb-10">
+                        <div class="mb-5 flex items-center justify-between gap-3">
+                            <h2 class="text-xl font-bold text-gray-900 dark:text-white md:text-2xl">{{ $groupLabel }}</h2>
+                            <span class="rounded-full border border-slate-200 bg-white/70 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 dark:border-slate-700 dark:bg-slate-900/50 dark:text-slate-300">
+                                {{ $items->count() }} foto
+                            </span>
+                        </div>
 
-            <article class="md:col-span-4 flex flex-col justify-center">
-                <blockquote class="text-base md:text-lg font-serif italic text-white-300 leading-relaxed">
-                    "Komitmen sejati tidak pernah diucapkan, tetapi selalu ditepati di lapangan."
-                </blockquote>
-            </article>
-        </div>
-    </section>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-3 md:gap-4 items-start">
+                            @foreach([0, 1, 2] as $columnIndex)
+                                <div class="flex flex-col gap-3 md:gap-4">
+                                    @foreach($items as $index => $item)
+                                        @if($index % 3 !== $columnIndex)
+                                            @continue
+                                        @endif
 
-    {{-- VIEWPORT 4: BROTHERHOOD (LANDSCAPE + OFFSET PORTRAIT) --}}
-    <section id="brotherhood" class="w-full min-h-screen flex flex-col justify-center py-24 px-6 md:px-16 lg:px-24 bg-white-950 border-b border-white-900">
-        <div class="w-full max-w-6xl mx-auto relative">
-            <figure class="w-full max-w-4xl aspect-[16/9] overflow-hidden bg-white-900">
-                <img 
-                    src="https://images.unsplash.com/photo-1478131143081-80f7f84ca84d?q=80&w=1600&auto=format&fit=crop" 
-                    alt="Kebersamaan di perkemahan" 
-                    class="w-full h-full object-cover filter grayscale contrast-125"
-                    loading="lazy"
-                />
-            </figure>
+                                        @php
+                                            $imageUrl = $resolveGalleryImage($item->image);
+                                            $aspectClasses = [
+                                                'aspect-[4/3]',
+                                                'aspect-[3/4]',
+                                                'aspect-[4/5]',
+                                                'aspect-[16/10]',
+                                                'aspect-square',
+                                                'aspect-[16/9]',
+                                            ];
+                                            $aspectClass = $aspectClasses[$index % count($aspectClasses)];
+                                        @endphp
 
-            <figure class="w-48 md:w-72 aspect-[3/4] overflow-hidden bg-white ml-auto -mt-16 md:-mt-32 mr-0 md:mr-8 relative z-10 border-4 ">
-                <img 
-                    src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?q=80&w=800&auto=format&fit=crop" 
-                    alt="Momen hangat ikatan persaudaraan" 
-                    class="w-full h-full object-cover filter grayscale contrast-120"
-                    loading="lazy"
-                />
-            </figure>
+                                        <div class="overflow-hidden bg-neutral-200 dark:bg-neutral-800 rounded-lg cursor-pointer group" onclick="openModal('{{ $imageUrl }}', '{{ addslashes($item->title ?: ($item->alt_text ?: 'Galeri Pramuka')) }}')">
+                                            <img src="{{ $imageUrl }}"
+                                                 alt="{{ $item->alt_text ?: $item->title }}"
+                                                 class="w-full {{ $aspectClass }} object-cover group-hover:scale-105 transition-transform duration-500">
+                                        </div>
+                                    @endforeach
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        @endif
+    </div>
 
-            <h2 class="text-xs font-mono uppercase tracking-[0.4em] text-neutral-500 mt-6">
-                Ikatan Persaudaraan
-            </h2>
-        </div>
-    </section>
+    <div id="imageModal" class="fixed inset-0 z-50 hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4 md:p-8" onclick="closeModal()">
+        <button type="button" class="absolute top-6 right-8 text-white/70 hover:text-white text-4xl font-light focus:outline-none z-10" onclick="closeModal()">
+            &times;
+        </button>
 
-    {{-- VIEWPORT 5: HONOR (CLIMAX FEATURE) --}}
-    <section id="honor" class="w-full min-h-screen flex flex-col justify-center items-center py-20 px-6 md:px-12 bg-white border-b border-white text-center">
-        <div class="w-full max-w-6xl mx-auto flex flex-col items-center">
-            <figure class="w-full aspect-[16/9] md:aspect-[21/9] overflow-hidden bg-white">
-                <img 
-                    src="https://images.unsplash.com/photo-1532375810709-75b1da00537c?q=80&w=2000&auto=format&fit=crop" 
-                    alt="Sakralitas kehormatan upacara" 
-                    class="w-full h-full object-cover filter grayscale contrast-130"
-                    loading="lazy"
-                />
-            </figure>
-
-            <h2 class="text-xs md:text-sm font-mono uppercase tracking-[0.4em] text-neutral-300 mt-8">
-                Kehormatan Tradisi & Sakralitas Upacara
-            </h2>
-        </div>
-    </section>
-
-    {{-- VIEWPORT 6: ARCHIVE (EDITORIAL MUSEUM LIST) --}}
-    <section id="archive" class="w-full min-h-screen flex flex-col justify-center py-24 px-6 md:px-16 lg:px-32 bg-white border-b border-white">
-        <div class="w-full max-w-5xl mx-auto">
-            <header class="mb-16 border-b border-neutral-900 pb-6">
-                <h2 class="text-xs font-mono uppercase tracking-[0.4em] text-neutral-500">
-                    Arsip Museum / Catatan Perjalanan
-                </h2>
-            </header>
-
-            <div class="divide-y divide-neutral-900">
-                <!-- TODO: Connect list items to dynamic database loop -->
-                <article class="py-6 flex items-center justify-between group hover:px-2 transition-all">
-                    <span class="text-xs md:text-sm font-mono text-neutral-500 w-20">2026</span>
-                    <h3 class="text-base md:text-xl font-light uppercase text-neutral-200 group-hover:text-white transition-colors flex-1 px-4">
-                        Bakti Lingkungan & Kemah Karya
-                    </h3>
-                    <figure class="w-16 h-12 md:w-24 md:h-16 bg-white overflow-hidden flex-shrink-0">
-                        <img 
-                            src="https://images.unsplash.com/photo-1516939884455-1445c8652f83?q=80&w=400&auto=format&fit=crop" 
-                            alt="Bakti Lingkungan" 
-                            class="w-full h-full object-cover filter grayscale opacity-70 group-hover:opacity-100 transition-opacity"
-                            loading="lazy"
-                        />
-                    </figure>
-                </article>
-
-                <article class="py-6 flex items-center justify-between group hover:px-2 transition-all">
-                    <span class="text-xs md:text-sm font-mono text-neutral-500 w-20">2025</span>
-                    <h3 class="text-base md:text-xl font-light uppercase text-neutral-200 group-hover:text-white transition-colors flex-1 px-4">
-                        Pelantikan Bantara Penjelajahan Wanarosotan
-                    </h3>
-                    <figure class="w-16 h-12 md:w-24 md:h-16 bg-white overflow-hidden flex-shrink-0">
-                        <img 
-                            src="https://images.unsplash.com/photo-1517649763962-0c623266010b?q=80&w=400&auto=format&fit=crop" 
-                            alt="Pelantikan Bantara" 
-                            class="w-full h-full object-cover filter grayscale opacity-70 group-hover:opacity-100 transition-opacity"
-                            loading="lazy"
-                        />
-                    </figure>
-                </article>
-
-                <article class="py-6 flex items-center justify-between group hover:px-2 transition-all">
-                    <span class="text-xs md:text-sm font-mono text-neutral-500 w-20">2025</span>
-                    <h3 class="text-base md:text-xl font-light uppercase text-neutral-200 group-hover:text-white transition-colors flex-1 px-4">
-                        Ekspedisi Navigasi Gunung Muria
-                    </h3>
-                    <figure class="w-16 h-12 md:w-24 md:h-16 bg-white  overflow-hidden flex-shrink-0">
-                        <img 
-                            src="https://images.unsplash.com/photo-1469854523086-cc02fe5d8800?q=80&w=400&auto=format&fit=crop" 
-                            alt="Ekspedisi Muria" 
-                            class="w-full h-full object-cover filter grayscale opacity-70 group-hover:opacity-100 transition-opacity"
-                            loading="lazy"
-                        />
-                    </figure>
-                </article>
-
-                <article class="py-6 flex items-center justify-between group hover:px-2 transition-all">
-                    <span class="text-xs md:text-sm font-mono text-neutral-500 w-20">2024</span>
-                    <h3 class="text-base md:text-xl font-light uppercase text-neutral-200 group-hover:text-white transition-colors flex-1 px-4">
-                        Gelar Ketangkasan Pionering Utama
-                    </h3>
-                    <figure class="w-16 h-12 md:w-24 md:h-16 bg-white overflow-hidden flex-shrink-0">
-                        <img 
-                            src="https://images.unsplash.com/photo-1526772662000-3f88f10405ff?q=80&w=400&auto=format&fit=crop" 
-                            alt="Gelar Ketangkasan" 
-                            class="w-full h-full object-cover filter grayscale opacity-70 group-hover:opacity-100 transition-opacity"
-                            loading="lazy"
-                        />
-                    </figure>
-                </article>
+        <div class="relative max-w-5xl max-h-[90vh] flex flex-col items-center justify-center" onclick="event.stopPropagation()">
+            <img id="modalImage" src="" alt="" class="max-w-full max-h-[75vh] object-contain shadow-2xl rounded-sm">
+            <div class="mt-4 flex flex-col sm:flex-row items-center gap-4 text-center">
+                <p id="modalCaption" class="text-white/80 font-serif italic text-xs md:text-sm tracking-widest uppercase"></p>
+                <button type="button" id="downloadBtn" onclick="triggerDownload()" class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 text-white text-xs font-mono uppercase tracking-wider rounded-md border border-white/20 backdrop-blur-sm transition-all cursor-pointer">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3"/>
+                    </svg>
+                    <span>Unduh Gambar</span>
+                </button>
             </div>
         </div>
-    </section>
-
-    {{-- VIEWPORT 7: CLOSING (FULLSCREEN HERO & SINGLE CTA) --}}
-    <section id="closing" class="relative w-full h-screen min-h-[650px] flex flex-col justify-center items-center p-6 md:p-12 bg-white text-center overflow-hidden">
-        <figure class="absolute inset-0 w-full h-full z-0 overflow-hidden">
-            <img 
-                src="https://images.unsplash.com/photo-1470071459604-3b5ec3a7fe05?q=80&w=2000&auto=format&fit=crop" 
-                alt="Siluet horizon penutup" 
-                class="w-full h-full object-cover filter grayscale contrast-130 opacity-30"
-                loading="lazy"
-            />
-        </figure>
-
-        <div class="relative z-10 max-w-4xl mx-auto space-y-10">
-            <h2 class="text-4xl md:text-7xl lg:text-8xl font-light uppercase tracking-tight text-white leading-tight">
-                Cerita Masa Depan
-            </h2>
-            
-            <div>
-                <a href="/profil" class="inline-block px-8 py-4 border border-neutral-400 text-xs font-mono uppercase tracking-[0.3em] text-white hover:bg-white hover:text-black hover:border-white transition-all">
-                    Jelajahi Profil
-                </a>
-            </div>
-        </div>
-        
-
-        <!-- TODO: Integrate modal lightboxes post-presentation if required -->
-    </section>
-
+    </div>
 </main>
 
+<script>
+    let activeImageSrc = '';
+    let activeCaption = '';
+
+    function openModal(imageSrc, caption) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        const modalCaption = document.getElementById('modalCaption');
+
+        activeImageSrc = imageSrc;
+        activeCaption = caption;
+
+        modalImg.src = imageSrc;
+        modalCaption.textContent = caption;
+
+        modal.classList.remove('hidden');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeModal() {
+        const modal = document.getElementById('imageModal');
+        modal.classList.add('hidden');
+        document.body.classList.remove('overflow-hidden');
+    }
+
+    async function triggerDownload() {
+        if (!activeImageSrc) return;
+
+        const btn = document.getElementById('downloadBtn');
+        const originalText = btn.innerHTML;
+        btn.innerText = 'Mengunduh...';
+
+        try {
+            const response = await fetch(activeImageSrc);
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+
+            const a = document.createElement('a');
+            a.style.display = 'none';
+            a.href = blobUrl;
+
+            const filename = (activeCaption ? activeCaption.toLowerCase().replace(/[^a-z0-9]/g, '-') : 'foto-galeri') + '.jpg';
+            a.download = filename;
+
+            document.body.appendChild(a);
+            a.click();
+
+            window.URL.revokeObjectURL(blobUrl);
+            document.body.removeChild(a);
+        } catch (error) {
+            window.open(activeImageSrc, '_blank');
+        } finally {
+            btn.innerHTML = originalText;
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModal();
+    });
+</script>
 @endsection

@@ -15,6 +15,11 @@ return new class extends Migration
             $table->string('sangga')->nullable();
             $table->string('sub_sangga')->nullable();
             $table->enum('ambalan', ['PA', 'PI'])->nullable();
+            $table->string('jabatan')->nullable();
+            $table->string('status')->default('Aktif');
+            $table->string('photo_url')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->unsignedInteger('sort_order')->default(0);
             $table->timestamps();
         });
     }

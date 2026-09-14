@@ -23,7 +23,7 @@
                 <!-- Right: Search Bar + Dark Mode Toggle + Mobile Toggle -->
                 <div class="absolute right-0 flex items-center gap-3">
                     <!-- Search Bar (Desktop Only) -->
-                    <div class="hidden md:flex items-center bg-white dark:bg-gray-800 border-2 border-slate-300 dark:border-slate-500 px-3 py-2 w-40 lg:w-48 rounded-lg transition-colors duration-200 hover:border-blue-400 dark:hover:border-blue-500 focus-within:border-blue-400 dark:focus-within:border-blue-500">
+                    <form action="{{ route('search') }}" method="get" class="hidden md:flex items-center bg-white dark:bg-gray-800 border-2 border-slate-300 dark:border-slate-500 px-3 py-2 w-40 lg:w-48 rounded-lg transition-colors duration-200 hover:border-blue-400 dark:hover:border-blue-500 focus-within:border-blue-400 dark:focus-within:border-blue-500">
                         <input 
                             type="text" 
                             name="q"
@@ -31,10 +31,12 @@
                             placeholder="Cari..." 
                             class="bg-white dark:bg-gray-800 text-sm text-gray-700 dark:text-gray-300 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none w-full transition-colors duration-200"
                         >
-                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                    </div>
+                        <button type="submit" class="ml-2 text-gray-600 dark:text-gray-400">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                        </button>
+                    </form>
 
                     <!-- Mobile Menu Toggle (Hidden on lg+) -->
                     <button 
@@ -166,10 +168,10 @@
                             x-transition:leave-end="opacity-0 translate-y-2"
                             class="absolute left-0 top-full z-50 mt-2 w-64 rounded-none border border-slate-300 bg-white p-2 shadow-lg dark:border-slate-600 dark:bg-gray-900"
                         >
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Pembina</a>
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Dewan Kehormatan</a>
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Dewan Ambalan</a>
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Anggota Dewan</a>
+                            <a href="{{ route('pembina') }}" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Pembina</a>
+                            <a href="{{ route('dewan-kehormatan') }}" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Dewan Kehormatan</a>
+                            <a href="{{ route('dewan-ambalan') }}" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Dewan Ambalan</a>
+                            <a href="{{ route('pembina') }}#anggota-dewan" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Anggota Dewan</a>
                             <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Mitra</a>
                             <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Alumni</a>
                         </div>
@@ -204,10 +206,10 @@
                             x-transition:leave-end="opacity-0 translate-y-2"
                             class="absolute left-0 top-full z-50 mt-2 w-52 rounded-none border border-slate-300 bg-white p-2 shadow-lg dark:border-slate-600 dark:bg-gray-900"
                         >
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Tingkat Ranting</a>
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Tingkat Cabang</a>
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Tingkat Daerah</a>
-                            <a href="#" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Tingkat Nasional</a>
+                            <a href="{{ route('prestasi.ranting') }}" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Tingkat Ranting</a>
+                            <a href="{{ route('prestasi.cabang') }}" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Tingkat Cabang</a>
+                            <a href="{{ route('prestasi.jateng') }}" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Tingkat Daerah</a>
+                            <a href="{{ route('prestasi.nasional') }}" class="block rounded-none px-3 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-slate-100 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white">Tingkat Nasional</a>
                         </div>
                     </div>
                     <div
@@ -319,18 +321,27 @@
                     </button>
                 </div>
 
-                <div class="mt-4">
+                    <div class="mt-4">
                     <label class="sr-only" for="mobile-search">Cari</label>
-                    <div class="flex items-center bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-3 py-3 rounded-2xl shadow-sm transition-colors duration-200 focus-within:border-blue-400 dark:focus-within:border-blue-500">
-                        <svg class="w-5 h-5 text-slate-400 dark:text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
-                        </svg>
-                        <input
-                            id="mobile-search"
-                            type="text"
-                            placeholder="Cari..."
-                            class="bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none w-full"
-                        >
+                    <div class="mt-4">
+                        <label class="sr-only" for="mobile-search">Cari</label>
+                        <form action="{{ route('search') }}" method="get" class="flex items-center bg-slate-50 dark:bg-slate-900 border border-slate-300 dark:border-slate-700 px-3 py-3 rounded-2xl shadow-sm transition-colors duration-200 focus-within:border-blue-400 dark:focus-within:border-blue-500">
+                            <svg class="w-5 h-5 text-slate-400 dark:text-slate-500 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input
+                                id="mobile-search"
+                                type="text"
+                                name="q"
+                                placeholder="Cari..."
+                                class="bg-transparent text-sm text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-500 focus:outline-none w-full"
+                            >
+                            <button type="submit" class="ml-2 text-slate-500 dark:text-slate-400">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                                </svg>
+                            </button>
+                        </form>
                     </div>
                 </div>
 
@@ -373,10 +384,10 @@
                             </svg>
                         </button>
                         <div x-show="mobileOrgOpen" x-transition class="space-y-1 border-t border-slate-200 dark:border-slate-800 px-4 py-2">
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Pembina</a>
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Dewan Kehormatan</a>
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Dewan Ambalan</a>
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Anggota Dewan</a>
+                            <a href="{{ route('pembina') }}" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Pembina</a>
+                            <a href="{{ route('dewan-kehormatan') }}" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Dewan Kehormatan</a>
+                            <a href="{{ route('dewan-ambalan') }}" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Dewan Ambalan</a>
+                            <a href="{{ route('pembina') }}#anggota-dewan" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Anggota Dewan</a>
                             <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Mitra</a>
                             <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Alumni</a>
                         </div>
@@ -390,10 +401,10 @@
                             </svg>
                         </button>
                         <div x-show="mobilePrestasiOpen" x-transition class="space-y-1 border-t border-slate-200 dark:border-slate-800 px-4 py-2">
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Tingkat Ranting</a>
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Tingkat Cabang</a>
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Tingkat Jateng</a>
-                            <a href="#" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Tingkat Nasional</a>
+                            <a href="{{ route('prestasi.ranting') }}" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Tingkat Ranting</a>
+                            <a href="{{ route('prestasi.cabang') }}" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Tingkat Cabang</a>
+                            <a href="{{ route('prestasi.jateng') }}" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Tingkat Jateng</a>
+                            <a href="{{ route('prestasi.nasional') }}" @click="mobileMenuOpen = false" class="block rounded-xl px-4 py-2 text-sm text-gray-700 transition-colors hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">Tingkat Nasional</a>
                         </div>
                     </div>
 

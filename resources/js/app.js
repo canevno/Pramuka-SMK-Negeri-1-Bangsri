@@ -4,8 +4,11 @@ import { initHeroAnimations } from "./animations/hero.js";
 import Alpine from 'alpinejs';
 
 window.gsap = gsap;
-window.Alpine = Alpine;
-Alpine.start();
+
+if (!window.Alpine) {
+    window.Alpine = Alpine;
+    Alpine.start();
+}
 
 document.addEventListener("DOMContentLoaded", () => {
     const gallery = document.querySelector('[data-page="gallery"]');

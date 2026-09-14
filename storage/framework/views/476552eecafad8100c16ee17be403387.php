@@ -1,113 +1,97 @@
-<section class="py-24 bg-white dark:bg-gray-950 transition-colors duration-200">
+<?php
+    $galleryItems = \App\Models\GalleryItem::query()
+        ->where('is_published', true)
+        ->orderByDesc('is_featured')
+        ->orderByDesc('published_at')
+        ->orderByDesc('id')
+        ->limit(10)
+        ->get();
+
+    $groupedGalleryItems = [
+        'putra' => $galleryItems->where('group', 'putra')->values(),
+        'putri' => $galleryItems->where('group', 'putri')->values(),
+    ];
+
+    $resolveGalleryImage = function ($path) {
+        if (empty($path)) {
+            return asset('images/gallery/default.jpg');
+        }
+
+        if (str_starts_with($path, 'http')) {
+            return $path;
+        }
+
+        if (str_starts_with($path, 'storage/')) {
+            return asset($path);
+        }
+
+        if (str_starts_with($path, 'gallery/')) {
+            return \Illuminate\Support\Facades\Storage::url($path);
+        }
+
+        return asset($path);
+    };
+?>
+
+<section class="py-16 md:py-24 bg-slate-50 dark:bg-gray-950 transition-colors duration-200">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <!-- Section Header -->
-        <div class="mb-16">
-            <h2 class="text-4xl md:text-5xl font-bold text-gray-900 dark:text-white mb-2">
+        <div class="text-center max-w-2xl mx-auto mb-12">
+            <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white mb-3">
                 Galleri Kegiatan
             </h2>
+            <p class="text-sm sm:text-base text-gray-600 dark:text-gray-400 leading-relaxed">
+                Dokumentasi momen kebersamaan, keseruan, dan dedikasi seluruh anggota dalam mengikuti berbagai kegiatan pramuka.
+            </p>
         </div>
 
-        <!-- Main Gallery Layout -->
-        <div class="hidden lg:grid lg:grid-cols-12 gap-8 items-start">
-            <!-- Left: Images Grid (75-80%) -->
-            <div class="col-span-9">
-                <p class="text-sm font-semibold text-gray-600 dark:text-gray-400 mb-4">Kegiatan Bulan Agustus 2026</p>
-                <div class="grid grid-cols-3 gap-4">
-                    <img src="<?php echo e(asset('images/gallery/g1 (1).jpeg')); ?>" 
-                         alt="Gallery 1"
-                         class="w-full h-48 object-cover border-2 border-slate-300 dark:border-slate-500 hover:scale-105 transition-transform duration-300">
-                    <img src="<?php echo e(asset('images/gallery/g1 (2).jpeg')); ?>" 
-                         alt="Gallery 2"
-                         class="w-full h-48 object-cover border-2 border-slate-300 dark:border-slate-500 hover:scale-105 transition-transform duration-300">
-                    <img src="<?php echo e(asset('images/gallery/g1 (3).jpeg')); ?>" 
-                         alt="Gallery 3"
-                         class="w-full h-48 object-cover border-2 border-slate-300 dark:border-slate-500 hover:scale-105 transition-transform duration-300">
-                    <img src="<?php echo e(asset('images/gallery/g1 (4).jpeg')); ?>" 
-                         alt="Gallery 4"
-                         class="w-full h-48 object-cover border-2 border-slate-300 dark:border-slate-500 hover:scale-105 transition-transform duration-300">
-                    <img src="<?php echo e(asset('images/gallery/g1 (5).jpeg')); ?>" 
-                         alt="Gallery 5"
-                         class="w-full h-48 object-cover border-2 border-slate-300 dark:border-slate-500 hover:scale-105 transition-transform duration-300">
-                    <img src="<?php echo e(asset('images/gallery/g1 (6).jpeg')); ?>" 
-                         alt="Gallery 6"
-                         class="w-full h-48 object-cover border-2 border-slate-300 dark:border-slate-500 hover:scale-105 transition-transform duration-300">
-                </div>
-            </div>
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($galleryItems->isNotEmpty()): ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = ['putra' => 'Putra', 'putri' => 'Putri']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $groupKey => $groupLabel): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                <?php $items = $groupedGalleryItems[$groupKey] ?? collect(); ?>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($items->isNotEmpty()): ?>
+                    <div class="mb-10">
+                        <div class="mb-5 flex items-center justify-between gap-3">
+                            <h3 class="text-xl font-bold text-gray-900 dark:text-white">Ambalan <?php echo e($groupLabel); ?></h3>
+                            <span class="rounded-full border border-slate-200 bg-white px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-300">
+                                <?php echo e($items->count()); ?> foto
+                            </span>
+                        </div>
 
-            <!-- Right: Content & Timeline (20-25%) -->
-            <div class="col-span-3 border-l-2 border-slate-300 dark:border-slate-500 pl-8">
-                <div class="space-y-6">
-                    <div>
-                        <h3 class="text-2xl font-black text-gray-900 dark:text-white mb-1">
-                            Kebersamaan
-                        </h3>
-                        <p class="text-lg font-bold text-gray-800 dark:text-gray-200">
-                            Kami Dalam
-                        </p>
-                        <p class="text-lg font-bold text-gray-700 dark:text-gray-300">
-                            Berbagai Kegiatan
-                        </p>
-                    </div>
+                        <div class="grid grid-cols-12 gap-4 md:gap-6 mb-6">
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $items; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $galleryItem): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                                <?php
+                                    $imageUrl = $resolveGalleryImage($galleryItem->image);
+                                    $isLarge = in_array($index, [0, 1], true);
+                                    $columnSpan = $isLarge ? 'col-span-12 md:col-span-6' : 'col-span-12 sm:col-span-4';
+                                    $height = $isLarge ? 'h-72 sm:h-80 lg:h-[26rem]' : 'h-56 sm:h-64 lg:h-72';
+                                ?>
 
-                    <!-- Timeline -->
-                    <div class="pt-4">
-                        <p class="text-gray-700 dark:text-gray-400 text-xs leading-relaxed mb-4">
-                            Dokumentasi momen kebersamaan dalam berbagai kegiatan pramuka yang menunjukkan antusiasme dan dedikasi seluruh anggota.
-                        </p>
-                        <div class="flex items-center gap-3">
-                            <div class="w-2 h-2 bg-gray-800 dark:bg-gray-400 rounded-full"></div>
-                            <p class="text-sm font-bold text-gray-800 dark:text-gray-200">Tahun 2025 - 2026</p>
+                                <div class="<?php echo e($columnSpan); ?> overflow-hidden rounded-xl shadow-md border border-slate-200 dark:border-gray-800 bg-neutral-200 dark:bg-neutral-800">
+                                    <img src="<?php echo e($imageUrl); ?>"
+                                         alt="<?php echo e($galleryItem->alt_text ?: $galleryItem->title); ?>"
+                                         class="w-full <?php echo e($height); ?> object-cover transition-transform duration-500 hover:scale-105">
+                                </div>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
                         </div>
                     </div>
-                </div>
+                <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+        <?php else: ?>
+            <div class="mb-12 grid grid-cols-12 gap-4 md:gap-6">
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = range(1, 5); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                    <div class="col-span-12 <?php echo e($index <= 2 ? 'md:col-span-6' : 'sm:col-span-4'); ?> overflow-hidden rounded-xl h-72 sm:h-80 lg:h-[26rem] shadow-md border border-slate-200 dark:border-gray-800 bg-slate-200 dark:bg-slate-800 animate-pulse"></div>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
             </div>
-        </div>
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-        <!-- Mobile Layout -->
-        <div class="lg:hidden space-y-6">
-            <!-- Label -->
-            <p class="text-sm font-semibold text-gray-600 dark:text-gray-400">Dokumentasi Kegiatan</p>
-            
-            <!-- Images Grid Mobile -->
-            <div class="grid grid-cols-3 gap-3">
-                <img src="<?php echo e(asset('images/gallery/g1 (1).jpeg')); ?>" alt="Gallery 1" class="w-full h-28 object-cover border-2 border-slate-300 dark:border-slate-500">
-                <img src="<?php echo e(asset('images/gallery/g1 (2).jpeg')); ?>" alt="Gallery 2" class="w-full h-28 object-cover border-2 border-slate-300 dark:border-slate-500">
-                <img src="<?php echo e(asset('images/gallery/g1 (3).jpeg')); ?>" alt="Gallery 3" class="w-full h-28 object-cover border-2 border-slate-300 dark:border-slate-500">
-                <img src="<?php echo e(asset('images/gallery/g1 (4).jpeg')); ?>" alt="Gallery 4" class="w-full h-28 object-cover border-2 border-slate-300 dark:border-slate-500">
-                <img src="<?php echo e(asset('images/gallery/g1 (5).jpeg')); ?>" alt="Gallery 5" class="w-full h-28 object-cover border-2 border-slate-300 dark:border-slate-500">
-                <img src="<?php echo e(asset('images/gallery/g1 (6).jpeg')); ?>" alt="Gallery 6" class="w-full h-28 object-cover border-2 border-slate-300 dark:border-slate-500">
-            </div>
-
-            <!-- Content Mobile -->
-            <div class="space-y-4 border-l-2 border-slate-300 dark:border-slate-500 pl-4">
-                <div>
-                    <h3 class="text-xl font-black text-gray-900 dark:text-white mb-1">
-                        Kebersamaan
-                    </h3>
-                    <p class="text-base font-bold text-gray-800 dark:text-gray-200">
-                        Kami Dalam Berbagai Kegiatan
-                    </p>
-                </div>
-
-                <!-- Timeline Mobile -->
-                <div>
-                    <p class="text-gray-700 dark:text-gray-400 text-xs mb-3 leading-relaxed">
-                        Dokumentasi momen kebersamaan dalam berbagai kegiatan pramuka yang menunjukkan antusiasme dan dedikasi seluruh anggota.
-                    </p>
-                    <div class="flex items-center gap-2">
-                        <div class="w-2 h-2 bg-gray-800 dark:bg-gray-400 rounded-full"></div>
-                        <p class="text-sm font-bold text-gray-800 dark:text-gray-200">Tahun 2026</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- Show More Button -->
-        <div class="text-center mt-16">
-            <a href="/galeri" class="inline-block px-8 py-3 border-2 border-slate-300 dark:border-slate-500 text-gray-700 dark:text-gray-300 hover:text-blue-600 dark:hover:text-blue-400 hover:border-blue-600 dark:hover:border-blue-400 font-semibold transition-colors">
-                Tampilkan Selengkapnya
+        <div class="flex items-center justify-center">
+            <a href="<?php echo e(url('/galeri')); ?>"
+               class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-semibold text-sm transition-all shadow-sm group">
+                <span>Tampilkan Selengkapnya</span>
+                <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                </svg>
             </a>
         </div>
+
     </div>
-</section>
-<?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views/sections/home/gallery.blade.php ENDPATH**/ ?>
+</section><?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views/sections/home/gallery.blade.php ENDPATH**/ ?>

@@ -66,7 +66,7 @@
                                 }
                             @endphp
                                 @if($hasSurat)
-                                <a href="{{ route('admin.pendaftaran.surat.download', $item->id) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 rounded hover:bg-blue-200 whitespace-nowrap min-w-[96px]">
+                                <a href="{{ route('admin.pendaftaran.download', $item->id) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-blue-700 bg-blue-100 rounded hover:bg-blue-200 whitespace-nowrap min-w-[96px]">
                                     <svg class="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v12m0 0l-4-4m4 4l4-4"/></svg>
                                     Download Berkas
                                 </a>
@@ -84,7 +84,7 @@
                             @endif
                         </td>
                         <td class="py-4 px-4 text-center">
-                            <form action="{{ route('admin.pendaftaran.update-status', $item->id) }}" method="POST" class="inline-flex items-center space-x-1">
+                            <form action="{{ route('admin.pendaftaran.updateStatus', $item->id) }}" method="POST" class="inline-flex items-center space-x-1">
                                 @csrf
                                 @method('PATCH')
                                 <select name="status" onchange="this.form.submit()" class="text-xs rounded border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 py-1 px-2">

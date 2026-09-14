@@ -3,58 +3,67 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
+use App\Models\Student;
 
 class ImportSanggaSeeder extends Seeder
 {
-    public function run(): void
+    public function run()
     {
+        Student::truncate();
+
+        // Mengarah tepat ke folder storage/app/Data Kelas X Tahun 2026
+        $folder = storage_path('app/Data Kelas X Tahun 2026');
+
         $files = [
-            [
-                'path' => storage_path('app/Data Kelas X Tahun 2026/ABSENSI PA.csv'),
-                'ambalan' => 'PA',
-            ],
-            [
-                'path' => storage_path('app/Data Kelas X Tahun 2026/ABSENSI PI.csv'),
-                'ambalan' => 'PI',
-            ],
+            'PA' => $folder . DIRECTORY_SEPARATOR . 'ABSENSI PA.csv',
+            'PI' => $folder . DIRECTORY_SEPARATOR . 'ABSENSI PI.csv',
         ];
 
-        foreach ($files as $file) {
-            $filePath = $file['path'];
-            $ambalan  = $file['ambalan'];
-
+        foreach ($files as $defaultAmbalan => $filePath) {
             if (!file_exists($filePath)) {
+                $this->command->error("File CSV tidak ditemukan di: " . $filePath);
                 continue;
             }
 
-            if (($handle = fopen($filePath, 'r')) !== false) {
-                // Deteksi otomatis pembatas kolom (koma atau titik koma)
-                $firstLine = fgets($handle);
-                $delimiter = (strpos($firstLine, ';') !== false) ? ';' : ',';
-                rewind($handle);
+            $handle = fopen($filePath, 'r');
+            $currentSangga = null;
+            $currentSubSangga = null;
+            $currentAmbalan = $defaultAmbalan;
 
-                // Melewati baris pertama (Header CSV)
-                fgetcsv($handle, 1000, $delimiter);
+            while (($line = fgets($handle)) !== FALSE) {
+                $delimiter = str_contains($line, ';') ? ';' : ',';
+                $data = str_getcsv($line, $delimiter);
 
-                while (($data = fgetcsv($handle, 1000, $delimiter)) !== false) {
-                    $nama = trim($data[1] ?? '');
+                $cellA = isset($data[0]) ? trim($data[0]) : '';
+                $cellB = isset($data[1]) ? trim($data[1]) : '';
+                $cellC = isset($data[2]) ? trim($data[2]) : '';
 
-                    // Mengabaikan baris kosong atau header tabel
-                    if (!empty($nama) && !in_array(strtolower($nama), ['nama', 'nama siswa', 'nama lengkap'])) {
-                        DB::table('students')->insert([
-                            'nama'       => $nama,
-                            'kelas_asal' => trim($data[2] ?? ''),
-                            'sangga'     => trim($data[3] ?? ''),
-                            'sub_sangga' => trim($data[4] ?? ''),
-                            'ambalan'    => $ambalan,
-                            'created_at' => now(),
-                            'updated_at' => now(),
+                // Deteksi Judul Sangga
+                if (preg_match('/^(PERINTIS|PENEGAS|PENCOBA|PENDOBRAK|PELAKSANA)\s+(\d+)\s*(PA|PI)?/i', $cellA, $matches)) {
+                    $currentSangga = strtoupper($matches[1]);
+                    $currentSubSangga = (string) $matches[2];
+                    if (!empty($matches[3])) {
+                        $currentAmbalan = strtoupper($matches[3]);
+                    }
+                    continue;
+                }
+
+                // Deteksi Baris Data Siswa
+                if (is_numeric($cellA) && !empty($cellB) && strtolower($cellB) !== 'nama lengkap') {
+                    if ($currentSangga && $currentSubSangga) {
+                        Student::create([
+                            'nama'       => $cellB,
+                            'sangga'     => $currentSangga,
+                            'sub_sangga' => $currentSubSangga,
+                            'ambalan'    => $currentAmbalan,
+                            'kelas_asal' => $cellC,
                         ]);
                     }
                 }
-                fclose($handle);
             }
+
+            fclose($handle);
+            $this->command->info("Selesai mengimpor: " . basename($filePath));
         }
     }
 }

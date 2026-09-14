@@ -9,33 +9,22 @@ class PetugasAbsensi extends Model
 {
     use HasFactory;
 
-    // Nama tabel di database
     protected $table = 'petugas_absensis';
 
     protected $fillable = [
         'nama',
         'nta',
         'kelas_petugas',
-        'jenis_kelamin', // Penambahan kolom jenis kelamin
-        'is_approved',
-        'is_active',
-        'terakhir_melakukan',
+        'jenis_kelamin',
+        'status',
         'jumlah_rekam',
+        'is_active',
+        'is_approved',
     ];
 
-    /**
-     * Cast fields to native types
-     */
     protected $casts = [
+        'is_active'    => 'boolean',
+        'is_approved'  => 'boolean',
         'jumlah_rekam' => 'integer',
     ];
-
-    /**
-     * Relasi ke model AttendanceRecord berdasarkan NTA
-     */
-    public function attendanceRecords()
-    {
-        // Parameter: (ModelTujuan, FK_di_AttendanceRecord, PK_di_PetugasAbsensi)
-        return $this->hasMany(AttendanceRecord::class, 'petugas_nta', 'nta');
-    }
 }

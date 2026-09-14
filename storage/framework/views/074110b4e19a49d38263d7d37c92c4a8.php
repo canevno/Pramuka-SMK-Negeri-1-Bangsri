@@ -18,7 +18,7 @@
                 <div class="w-full max-w-xs">
                     <!-- Photo Container -->
                     <div class="bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-900 dark:to-gray-950 rounded-lg overflow-hidden shadow-xl mb-6 border-2 border-slate-300 dark:border-slate-500">
-                        <img src="images/logos/iconambalan1.png" 
+                        <img src="images/logos/kagudep.png" 
                              alt="Shaifur Rizqi Zein, S.Pd" 
                              class="w-full h-auto object-cover aspect-[4/5]">
                     </div>

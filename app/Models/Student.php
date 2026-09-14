@@ -15,5 +15,15 @@ class Student extends Model
         'sangga',
         'sub_sangga',
         'ambalan',
+        'jabatan',
+        'status',
+        'photo_url',
+        'is_active',
+        'sort_order',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
+        'sort_order' => 'integer',
     ];
 }

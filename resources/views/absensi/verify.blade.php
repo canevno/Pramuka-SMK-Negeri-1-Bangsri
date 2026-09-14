@@ -28,7 +28,7 @@
             <div class="alert">{{ session('absensi_verify_error') }}</div>
         @endif
 
-        <form action="{{ route('absensi.verify.post') }}" method="POST">
+        <form action="{{ route('absensi.verify') }}" method="POST">
             @csrf
             <div class="form-group">
                 <label>Nama Lengkap Petugas</label>

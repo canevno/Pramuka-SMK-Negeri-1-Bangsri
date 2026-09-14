@@ -14,6 +14,7 @@ class AddStatusToPetugasAbsensisTable extends Migration
                 $table->string('nama');
                 $table->string('nta')->unique();
                 $table->string('kelas_petugas')->nullable();
+                $table->string('status')->default('Aktif');
                 $table->boolean('is_approved')->default(false);
                 $table->boolean('is_active')->default(true);
                 $table->timestamp('terakhir_melakukan')->nullable();
@@ -24,8 +25,11 @@ class AddStatusToPetugasAbsensisTable extends Migration
         }
 
         Schema::table('petugas_absensis', function (Blueprint $table) {
+            if (! Schema::hasColumn('petugas_absensis', 'status')) {
+                $table->string('status')->default('Aktif')->after('kelas_petugas');
+            }
             if (! Schema::hasColumn('petugas_absensis', 'is_approved')) {
-                $table->boolean('is_approved')->default(false)->after('kelas_petugas');
+                $table->boolean('is_approved')->default(false)->after('status');
             }
             if (! Schema::hasColumn('petugas_absensis', 'is_active')) {
                 $table->boolean('is_active')->default(true)->after('is_approved');
@@ -51,6 +55,9 @@ class AddStatusToPetugasAbsensisTable extends Migration
             }
             if (Schema::hasColumn('petugas_absensis', 'is_approved')) {
                 $table->dropColumn('is_approved');
+            }
+            if (Schema::hasColumn('petugas_absensis', 'status')) {
+                $table->dropColumn('status');
             }
         });
     }

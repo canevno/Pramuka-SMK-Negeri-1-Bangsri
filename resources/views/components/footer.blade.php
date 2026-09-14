@@ -27,7 +27,7 @@
             <div class="col-span-1">
                     <h3 class="mb-6 text-sm font-semibold uppercase tracking-[.18em] text-slate-500 dark:text-slate-400">Program</h3>
                     <ul class="space-y-3 text-sm text-slate-700 dark:text-slate-300">
-                    <li><a href="{{ route('active-board') }}" class="text-sm font-semibold text-slate-900 dark:text-white hover:text-slate-700 dark:hover:text-white transition-colors uppercase tracking-wide">Pengurus Aktif</a></li>
+                    <li><a href="{{ route('pembina') }}#anggota-dewan" class="text-sm font-semibold text-slate-900 dark:text-white hover:text-slate-700 dark:hover:text-white transition-colors uppercase tracking-wide">Anggota Dewan</a></li>
                     <li><a href="{{ route('achievement') }}" class="text-sm font-semibold text-slate-900 dark:text-white hover:text-slate-700 dark:hover:text-white transition-colors uppercase tracking-wide">Prestasi</a></li>
                     <li><a href="{{ route('event') }}" class="text-sm font-semibold text-slate-900 dark:text-white hover:text-slate-700 dark:hover:text-white transition-colors uppercase tracking-wide">Event</a></li>
                     <li><a href="{{ route('news') }}" class="text-sm font-semibold text-slate-900 dark:text-white hover:text-slate-700 dark:hover:text-white transition-colors uppercase tracking-wide">Berita</a></li>

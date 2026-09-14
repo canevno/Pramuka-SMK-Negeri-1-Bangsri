@@ -1,39 +1,79 @@
 <?php
 
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AdminAuthController;
-use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\AttendanceController;
-use App\Http\Controllers\Admin\AttendanceController as AdminAttendanceController;
-use App\Http\Controllers\Admin\ModuleController;
-use App\Http\Controllers\Admin\PendaftaranAdminController;
-use App\Http\Controllers\Admin\PetugasController;
-use App\Http\Controllers\Auth\GoogleController;
-
-/*
-|--------------------------------------------------------------------------
-| Public Pages Routes
-|--------------------------------------------------------------------------
-*/
+use App\Models\AttendanceRecord;
+use Illuminate\Support\Facades\Route;
 
 Route::view('/', 'pages.home')->name('home');
+
 Route::view('/tentang-kami', 'pages.about')->name('about');
 Route::view('/visi-misi', 'pages.visi-misi')->name('visi-misi');
 Route::view('/ambalan', 'pages.ambalan')->name('ambalan');
-Route::view('/pengurus-aktif', 'pages.active-board')->name('active-board');
+Route::get('/pembina', function () {
+    $pembinas = \Illuminate\Support\Facades\Schema::hasTable('pembinas')
+        ? \App\Models\Pembina::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+        : collect();
+
+    $dewanAnggota = \Illuminate\Support\Facades\Schema::hasTable('students')
+        ? \App\Models\Student::query()
+            ->where('is_active', true)
+            ->where(function ($query) {
+                $query->where('jabatan', 'like', '%dewan%')
+                    ->orWhere('jabatan', 'like', '%ketua%')
+                    ->orWhere('jabatan', 'like', '%sekretaris%')
+                    ->orWhere('jabatan', 'like', '%bendahara%')
+                    ->orWhere('nama', 'like', '%dewan%');
+            })
+            ->orderBy('sort_order')
+            ->orderBy('nama')
+            ->get()
+        : collect();
+
+    return view('pages.pembina', compact('pembinas', 'dewanAnggota'));
+})->name('pembina');
+Route::view('/dewan-kehormatan', 'pages.dewan-kehormatan')->name('dewan-kehormatan');
+Route::view('/dewan-ambalan', 'pages.dewan-ambalan')->name('dewan-ambalan');
+
+Route::get('/pengurus-aktif', function () {
+    $hasStudentsTable = \Illuminate\Support\Facades\Schema::hasTable('students');
+
+    if (! $hasStudentsTable) {
+        return view('pages.active-board', ['anggota' => collect()]);
+    }
+
+    $query = \App\Models\Student::query();
+
+    if (\Illuminate\Support\Facades\Schema::hasColumn('students', 'is_active')) {
+        $query->where('is_active', true);
+    }
+
+    if (\Illuminate\Support\Facades\Schema::hasColumn('students', 'sort_order')) {
+        $query->orderBy('sort_order');
+    }
+
+    if (\Illuminate\Support\Facades\Schema::hasColumn('students', 'nama')) {
+        $query->orderBy('nama');
+    }
+
+    return view('pages.active-board', ['anggota' => $query->get()]);
+})->name('active-board');
+
 Route::view('/alumni', 'pages.alumni')->name('alumni');
-Route::view('/prestasi', 'pages.achievement')->name('achievement');
+
+Route::redirect('/prestasi', '/#prestasi')->name('achievement');
+Route::view('/prestasi/ranting', 'pages.prestasi.ranting')->name('prestasi.ranting');
+Route::view('/prestasi/cabang', 'pages.prestasi.cabang')->name('prestasi.cabang');
+Route::view('/prestasi/jateng', 'pages.prestasi.jateng')->name('prestasi.jateng');
+Route::view('/prestasi/nasional', 'pages.prestasi.nasional')->name('prestasi.nasional');
+
 Route::view('/event', 'pages.event')->name('event');
+
 Route::view('/artikel', 'pages.article')->name('article');
-Route::view('/galeri', 'pages.gallery')->name('gallery');
-Route::view('/kontak', 'pages.contact')->name('contact');
 
-// Google OAuth
-Route::get('/auth/google', [GoogleController::class, 'redirectToGoogle']);
-Route::get('/auth/google/callback', [GoogleController::class, 'handleGoogleCallback']);
-
-// Berita Dynamic Page
 Route::get('/berita', function () {
     $templateNews = [
         ['category' => 'Sosial', 'title' => 'Pramuka Peduli Lingkungan Pantai', 'date' => 'Januari 8, 2024', 'description' => 'Aksi membersihkan sampah plastik pantai Bangsri sebagai bentuk pengabdian.', 'image' => 'images/hero/imagehero1.png', 'alt' => 'Pramuka Peduli Lingkungan Pantai'],
@@ -56,9 +96,53 @@ Route::get('/berita', function () {
     return view('pages.news', compact('newsItems'));
 })->name('news');
 
-// Pendaftaran Bantara & Laksana (Public)
+Route::get('/galeri', function () {
+    $galleryItems = \App\Models\GalleryItem::query()
+        ->where('is_published', true)
+        ->orderByDesc('is_featured')
+        ->orderByDesc('published_at')
+        ->orderByDesc('id')
+        ->get();
+
+    return view('pages.gallery', compact('galleryItems'));
+})->name('gallery');
+
+Route::get('/search', function (Illuminate\Http\Request $request) {
+    $q = trim((string) $request->query('q', ''));
+
+    $pages = [
+        ['title' => 'Beranda', 'route' => route('home'), 'keywords' => 'beranda utama home'],
+        ['title' => 'Tentang Kami', 'route' => route('about'), 'keywords' => 'tentang kami sejarah profil'],
+        ['title' => 'Visi & Misi', 'route' => route('visi-misi'), 'keywords' => 'visi misi tujuan program'],
+        ['title' => 'Ambalan', 'route' => route('ambalan'), 'keywords' => 'ambalan gugus pramuka satuan'],
+        ['title' => 'Berita', 'route' => route('news'), 'keywords' => 'berita informasi kegiatan'],
+        ['title' => 'Galeri', 'route' => route('gallery'), 'keywords' => 'galeri foto dokumentasi acara'],
+        ['title' => 'Event', 'route' => route('event'), 'keywords' => 'event agenda kegiatan'],
+        ['title' => 'Prestasi', 'route' => route('achievement'), 'keywords' => 'prestasi juara lomba'],
+        ['title' => 'Pendaftaran Bantara', 'route' => route('pendaftaran-bantara'), 'keywords' => 'bantara pendaftaran calon anggota'],
+        ['title' => 'Pendaftaran Laksana', 'route' => route('pendaftaran-laksana'), 'keywords' => 'laksana pendaftaran calon anggota'],
+        ['title' => 'Kontak', 'route' => route('contact'), 'keywords' => 'kontak hubungi cs'],
+    ];
+
+    $results = [];
+
+    if ($q !== '') {
+        $needle = mb_strtolower($q);
+
+        foreach ($pages as $page) {
+            $haystack = mb_strtolower($page['title'] . ' ' . $page['keywords']);
+
+            if (str_contains($haystack, $needle)) {
+                $results[] = $page;
+            }
+        }
+    }
+
+    return view('pages.search-results', compact('q', 'results'));
+})->name('search');
+
 Route::view('/pendaftaran-bantara', 'pages.pendaftaran-bantara')->name('pendaftaran-bantara');
-Route::post('/pendaftaran-bantara', function (Request $request) {
+Route::post('/pendaftaran-bantara', function (Illuminate\Http\Request $request) {
     $request->validate([
         'nama' => 'required|string',
         'kelas' => 'required|string',
@@ -82,7 +166,7 @@ Route::post('/pendaftaran-bantara', function (Request $request) {
 })->name('pendaftaran-bantara.submit');
 
 Route::view('/pendaftaran-laksana', 'pages.pendaftaran-laksana')->name('pendaftaran-laksana');
-Route::post('/pendaftaran-laksana', function (Request $request) {
+Route::post('/pendaftaran-laksana', function (Illuminate\Http\Request $request) {
     $request->validate([
         'nama' => 'required|string',
         'nta' => 'required|string',
@@ -106,106 +190,251 @@ Route::post('/pendaftaran-laksana', function (Request $request) {
     return redirect()->route('pendaftaran-laksana')->with('pendaftaran_success', 'Pendaftaran berhasil!');
 })->name('pendaftaran-laksana.submit');
 
-/*
-|--------------------------------------------------------------------------
-| Public Absensi Routes
-|--------------------------------------------------------------------------
-*/
+Route::view('/kontak', 'pages.contact')->name('contact');
 
-Route::prefix('absensi')->name('absensi.')->group(function () {
-    Route::get('/', [AttendanceController::class, 'index'])->name('index');
-    Route::post('/verify', [AttendanceController::class, 'verifyPetugas'])->name('verify');
-    Route::post('/submit', [AttendanceController::class, 'submit'])->name('submit');
-    Route::post('/logout-petugas', [AttendanceController::class, 'logoutPetugas'])->name('logoutPetugas');
-    Route::post('/logout', [AttendanceController::class, 'logoutPetugas'])->name('logout_petugas'); // Alias fleksibel
+use App\Http\Controllers\Admin\ModuleController;
+use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\DashboardController;
 
-    Route::post('/forget', function () {
-        session()->forget(['absensi_verified', 'absensi_petugas_id']);
-        return redirect()->route('absensi.index');
-    })->name('forget');
-});
+// Redirect default login route to admin login
+Route::redirect('/login', '/admin/login');
 
-/*
-|--------------------------------------------------------------------------
-| Authenticated User Routes
-|--------------------------------------------------------------------------
-*/
+// Admin auth routes
+Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
+Route::post('/admin/login', [AdminAuthController::class, 'login']);
+Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
 
-Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::middleware(['auth', 'verified', \App\Http\Middleware\EnsureUserIsAdmin::class])->group(function () {
+    // Admin panel is mounted at /admin to keep it separate from public site
+    Route::get('/admin', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/admin/news', function () {
+        return view('admin.section', [
+            'title' => 'Kelola Berita',
+            'description' => 'Tambahkan, edit, dan hapus berita yang tampil di website.',
+            'publicRoute' => route('news'),
+            'publicLabel' => 'Lihat Halaman Berita',
+            'fields' => [
+                'Judul berita',
+                'Kategori berita',
+                'Ringkasan / excerpt',
+                'Konten utama',
+                'Gambar utama',
+                'Tanggal publikasi',
+                'Status: draft / terbit',
+            ],
+        ]);
+    })->name('admin.news');
+
+    Route::get('/admin/gallery', [ModuleController::class, 'gallery'])->name('admin.gallery');
+    Route::post('/admin/gallery/store', [ModuleController::class, 'storeGallery'])->name('admin.gallery.store');
+    Route::delete('/admin/gallery/{id}', [ModuleController::class, 'deleteGallery'])->name('admin.gallery.delete');
+
+    Route::get('/admin/agenda', function () {
+        return view('admin.section', [
+            'title' => 'Kelola Agenda',
+            'description' => 'Atur kegiatan dan jadwal Pramuka.',
+            'publicRoute' => route('event'),
+            'publicLabel' => 'Lihat Halaman Agenda',
+            'fields' => [
+                'Judul kegiatan',
+                'Tanggal dan waktu',
+                'Lokasi',
+                'Deskripsi acara',
+                'Penanggung jawab',
+                'Status kegiatan',
+            ],
+        ]);
+    })->name('admin.agenda');
+
+    Route::get('/admin/absensi', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('admin.absensi');
+    Route::get('/admin/absensi/detail', [\App\Http\Controllers\Admin\AttendanceController::class, 'detail'])->name('admin.absensi.detail');
+    Route::get('/admin/absensi/detail/export/excel', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportExcel'])->name('admin.absensi.export.excel');
+    Route::get('/admin/absensi/detail/export/pdf', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportPdf'])->name('admin.absensi.export.pdf');
+
+    Route::get('/admin/petugas', [\App\Http\Controllers\Admin\PetugasController::class, 'index'])->name('admin.petugas');
+    Route::post('/admin/petugas/store', [\App\Http\Controllers\Admin\PetugasController::class, 'store'])->name('admin.petugas.store');
+    Route::post('/admin/petugas/{id}/toggle', [\App\Http\Controllers\Admin\PetugasController::class, 'toggle'])->name('admin.petugas.toggle');
+
+    Route::get('/admin/pendaftaran-laksana', function () {
+        return view('admin.section', [
+            'title' => 'Kelola Pendaftaran Laksana',
+            'description' => 'Kelola pendaftaran khusus peserta Laksana.',
+            'publicRoute' => route('pendaftaran-laksana'),
+            'publicLabel' => 'Lihat Halaman Pendaftaran Laksana',
+            'fields' => [
+                'Nama lengkap',
+                'Golongan',
+                'Asal sekolah / gugus',
+                'Tanggal lahir',
+                'Surat izin / dokumen',
+                'Status verifikasi',
+            ],
+        ]);
+    })->name('admin.pendaftaran-laksana');
+
+    Route::get('/admin/pembina', [\App\Http\Controllers\Admin\ModuleController::class, 'pembina'])->name('admin.pembina');
+    Route::post('/admin/pembina/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storePembina'])->name('admin.pembina.store');
+    Route::post('/admin/pembina/{pembina}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'togglePembina'])->name('admin.pembina.toggle');
+    Route::delete('/admin/pembina/{pembina}', [\App\Http\Controllers\Admin\ModuleController::class, 'deletePembina'])->name('admin.pembina.delete');
+
+    Route::get('/admin/anggota', [\App\Http\Controllers\Admin\ModuleController::class, 'anggota'])->name('admin.anggota');
+    Route::post('/admin/anggota/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeAnggota'])->name('admin.anggota.store');
+    Route::delete('/admin/anggota/delete-all', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteAllAnggota'])->name('admin.anggota.delete-all');
+    Route::put('/admin/anggota/{student}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateAnggota'])->name('admin.anggota.update');
+    Route::post('/admin/anggota/{student}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleAnggota'])->name('admin.anggota.toggle');
+    Route::delete('/admin/anggota/{student}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteAnggota'])->name('admin.anggota.delete');
+
+    Route::get('/admin/prestasi', function () {
+        return view('admin.modules.prestasi', [
+            'title' => 'Kelola Prestasi',
+            'description' => 'Tambah dan kelola prestasi anggota.',
+            'publicRoute' => route('achievement'),
+            'publicLabel' => 'Lihat Halaman Prestasi',
+            'achievements' => App\Support\AchievementStore::all(),
+        ]);
+    })->name('admin.prestasi');
+
+    Route::post('/admin/prestasi/store', function (Illuminate\Http\Request $request) {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:255',
+            'year' => 'required|integer|min:2000|max:2100',
+            'winner' => 'required|string|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|string|max:255',
+        ]);
+
+        App\Support\AchievementStore::add($request->only(['title', 'category', 'year', 'winner', 'description', 'image']));
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil ditambahkan.');
+    })->name('admin.prestasi.store');
+
+    Route::delete('/admin/prestasi/{id}', function ($id) {
+        App\Support\AchievementStore::delete((int) $id);
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil dihapus.');
+    })->name('admin.prestasi.delete');
+
+    Route::get('/admin/downloads', function () {
+        return view('admin.section', [
+            'title' => 'Kelola File Download',
+            'description' => 'Kelola berkas yang dapat diunduh oleh pengguna.',
+            'fields' => [
+                'Judul berkas',
+                'Kategori / tipe file',
+                'File upload',
+                'Deskripsi singkat',
+                'Tanggal publikasi',
+            ],
+        ]);
+    })->name('admin.downloads');
+
+    Route::get('/admin/pendaftaran', function () {
+        return view('admin.section', [
+            'title' => 'Kelola Pendaftaran',
+            'description' => 'Kelola form dan data pendaftaran peserta.',
+            'publicRoute' => route('pendaftaran-bantara'),
+            'publicLabel' => 'Lihat Halaman Pendaftaran Bantara',
+            'fields' => [
+                'Jenis pendaftaran',
+                'Nama peserta',
+                'Golongan',
+                'Sekolah / asal',
+                'Tanggal lahir',
+                'File surat izin',
+                'Status verifikasi',
+            ],
+        ]);
+    })->name('admin.pendaftaran');
+
+    Route::get('/admin/users', function () {
+        return view('admin.section', [
+            'title' => 'Pengguna/Admin',
+            'description' => 'Kelola akun pengguna dan hak akses admin.',
+            'fields' => [
+                'Nama lengkap',
+                'Email',
+                'Password',
+                'Role / hak akses',
+                'Status aktif',
+            ],
+        ]);
+    })->name('admin.users');
+
+    Route::get('/admin/settings', function () {
+        return view('admin.section', [
+            'title' => 'Pengaturan Website',
+            'description' => 'Atur konfigurasi umum website dan tampilan publik.',
+            'fields' => [
+                'Judul website',
+                'Deskripsi singkat',
+                'Logo situs',
+                'Warna brand',
+                'Kontak admin',
+            ],
+        ]);
+    })->name('admin.settings');
+
+    Route::get('/admin/comments', function () {
+        return view('admin.section', [
+            'title' => 'Kelola Komentar',
+            'description' => 'Review dan moderasi komentar pengguna.',
+            'fields' => [
+                'Nama pengirim',
+                'Email',
+                'Isi komentar',
+                'Status moderasi',
+                'Tanggal komentar',
+                'Balasan admin',
+            ],
+        ]);
+    })->name('admin.comments');
 });
 
 require __DIR__.'/settings.php';
 
-/*
-|--------------------------------------------------------------------------
-| Admin Auth Routes
-|--------------------------------------------------------------------------
-*/
+use App\Models\PetugasAbsensi;
 
-Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('admin.login');
-Route::get('/login', [AdminAuthController::class, 'showLogin'])->name('login'); // Fallback untuk middleware auth
-Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
-Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+// Absensi routes (no database required initially)
+Route::prefix('absensi')->group(function () {
+    Route::get('/', [AttendanceController::class, 'index'])->name('absensi.index');
 
-/*
-|--------------------------------------------------------------------------
-| Admin Area Routes
-|--------------------------------------------------------------------------
-*/
+    Route::post('/verify', function (Illuminate\Http\Request $req) {
+        $name = trim((string) $req->input('name'));
+        $kelas = trim((string) $req->input('kelas'));
+        $nta = trim((string) $req->input('nta'));
+        $ambalan = trim((string) $req->input('ambalan'));
+        $sangga = trim((string) $req->input('sangga'));
 
-Route::prefix('admin')
-    ->name('admin.')
-    ->middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])
-    ->group(function () {
+        // Simple safety: check fields length
+        if (!$name || !$kelas || !$nta || strlen($nta) < 3) {
+            return redirect()->route('absensi.index')->with('absensi_verify_error', 'Data verifikasi tidak valid.');
+        }
 
-        Route::get('/', function () {
-            return redirect()->route('admin.absensi');
-        })->name('dashboard');
+        $petugas = PetugasAbsensi::query()
+            ->whereRaw('LOWER(nta) = ?', [strtolower($nta)])
+            ->first();
 
-        // Attendance Admin Routes
-        Route::prefix('absensi')->group(function () {
-            Route::get('/', [AdminAttendanceController::class, 'adminIndex'])->name('absensi');
-            Route::post('/', [AdminAttendanceController::class, 'store'])->name('absensi.store');
-            
-            Route::get('/detail-data', [AdminAttendanceController::class, 'getDetailData'])->name('absensi.detail-data');
-            Route::get('/detail', [AdminAttendanceController::class, 'getDetailData'])->name('absensi.detail');
-            
-            Route::get('/export', [AdminAttendanceController::class, 'exportExcel'])->name('absensi.export');
-            Route::get('/export-word/{id?}', [AdminAttendanceController::class, 'exportWord'])->name('absensi.exportWord');
-            Route::get('/{id}', [AdminAttendanceController::class, 'show'])->name('absensi.show');
-        });
+        if (! $petugas || ! $petugas->is_active) {
+            return redirect()->route('absensi.index')->with('absensi_verify_error', 'NTA petugas tidak aktif atau belum terdaftar di daftar admin.');
+        }
 
-        // Module Routes
-        Route::get('/news', [ModuleController::class, 'news'])->name('news');
-        Route::get('/gallery', [ModuleController::class, 'gallery'])->name('gallery');
-        Route::get('/agenda', [ModuleController::class, 'agenda'])->name('agenda');
-        Route::get('/pendaftaran-laksana', [ModuleController::class, 'pendaftaranLaksana'])->name('pendaftaran-laksana');
-        Route::get('/prestasi', [ModuleController::class, 'prestasi'])->name('prestasi');
-        Route::get('/pembina', [ModuleController::class, 'pembina'])->name('pembina');
-        Route::get('/anggota', [ModuleController::class, 'anggota'])->name('anggota');
-        Route::get('/comments', [ModuleController::class, 'comments'])->name('comments');
-        Route::get('/users', [ModuleController::class, 'users'])->name('users');
-        Route::get('/settings', [ModuleController::class, 'settings'])->name('settings');
+        session(['absensi_verified' => [
+            'name' => $name,
+            'kelas' => $kelas,
+            'nta' => $nta,
+            'ambalan' => $ambalan ?: 'PA',
+            'sangga' => $sangga ?: 'Perintis',
+        ]]);
 
-        // Registration Admin Management
-        Route::prefix('pendaftaran')->group(function () {
-            Route::get('/', [PendaftaranAdminController::class, 'index'])->name('pendaftaran');
-            Route::post('/{id}/status', [PendaftaranAdminController::class, 'updateStatus'])->name('pendaftaran.update-status');
-            Route::get('/surat/{id}', [PendaftaranAdminController::class, 'showSurat'])->name('pendaftaran.showSurat');
-            Route::get('/surat/download/{id}', [PendaftaranAdminController::class, 'downloadSurat'])->name('pendaftaran.surat.download');
-            Route::delete('/{id}', [PendaftaranAdminController::class, 'destroy'])->name('pendaftaran.destroy');
-        });
+        return redirect()->route('absensi.index');
+    })->name('absensi.verify');
 
-        // Petugas & Notifications
-        Route::get('/petugas', [PetugasController::class, 'index'])->name('petugas');
-        Route::post('/petugas', [PetugasController::class, 'storePetugas'])->name('petugas.store');
-        Route::post('/petugas/{id}/toggle', [PetugasController::class, 'toggleStatus'])->name('petugas.toggle');
-        
-        Route::prefix('notifications')->name('notifications.')->group(function () {
-            Route::post('/read-all', [PetugasController::class, 'markAllNotificationsRead'])->name('readAll');
-            Route::get('/fetch', [PetugasController::class, 'fetchNotifications'])->name('fetch');
-            Route::post('/{id}/read', [PetugasController::class, 'markNotificationRead'])->name('read');
-        });
+    Route::post('/forget', function () {
+        session()->forget('absensi_verified');
+        return redirect()->route('absensi.index');
+    })->name('absensi.forget');
 
-    });
+    Route::post('/submit', [AttendanceController::class, 'submit'])->name('absensi.submit');
+});
