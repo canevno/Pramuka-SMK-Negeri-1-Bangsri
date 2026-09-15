@@ -127,7 +127,7 @@
                             <p class="text-sm font-semibold text-slate-700">Tarik foto ke sini</p>
                             <p class="mt-1 text-[11px] text-slate-500">atau klik untuk memilih file</p>
                         </div>
-                        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-600">PNG • JPG • WEBP • HEIF</span>
+                        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-600">PNG • JPG • WEBP</span>
                     </div>
 
                     <div id="pembina-preview-wrap" class="hidden overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
@@ -139,7 +139,7 @@
                     </div>
                 </div>
 
-                <input id="pembina-photo-input" type="file" name="photo" accept="image/*,.heif,.heic" class="hidden">
+                <input id="pembina-photo-input" type="file" name="photo" accept="image/*" class="hidden">
             </div>
 
             <label class="block">

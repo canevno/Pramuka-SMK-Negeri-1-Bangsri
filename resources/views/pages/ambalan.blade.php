@@ -21,7 +21,7 @@
                         <span class="block px-3 py-1.5 text-base font-bold text-slate-950 mb-2">
                             Profil
                         </span>
-                        <div class="space-y-0.5 pl-2">
+                        <div class="space-y-1 pl-2">
                             <button @click="changeTab('kepanduan-dunia')" 
                                 :class="activeTab === 'kepanduan-dunia' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
                                 class="w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition">
@@ -65,7 +65,7 @@
                         <span class="block px-3 py-1.5 text-base font-bold text-slate-950 mb-2">
                             Visi & Misi
                         </span>
-                        <div class="space-y-0.5 pl-2">
+                        <div class="space-y-1 pl-2">
                             <button @click="changeTab('visi-misi-kwarnas')" 
                                 :class="activeTab === 'visi-misi-kwarnas' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
                                 class="w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition">
@@ -84,7 +84,7 @@
                         <span class="block px-3 py-1.5 text-base font-bold text-slate-950 mb-2">
                             Ambalan
                         </span>
-                        <div class="space-y-0.5 pl-2">
+                        <div class="space-y-1 pl-2">
                             <button @click="changeTab('ambalan-fauzan')" 
                                 :class="activeTab === 'ambalan-fauzan' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
                                 class="w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition">
@@ -260,7 +260,7 @@
                         <div class="flex flex-col items-center pb-5 sm:pb-8">
                             <img src="{{ asset('images/logos/aflogo.png') }}" 
                                  alt="Logo Ambalan KH. Achmad Fauzan" 
-                                 class="h-48 sm:h-68 w-auto object-contain translate-y-2 sm:translate-y-4">
+                                 class="h-48 sm:h-68 w-auto object-contain -translate-y-1 sm:-translate-y-2">
                         </div>
 
                     </div>
@@ -330,34 +330,27 @@
 
                 <!-- 5. Ambalan Dewi Sartika (Putri) -->
                 <section x-show="activeTab === 'ambalan-sartika'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-
-                    <!-- KONTAINER LOGO & ICON (Sama seperti Ambalan Fauzan) -->
-                    <div class="flex items-end justify-center gap-6 sm:gap-16 -mt-4 sm:-mt-6 pt-0 pb-3 border-b border-slate-200/80">
-                        
-                        <!-- Icon Ambalan Putri -->
-                        <div class="relative flex flex-col items-center overflow-hidden">
-                            <img src="{{ asset('images/logos/iconambalan2.png') }}" 
-                                 alt="Icon Ambalan Putri" 
-                                 class="h-64 sm:h-96 w-auto object-contain [mask-image:linear-gradient(to_bottom,black_75%,transparent_100%)] sm:[mask-image:linear-gradient(to_bottom,black_85%,transparent_100%)]">
-                            
-                            <div class="absolute bottom-0 inset-x-0 h-16 sm:h-10 bg-gradient-to-t from-slate-50 via-slate-50/80 to-transparent pointer-events-none"></div>
+                    <header class="overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-emerald-700 to-green-600 text-white shadow-md">
+                        <div class="flex flex-col sm:flex-row items-center gap-6 px-6 py-8 sm:px-10">
+                            <img src="{{ asset('images/logos/dslogo.png') }}" alt="Logo Ambalan Dewi Sartika" class="h-24 w-24 object-contain bg-white/10 p-2 rounded-xl backdrop-blur-sm shrink-0">
+                            <div class="text-center sm:text-left">
+                                <span class="text-xs font-bold uppercase tracking-[0.25em] text-emerald-200">Ambalan Putri • Gudep SMKN 1 Bangsri</span>
+                                <h1 class="mt-1 text-2xl font-black tracking-tight sm:text-4xl">
+                                    Dewi Sartika
+                                </h1>
+                                <p class="mt-2 text-sm text-emerald-100 max-w-2xl">
+                                    Meneladani semangat perintis pendidikan perempuan, kemandirian, dan kepedulian sosial pahlawan nasional Raden Dewi Sartika.
+                                </p>
+                            </div>
                         </div>
-
-                        <!-- Logo Ambalan Dewi Sartika -->
-                        <div class="flex flex-col items-center pb-5 sm:pb-8">
-                            <img src="{{ asset('images/logos/dslogo.png') }}" 
-                                 alt="Logo Ambalan Dewi Sartika" 
-                                 class="h-48 sm:h-68 w-auto object-contain translate-y-2 sm:translate-y-4">
-                        </div>
-
-                    </div>
+                    </header>
 
                     <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-4 text-justify text-slate-700 leading-relaxed">
                         <strong class="block text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">
                             Biografi Singkat Raden Dewi Sartika
                         </strong>
                         <p>
-                            <strong>Raden Dewi Sartika</strong> adalah salah satu tokoh perintis pendidikan bagi kaum perempuan di Indonesia. Beliau mendirikan <em>Sakola Istri</em> pada tahun 1904 di Bandung, yang menjadi pilar penting pembinaan keterampilan, moralitas, dan kemandirian wanita bumiputera.
+                            <strong>Raden Dewi Sartika</strong> adalah salah satu tokoh perintis pendidikan bagi kaum perempuan di Indonesia. Beliau mendirikan *Sakola Istri* pada tahun 1904 di Bandung, yang menjadi pilar penting pembinaan keterampilan, moralitas, dan kemandirian wanita bumiputera.
                         </p>
                         <p>
                             Perjuangan beliau menginspirasi pembentukan Ambalan Putri sebagai wadah untuk melatih Pramuka Penegak Putri agar berwawasan luas, terampil, berkarakter luhur, serta siap menjadi pelopor kebaikan di lingkungan keluarga dan masyarakat.

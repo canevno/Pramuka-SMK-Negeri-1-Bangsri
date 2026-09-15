@@ -150,7 +150,62 @@ Route::get('/pengurus-aktif', function () {
     return view('pages.active-board', ['anggota' => $query->get()]);
 })->name('active-board');
 
-Route::view('/alumni', 'pages.alumni')->name('alumni');
+Route::get('/alumni', function () {
+    $alumni = [
+        [
+            'name' => 'Muhammad Rafi S.',
+            'jabatan' => 'Ketua Alumni',
+            'bio' => 'Alumni yang aktif menjaga silaturahmi dan mendukung pengembangan kegiatan Pramuka.',
+            'photo_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800',
+            'is_active' => true,
+            'sort_order' => 1,
+        ],
+        [
+            'name' => 'Siti Nuraeni',
+            'jabatan' => 'Sekretaris Alumni',
+            'bio' => 'Berperan dalam penguatan jaringan alumni dan kegiatan sosial serta pembinaan generasi muda.',
+            'photo_url' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800',
+            'is_active' => true,
+            'sort_order' => 2,
+        ],
+        [
+            'name' => 'Dimas Pratama',
+            'jabatan' => 'Koordinator Kegiatan',
+            'bio' => 'Mensinergikan alumni dengan ambalan untuk menjaga kesinambungan semangat Pramuka.',
+            'photo_url' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800',
+            'is_active' => true,
+            'sort_order' => 3,
+        ],
+        [
+            'name' => 'Ayu Lestari',
+            'jabatan' => 'Bendahara Alumni',
+            'bio' => 'Mengelola dukungan kegiatan alumni dan menjaga ikatan solidaritas yang kuat.',
+            'photo_url' => 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&q=80&w=800',
+            'is_active' => true,
+            'sort_order' => 4,
+        ],
+        [
+            'name' => 'Rizki Maulana',
+            'jabatan' => 'Koordinator Hubungan',
+            'bio' => 'Menyambungkan alumni dengan komunitas dan lembaga yang mendukung perkembangan Pramuka.',
+            'photo_url' => 'https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&q=80&w=800',
+            'is_active' => true,
+            'sort_order' => 5,
+        ],
+        [
+            'name' => 'Nurhaliza',
+            'jabatan' => 'Anggota Alumni',
+            'bio' => 'Terlibat aktif dalam kegiatan sosial dan pengembangan komunikasi alumni.',
+            'photo_url' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=800',
+            'is_active' => true,
+            'sort_order' => 6,
+        ],
+    ];
+
+    $members = collect($alumni)->filter(fn ($item) => ! empty($item['name']))->sortBy('sort_order')->values();
+
+    return view('pages.alumni', ['members' => $members]);
+})->name('alumni');
 
 Route::redirect('/prestasi', '/#prestasi')->name('achievement');
 Route::view('/prestasi/ranting', 'pages.prestasi.ranting')->name('prestasi.ranting');

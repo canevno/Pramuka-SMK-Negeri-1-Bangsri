@@ -48,6 +48,7 @@ it('allows admin to store, toggle and delete an anggota', function () {
             'ambalan' => 'PI',
             'jabatan' => 'Sekretaris',
             'status' => 'Aktif',
+            'bio' => 'Anggota dewan yang aktif membina dan membangun program organisasi.',
             'is_active' => true,
             'sort_order' => 2,
         ])
@@ -55,6 +56,7 @@ it('allows admin to store, toggle and delete an anggota', function () {
         ->assertSessionHas('success');
 
     $anggota = Student::query()->where('nama', 'Nafa Anjani')->firstOrFail();
+    expect($anggota->bio)->toBe('Anggota dewan yang aktif membina dan membangun program organisasi.');
 
     $this->actingAs($admin)
         ->post(route('admin.anggota.toggle', $anggota))
@@ -112,6 +114,7 @@ it('allows admin to update a single anggota and delete all anggota', function ()
             'ambalan' => 'PI',
             'jabatan' => 'Ketua',
             'status' => 'Non-Aktif',
+            'bio' => 'Pernah menjabat sebagai ketua yang memimpin pembinaan dan koordinasi antaranggota.',
             'is_active' => false,
             'sort_order' => 7,
         ])
@@ -120,6 +123,7 @@ it('allows admin to update a single anggota and delete all anggota', function ()
 
     $anggota->refresh();
     expect($anggota->nama)->toBe('Ayu Lestari Baru');
+    expect($anggota->bio)->toBe('Pernah menjabat sebagai ketua yang memimpin pembinaan dan koordinasi antaranggota.');
     expect($anggota->is_active)->toBeFalse();
     expect($anggota->status)->toBe('Non-Aktif');
 

@@ -17,6 +17,7 @@ class Student extends Model
         'ambalan',
         'jabatan',
         'status',
+        'bio',
         'photo_url',
         'is_active',
         'sort_order',

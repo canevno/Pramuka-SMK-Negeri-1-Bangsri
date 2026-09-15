@@ -119,21 +119,14 @@
                                     <?php echo csrf_field(); ?>
                                     <?php echo method_field('PUT'); ?>
 
-                                    <input type="text" name="nama" value="<?php echo e(old('nama', $item->nama)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Nama lengkap" required>
-                                    <input type="text" name="kelas_asal" value="<?php echo e(old('kelas_asal', $item->kelas_asal)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Kelas">
+                                    <input type="text" name="nama" value="<?php echo e(old('nama', $item->nama)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm md:col-span-2" placeholder="Nama lengkap" required>
                                     <input type="text" name="jabatan" value="<?php echo e(old('jabatan', $item->jabatan)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Jabatan">
-                                    <input type="text" name="sangga" value="<?php echo e(old('sangga', $item->sangga)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Sangga">
-                                    <input type="text" name="sub_sangga" value="<?php echo e(old('sub_sangga', $item->sub_sangga)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Sub Sangga">
-                                    <select name="ambalan" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
-                                        <option value="" <?php echo e(old('ambalan', $item->ambalan) === '' ? 'selected' : ''); ?>>Pilih Ambalan</option>
-                                        <option value="PA" <?php echo e(old('ambalan', $item->ambalan) === 'PA' ? 'selected' : ''); ?>>PA</option>
-                                        <option value="PI" <?php echo e(old('ambalan', $item->ambalan) === 'PI' ? 'selected' : ''); ?>>PI</option>
-                                    </select>
                                     <select name="status" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
                                         <option value="Aktif" <?php echo e(old('status', $item->status) === 'Aktif' ? 'selected' : ''); ?>>Aktif</option>
                                         <option value="Non-Aktif" <?php echo e(old('status', $item->status) === 'Non-Aktif' ? 'selected' : ''); ?>>Non-Aktif</option>
                                     </select>
                                     <input type="number" name="sort_order" value="<?php echo e(old('sort_order', $item->sort_order ?? 0)); ?>" min="0" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Urutan">
+                                    <textarea name="bio" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm md:col-span-2" placeholder="Deskripsi singkat"><?php echo e(old('bio', $item->bio)); ?></textarea>
                                     <input type="file" name="photo" accept="image/*,.heif,.heic" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm md:col-span-2">
                                     <label class="inline-flex items-center gap-2 text-sm text-slate-600 md:col-span-2">
                                         <input type="checkbox" name="is_active" value="1" <?php echo e(old('is_active', $item->is_active) ? 'checked' : ''); ?>>
@@ -166,38 +159,42 @@
         <form action="<?php echo e(route('admin.anggota.store')); ?>" method="POST" enctype="multipart/form-data" class="grid gap-4 md:grid-cols-2">
             <?php echo csrf_field(); ?>
 
+            <div class="md:col-span-2">
+                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Foto anggota dewan</span>
+                <div id="anggota-upload-box" class="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-3 transition-all duration-200 hover:border-indigo-400 hover:bg-indigo-50/80">
+                    <div id="anggota-empty-state" class="flex min-h-[170px] flex-col items-center justify-center gap-3 rounded-xl border border-slate-200/80 bg-white/70 px-4 py-5 text-center shadow-inner">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 shadow-sm">
+                            <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
+                                <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16.5V18a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 18v-1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                        </div>
+                        <div>
+                            <p class="text-sm font-semibold text-slate-700">Tarik foto ke sini</p>
+                            <p class="mt-1 text-[11px] text-slate-500">atau klik untuk memilih file</p>
+                        </div>
+                        <span class="rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate-600">PNG • JPG • WEBP • HEIF</span>
+                    </div>
+
+                    <div id="anggota-preview-wrap" class="hidden overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                        <img id="anggota-preview" alt="Preview foto anggota dewan" class="h-[170px] w-full object-cover" />
+                        <div class="flex items-center justify-between gap-3 border-t border-slate-200 px-3 py-2">
+                            <span id="anggota-file-name" class="truncate text-xs font-medium text-slate-700"></span>
+                            <span class="rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-emerald-700">Preview</span>
+                        </div>
+                    </div>
+                </div>
+
+                <input id="anggota-photo-input" type="file" name="photo" accept="image/*,.heif,.heic" class="hidden">
+            </div>
+
             <label class="block md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Nama lengkap</span>
-                <input type="text" name="nama" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Masukkan nama anggota dewan" required>
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Kelas</span>
-                <input type="text" name="kelas_asal" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Contoh: XI">
+                <input type="text" name="nama" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Masukkan nama lengkap" required>
             </label>
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Jabatan</span>
-                <input type="text" name="jabatan" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Ketua Regu / Sekretaris">
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Sangga</span>
-                <input type="text" name="sangga" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Sangga Merah">
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Sub Sangga</span>
-                <input type="text" name="sub_sangga" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Sub Sangga 1">
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Ambalan</span>
-                <select name="ambalan" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500">
-                    <option value="">Pilih</option>
-                    <option value="PA">PA</option>
-                    <option value="PI">PI</option>
-                </select>
+                <input type="text" name="jabatan" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Masukkan jabatan">
             </label>
 
             <label class="block">
@@ -213,10 +210,10 @@
                 <input type="number" name="sort_order" value="0" min="0" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500">
             </label>
 
-            <div class="md:col-span-2">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Foto anggota dewan</span>
-                <input type="file" name="photo" accept="image/*,.heif,.heic" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500">
-            </div>
+            <label class="block md:col-span-2">
+                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Deskripsi</span>
+                <textarea name="bio" rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500" placeholder="Tuliskan deskripsi singkat anggota dewan"></textarea>
+            </label>
 
             <div class="md:col-span-2 flex justify-end">
                 <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">
@@ -226,6 +223,80 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const uploadBox = document.getElementById('anggota-upload-box');
+        const input = document.getElementById('anggota-photo-input');
+        const fileLabel = document.getElementById('anggota-file-name');
+        const previewWrap = document.getElementById('anggota-preview-wrap');
+        const previewImage = document.getElementById('anggota-preview');
+        const emptyState = document.getElementById('anggota-empty-state');
+
+        if (!uploadBox || !input || !fileLabel || !previewWrap || !previewImage || !emptyState) {
+            return;
+        }
+
+        const updatePreview = (file) => {
+            if (!file || !file.type.startsWith('image/')) {
+                previewWrap.classList.add('hidden');
+                emptyState.classList.remove('hidden');
+                fileLabel.textContent = '';
+                return;
+            }
+
+            const objectUrl = URL.createObjectURL(file);
+            previewImage.src = objectUrl;
+            previewWrap.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            fileLabel.textContent = file.name;
+
+            previewImage.onload = function () {
+                URL.revokeObjectURL(objectUrl);
+            };
+        };
+
+        uploadBox.addEventListener('click', function (event) {
+            if (event.target.closest('button') || event.target.closest('a')) {
+                return;
+            }
+            input.click();
+        });
+
+        ['dragenter', 'dragover'].forEach((eventName) => {
+            uploadBox.addEventListener(eventName, function (event) {
+                event.preventDefault();
+                uploadBox.classList.add('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.remove('border-slate-300');
+            });
+        });
+
+        ['dragleave', 'drop'].forEach((eventName) => {
+            uploadBox.addEventListener(eventName, function (event) {
+                event.preventDefault();
+                uploadBox.classList.remove('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.add('border-slate-300');
+            });
+        });
+
+        uploadBox.addEventListener('drop', function (event) {
+            event.preventDefault();
+            const files = event.dataTransfer && event.dataTransfer.files;
+            if (files && files.length) {
+                const file = files[0];
+                if (!file.type.startsWith('image/')) {
+                    return;
+                }
+                input.files = files;
+                updatePreview(file);
+            }
+        });
+
+        input.addEventListener('change', function () {
+            updatePreview(this.files && this.files[0]);
+        });
+    });
+</script>
 <?php $__env->stopSection(); ?>
 
 <?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views/admin/modules/anggota.blade.php ENDPATH**/ ?>
