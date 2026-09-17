@@ -54,6 +54,12 @@ it('admin can access the attendance and petugas management screens', function ()
         ->get(route('admin.absensi'))
         ->assertOk()
         ->assertSee('Rekam Absensi Terbaru')
+        ->assertSee('No')
+        ->assertSee('Sangga')
+        ->assertSee('Ambalan')
+        ->assertSee('Petugas')
+        ->assertSee('Tanggal')
+        ->assertSee('Minggu-ke')
         ->assertSee('Detail')
         ->assertViewHas('petugasSummary', function ($summary) {
             return collect($summary)->first()['total_records'] === 1;

@@ -1,7 +1,7 @@
-<section id="prestasi" class="py-16 sm:py-20 bg-white dark:bg-gray-950 transition-colors duration-200">
+<section id="prestasi" class="py-10 sm:py-14 bg-white dark:bg-gray-950 transition-colors duration-200">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <!-- Header Section -->
-        <div class="text-center mb-8 sm:mb-10">
+        <div class="text-center mb-6 sm:mb-8">
             <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white font-['Poppins'] mb-2 tracking-tight">
                 PRESTASI
             </h2>
@@ -48,6 +48,10 @@
                         </p>
 
                         <p class="text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed flex-grow line-clamp-3">
+                            {{ $achievement['description'] ?? 'Prestasi yang membanggakan.' }}
+                        </p>
+
+                        <p class="mt-2 text-xs sm:text-sm text-slate-600 dark:text-slate-300 leading-relaxed">
                             @if($winnerSocialLink !== '')
                                 Pemenang: <a href="{{ $winnerSocialLink }}" target="_blank" rel="noopener noreferrer" class="font-semibold text-slate-900 underline decoration-slate-400 underline-offset-4 hover:text-slate-600 dark:text-white dark:hover:text-slate-200">
                                     {{ $achievement['winner'] ?? 'Anggota' }}

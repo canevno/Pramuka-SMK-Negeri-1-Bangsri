@@ -215,15 +215,10 @@ class AttendanceController extends Controller
 
     private function generateWeekLabel(string $bulan, string $tanggal, string $tahun): string
     {
-        $date = \DateTime::createFromFormat('!d-m-Y', sprintf('%02d-%s-%s', (int) $tanggal, $this->monthNumber($bulan), $tahun));
+        $day = (int) $tanggal;
+        $week = (int) ceil($day / 7);
 
-        if (! $date) {
-            return sprintf('%s %s', $bulan, $tahun);
-        }
-
-        $week = (int) $date->format('W');
-
-        return sprintf('Minggu %02d %s %s', $week, $bulan, $tahun);
+        return sprintf('Minggu %d', $week);
     }
 
     private function generateMonthKey(string $bulan, string $tahun): string

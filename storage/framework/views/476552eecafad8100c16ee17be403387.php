@@ -44,9 +44,9 @@
     };
 ?>
 
-<section class="py-16 md:py-24 bg-slate-50 dark:bg-gray-950 transition-colors duration-200">
+<section class="py-10 md:py-16 bg-slate-50 dark:bg-gray-950 transition-colors duration-200">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="text-center max-w-2xl mx-auto mb-8 sm:mb-10 md:mb-12">
+        <div class="text-center max-w-2xl mx-auto mb-6 sm:mb-8 md:mb-10">
             <h2 class="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight text-gray-900 dark:text-white mb-3">
                 Galleri Kegiatan
             </h2>
@@ -79,7 +79,7 @@
 
         <div class="flex items-center justify-center">
             <a href="<?php echo e(url('/galeri')); ?>"
-               class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 dark:bg-white dark:hover:bg-slate-100 text-white dark:text-slate-900 font-semibold text-sm transition-all shadow-sm group">
+               class="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-[#0D1B2A] hover:bg-[#162b45] text-white font-semibold text-sm transition-all shadow-sm group">
                 <span>Tampilkan Selengkapnya</span>
                 <svg class="w-4 h-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>

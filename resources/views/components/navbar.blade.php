@@ -21,7 +21,7 @@
                 </a>
 
                 <!-- Right: Search Bar + Dark Mode Toggle + Mobile Toggle -->
-                <div class="absolute right-0 flex items-center gap-3">
+                <div class="absolute right-0 flex items-center gap-3 bg-transparent">
                     <!-- Search Bar (Desktop Only) -->
                     <form action="{{ route('search') }}" method="get" class="hidden md:flex items-center bg-white dark:bg-gray-800 border-2 border-slate-300 dark:border-slate-500 px-3 py-2 w-40 lg:w-48 rounded-lg transition-colors duration-200 hover:border-blue-400 dark:hover:border-blue-500 focus-within:border-blue-400 dark:focus-within:border-blue-500">
                         <input 
@@ -38,13 +38,13 @@
                         </button>
                     </form>
 
-                    <!-- Mobile Menu Toggle (Hidden on lg+) -->
+                    <!-- Mobile Menu Toggle -->
                     <button 
                         type="button"
                         @click="mobileMenuOpen = !mobileMenuOpen"
                         :aria-expanded="mobileMenuOpen"
                         aria-controls="mobile-menu"
-                        class="lg:hidden p-2.5 rounded-xl bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-white hover:bg-gray-200 dark:hover:bg-gray-700 hover:shadow-lg dark:hover:shadow-lg active:scale-95 transition-all duration-200 shadow-sm dark:shadow-md border border-slate-300 dark:border-slate-500"
+                        class="lg:hidden m-0 rounded-none border-0 bg-transparent p-0 text-gray-700 shadow-none ring-0 outline-none hover:text-gray-900 focus:outline-none focus:ring-0 dark:text-white dark:hover:text-gray-200 active:scale-95 transition-all duration-200"
                         aria-label="Toggle menu"
                     >
                         <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

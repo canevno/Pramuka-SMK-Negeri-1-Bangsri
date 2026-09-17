@@ -47,12 +47,12 @@
 
                                 <div @click="selectedMember = (selectedMember === {{ $index }} ? null : {{ $index }})"
                                     :class="selectedMember === {{ $index }}
-                                        ? 'bg-[#183a2d] border-[#183a2d] ring-2 ring-[#183a2d]'
+                                        ? 'bg-[#0D1B2A] border-[#0D1B2A] ring-2 ring-[#0D1B2A]'
                                         : 'bg-white border-slate-200 hover:border-slate-300'"
                                     class="relative rounded-xl border p-1.5 cursor-pointer transition-all duration-300 select-none shadow-sm lg:scale-[0.96] lg:hover:scale-[0.97]">
                                     <div class="relative overflow-hidden rounded-lg aspect-square bg-slate-100">
                                         <img src="{{ $image }}" alt="{{ $member['name'] ?? 'Dewan Kehormatan' }}" class="w-full h-full object-cover transition duration-300"
-                                            :class="selectedMember === {{ $index }} ? 'grayscale-0' : 'grayscale hover:grayscale-0'">
+                                            :class="selectedMember === {{ $index }} ? 'grayscale-0' : 'grayscale-0'">
                                     </div>
 
                                     <div class="px-2 pt-2.5 pb-1">
@@ -61,11 +61,11 @@
                                             {{ $member['name'] ?? 'Nama' }}
                                         </h3>
                                         <p class="text-xs transition-colors mt-0.5"
-                                           :class="selectedMember === {{ $index }} ? 'text-emerald-300' : 'text-slate-500'">
+                                           :class="selectedMember === {{ $index }} ? 'text-sky-200' : 'text-slate-500'">
                                             {{ $member['jabatan'] ?? 'Anggota' }}
                                         </p>
                                         <p class="mt-2 text-[11px] leading-relaxed transition-colors"
-                                           :class="selectedMember === {{ $index }} ? 'text-emerald-100' : 'text-slate-600'">
+                                           :class="selectedMember === {{ $index }} ? 'text-slate-200' : 'text-slate-600'">
                                             {{ Str::limit($description, 110) }}
                                         </p>
                                     </div>

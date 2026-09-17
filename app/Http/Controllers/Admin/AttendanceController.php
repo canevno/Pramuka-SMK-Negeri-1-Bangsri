@@ -19,10 +19,14 @@ class AttendanceController extends Controller
         $today = Carbon::today();
         $currentYear = $today->year;
         $currentMonthKey = $today->format('m-Y');
-        $currentWeekLabel = sprintf('Minggu %02d %s %s', $today->isoWeek(), $today->translatedFormat('F'), $today->year);
+        $currentWeekOfMonth = (int) ceil($today->day / 7);
+        $currentWeekLabel = sprintf('Minggu %d', $currentWeekOfMonth);
 
         $totalCount = AttendanceRecord::count();
-        $weeklyCount = AttendanceRecord::where('week_label', $currentWeekLabel)->count();
+        $weeklyCount = AttendanceRecord::query()
+            ->get()
+            ->filter(fn ($record) => $this->deriveWeekLabelFromDate($record->record_date ?? null) === $currentWeekLabel)
+            ->count();
         $monthlyCount = AttendanceRecord::where('month_key', $currentMonthKey)->count();
         $yearlyCount = AttendanceRecord::where('year_key', (string) $currentYear)->count();
         $recentRecords = AttendanceRecord::latest()->take(10)->get();
@@ -37,47 +41,51 @@ class AttendanceController extends Controller
             ->get()
             ->keyBy('nta');
 
-        $petugasSummary = AttendanceRecord::query()
-            ->select('petugas_name', 'petugas_nta', 'petugas_kelas')
-            ->selectRaw('MAX(created_at) AS last_seen')
-            ->selectRaw('COUNT(DISTINCT record_date) AS total_records')
-            ->groupBy('petugas_name', 'petugas_nta', 'petugas_kelas')
-            ->orderByDesc('last_seen')
-            ->get()
-            ->map(function ($record) use ($registeredPetugas) {
-                $lastSeen = Carbon::parse($record->last_seen);
-                $registered = $registeredPetugas->get($record->petugas_nta)
-                    ?? $registeredPetugas->first(function ($petugas) use ($record) {
-                        return strtolower(trim((string) $petugas->nama)) === strtolower(trim((string) $record->petugas_name));
-                    });
+        if ($registeredPetugas->isEmpty()) {
+            $petugasSummary = collect();
+        } else {
+            $petugasSummary = AttendanceRecord::query()
+                ->select('petugas_name', 'petugas_nta', 'petugas_kelas')
+                ->selectRaw('MAX(created_at) AS last_seen')
+                ->selectRaw('COUNT(DISTINCT record_date) AS total_records')
+                ->groupBy('petugas_name', 'petugas_nta', 'petugas_kelas')
+                ->orderByDesc('last_seen')
+                ->get()
+                ->map(function ($record) use ($registeredPetugas) {
+                    $lastSeen = Carbon::parse($record->last_seen);
+                    $registered = $registeredPetugas->get($record->petugas_nta)
+                        ?? $registeredPetugas->first(function ($petugas) use ($record) {
+                            return strtolower(trim((string) $petugas->nama)) === strtolower(trim((string) $record->petugas_name));
+                        });
 
-                if (! $registered) {
-                    return null;
-                }
+                    if (! $registered) {
+                        return null;
+                    }
 
-                $isActive = (bool) $registered->is_active;
+                    $isActive = (bool) $registered->is_active;
 
-                return [
-                    'name' => $record->petugas_name,
-                    'nta' => $record->petugas_nta,
-                    'kelas' => $record->petugas_kelas,
-                    'last_seen' => $lastSeen->translatedFormat('d F Y H:i'),
-                    'total_records' => (int) $record->total_records,
-                    'status' => $isActive ? 'Aktif' : 'Non-Aktif',
-                ];
-            })
-            ->filter()
-            ->values();
+                    return [
+                        'name' => $record->petugas_name,
+                        'nta' => $record->petugas_nta,
+                        'kelas' => $record->petugas_kelas,
+                        'last_seen' => $lastSeen->translatedFormat('d F Y H:i'),
+                        'total_records' => (int) $record->total_records,
+                        'status' => $isActive ? 'Aktif' : 'Non-Aktif',
+                    ];
+                })
+                ->filter()
+                ->values();
+        }
 
         // Rekap agregat per tanggal + kelas + petugas
         $recapRecords = AttendanceRecord::query()
-            ->select('record_date', 'participant_kelas', 'participant_sangga', 'participant_ambalan', 'petugas_name')
+            ->select('record_date', 'participant_kelas', 'participant_sangga', 'participant_ambalan', 'petugas_name', 'week_label')
             ->selectRaw('COUNT(*) as total_members')
             ->selectRaw("SUM(CASE WHEN status = 'Hadir' THEN 1 ELSE 0 END) as hadir")
             ->selectRaw("SUM(CASE WHEN status = 'Izin' THEN 1 ELSE 0 END) as izin")
             ->selectRaw("SUM(CASE WHEN status = 'Sakit' THEN 1 ELSE 0 END) as sakit")
             ->selectRaw("SUM(CASE WHEN status IN ('Alpha','Alpa','-','') THEN 1 ELSE 0 END) as alpha")
-            ->groupBy('record_date', 'participant_kelas', 'participant_sangga', 'participant_ambalan', 'petugas_name')
+            ->groupBy('record_date', 'participant_kelas', 'participant_sangga', 'participant_ambalan', 'petugas_name', 'week_label')
             ->orderByDesc('record_date')
             ->get()
             ->map(function ($r) {
@@ -93,6 +101,7 @@ class AttendanceController extends Controller
                     'sakit' => (int) $r->sakit,
                     'alpha' => (int) $r->alpha,
                     'status' => ((int) $r->hadir > 0 ? 'Selesai' : 'Belum'),
+                    'minggu_ke' => $this->deriveWeekLabelFromDate($r->record_date ?? null, $r->week_label ?? null),
                 ];
             });
 
@@ -108,6 +117,25 @@ class AttendanceController extends Controller
             'currentMonthKey' => $currentMonthKey,
             'currentYear' => $currentYear,
         ]);
+    }
+
+    private function deriveWeekLabelFromDate(?string $recordDate, ?string $fallback = null): string
+    {
+        if (! empty($recordDate)) {
+            try {
+                $date = Carbon::parse($recordDate);
+
+                return sprintf('Minggu %d', (int) ceil($date->day / 7));
+            } catch (\Throwable $e) {
+                // fallback below
+            }
+        }
+
+        if (! empty($fallback) && preg_match('/Minggu\s*(\d+)/i', $fallback, $matches)) {
+            return sprintf('Minggu %d', (int) $matches[1]);
+        }
+
+        return 'Minggu 0';
     }
 
     public function detail(Request $request)

@@ -87,6 +87,55 @@ class AchievementStore
         return self::normalize($achievement->toArray());
     }
 
+    public static function update(int $id, array $input): ?array
+    {
+        if (! Schema::hasTable('achievements')) {
+            return null;
+        }
+
+        $achievement = Achievement::query()->find($id);
+
+        if (! $achievement) {
+            return null;
+        }
+
+        $achievement->fill(self::normalize([
+            'id' => $achievement->id,
+            'title' => $input['title'] ?? $achievement->title,
+            'category' => $input['category'] ?? $achievement->category,
+            'year' => $input['year'] ?? $achievement->year,
+            'winner' => $input['winner'] ?? $achievement->winner,
+            'winner_social_link' => $input['winner_social_link'] ?? ($input['winner_link'] ?? $achievement->winner_social_link),
+            'description' => $input['description'] ?? $achievement->description,
+            'image' => $input['image'] ?? $achievement->image,
+        ]));
+
+        $achievement->save();
+
+        return self::normalize($achievement->fresh()->toArray());
+    }
+
+    public static function duplicate(int $id): ?array
+    {
+        if (! Schema::hasTable('achievements')) {
+            return null;
+        }
+
+        $achievement = Achievement::query()->find($id);
+
+        if (! $achievement) {
+            return null;
+        }
+
+        $duplicate = $achievement->toArray();
+        unset($duplicate['id'], $duplicate['created_at'], $duplicate['updated_at']);
+
+        $duplicate['title'] = trim($achievement->title . ' (Duplikat)');
+        $duplicate['winner'] = trim((string) $achievement->winner);
+
+        return self::add($duplicate);
+    }
+
     public static function delete(int $id): bool
     {
         if (! Schema::hasTable('achievements')) {

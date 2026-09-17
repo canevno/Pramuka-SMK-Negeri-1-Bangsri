@@ -6,11 +6,9 @@
 
     @include('sections.home.sambutan')
 
-    @include('sections.home.organisation')
-
     @include('sections.home.timeline')
 
-    @include('sections.home.achievement')
+    @include('sections.home.news')
 
     @include('sections.home.gallery')
 

@@ -71,7 +71,14 @@ class PetugasController extends Controller
             'nta' => ['required', 'string', 'max:50', 'unique:petugas_absensis,nta'],
             'kelas_petugas' => ['required', 'string', 'max:100'],
             'jenis_kelamin' => ['nullable', 'in:L,P'],
+            'photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:12288'],
         ]);
+
+        $photoUrl = null;
+
+        if ($request->hasFile('photo')) {
+            $photoUrl = 'storage/' . $request->file('photo')->store('petugas', 'public');
+        }
 
         $petugasData = [
             'nama' => trim($validated['nama']),
@@ -79,6 +86,7 @@ class PetugasController extends Controller
             'kelas_petugas' => trim($validated['kelas_petugas']),
             'is_approved' => true,
             'is_active' => true,
+            'photo_url' => $photoUrl,
         ];
 
         if (Schema::hasColumn('petugas_absensis', 'jenis_kelamin')) {
@@ -106,5 +114,13 @@ class PetugasController extends Controller
         $petugas->save();
 
         return redirect()->route('admin.petugas')->with('success', 'Status petugas berhasil diperbarui.');
+    }
+
+    public function destroy($id)
+    {
+        $petugas = PetugasAbsensi::query()->findOrFail($id);
+        $petugas->delete();
+
+        return redirect()->route('admin.petugas')->with('success', 'Petugas berhasil dihapus.');
     }
 }

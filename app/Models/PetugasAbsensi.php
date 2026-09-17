@@ -20,6 +20,7 @@ class PetugasAbsensi extends Model
         'jumlah_rekam',
         'is_active',
         'is_approved',
+        'photo_url',
     ];
 
     protected $casts = [

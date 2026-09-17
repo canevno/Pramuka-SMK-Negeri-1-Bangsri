@@ -24,6 +24,7 @@
                 <thead class="bg-slate-50">
                     <tr>
                         <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Nama Lengkap</th>
+                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Kelas Asal</th>
                         <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Ambalan</th>
                         <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Sangga</th>
                         <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Keterangan</th>
@@ -34,6 +35,7 @@
                     @forelse($records as $record)
                         <tr>
                             <td class="px-4 py-4">{{ $record->participant_name }}</td>
+                            <td class="px-4 py-4">{{ $record->participant_kelas }}</td>
                             <td class="px-4 py-4">{{ $record->participant_ambalan }}</td>
                             <td class="px-4 py-4">
                                 @php
@@ -59,7 +61,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada data pada detail absensi ini.</td>
+                            <td colspan="6" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada data pada detail absensi ini.</td>
                         </tr>
                     @endforelse
                 </tbody>

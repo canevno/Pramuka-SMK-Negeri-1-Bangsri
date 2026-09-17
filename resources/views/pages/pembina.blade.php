@@ -75,12 +75,12 @@
 
                                     <div @click="selectedPembina = (selectedPembina === {{ $pembina->id }} ? null : {{ $pembina->id }})"
                                         :class="selectedPembina === {{ $pembina->id }}
-                                            ? 'bg-[#183a2d] border-[#183a2d] ring-2 ring-[#183a2d]'
+                                            ? 'bg-[#0D1B2A] border-[#0D1B2A] ring-2 ring-[#0D1B2A]'
                                             : 'bg-white border-slate-200 hover:border-slate-300'"
                                         class="relative rounded-xl border p-1.5 cursor-pointer transition-all duration-300 select-none shadow-sm lg:scale-[0.96] lg:hover:scale-[0.97]">
                                         <div class="relative overflow-hidden rounded-lg aspect-square bg-slate-100">
                                             <img src="{{ $image }}" alt="{{ $pembina->name }}" class="w-full h-full object-cover transition duration-300"
-                                                :class="selectedPembina === {{ $pembina->id }} ? 'grayscale-0' : 'grayscale hover:grayscale-0'">
+                                                :class="selectedPembina === {{ $pembina->id }} ? 'grayscale-0' : 'grayscale-0'">
                                         </div>
 
                                         <div class="px-2 pt-2 pb-1">
@@ -89,11 +89,11 @@
                                                 {{ $pembina->name }}
                                             </h3>
                                             <p class="text-[11px] transition-colors mt-0.5"
-                                               :class="selectedPembina === {{ $pembina->id }} ? 'text-emerald-300' : 'text-slate-500'">
+                                               :class="selectedPembina === {{ $pembina->id }} ? 'text-sky-200' : 'text-slate-500'">
                                                 {{ $pembina->jabatan }}
                                             </p>
                                             <p class="mt-2 text-[10.5px] leading-relaxed transition-colors"
-                                               :class="selectedPembina === {{ $pembina->id }} ? 'text-emerald-100' : 'text-slate-600'">
+                                               :class="selectedPembina === {{ $pembina->id }} ? 'text-slate-200' : 'text-slate-600'">
                                                 {{ Str::limit($description, 100) }}
                                             </p>
                                         </div>

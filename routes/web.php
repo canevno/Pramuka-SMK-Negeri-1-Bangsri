@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\AttendanceController;
 use App\Models\AttendanceRecord;
 use Illuminate\Support\Facades\Route;
@@ -9,6 +10,7 @@ Route::view('/', 'pages.home')->name('home');
 Route::view('/tentang-kami', 'pages.about')->name('about');
 Route::view('/visi-misi', 'pages.visi-misi')->name('visi-misi');
 Route::view('/ambalan', 'pages.ambalan')->name('ambalan');
+Route::view('/organisasi', 'pages.organisasi')->name('organisasi');
 Route::get('/pembina', function () {
     $pembinas = \Illuminate\Support\Facades\Schema::hasTable('pembinas')
         ? \App\Models\Pembina::query()
@@ -99,29 +101,43 @@ Route::get('/anggota-dewan', function () {
 })->name('anggota-dewan');
 
 Route::get('/mitra', function () {
-    $partners = [
-        [
-            'name' => 'Kwartir Ranting',
-            'jabatan' => 'Pendamping Organisasi',
-            'status' => 'Resmi',
-            'photo_url' => 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800',
-            'description' => 'Mendukung koordinasi program, pembinaan, serta pelaksanaan kegiatan kepramukaan di tingkat ranting.',
-        ],
-        [
-            'name' => 'Instansi Pendidikan',
-            'jabatan' => 'Kolaborator Program',
-            'status' => 'Strategis',
-            'photo_url' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800',
-            'description' => 'Menghubungkan kegiatan ambalan dengan proses pembelajaran, pelatihan, dan pengembangan sekolah.',
-        ],
-        [
-            'name' => 'Komunitas Lingkungan',
-            'jabatan' => 'Mitra Sosial',
-            'status' => 'Terlibat',
-            'photo_url' => 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=800',
-            'description' => 'Bersama-sama menyelenggarakan aksi peduli lingkungan, kebersamaan, dan pengabdian masyarakat.',
-        ],
-    ];
+    $partners = \Illuminate\Support\Facades\Schema::hasTable('mitras')
+        ? \App\Models\Mitra::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($partner) => [
+                'name' => $partner->name,
+                'jabatan' => $partner->jabatan,
+                'status' => $partner->status ?: ($partner->is_active ? 'Aktif' : 'Non-Aktif'),
+                'photo_url' => $partner->photo_url ?: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800',
+                'description' => $partner->bio ?: 'Mitra yang mendukung program, pembinaan, dan penguatan kegiatan Pramuka.',
+            ])
+            ->all()
+        : [
+            [
+                'name' => 'Kwartir Ranting',
+                'jabatan' => 'Pendamping Organisasi',
+                'status' => 'Resmi',
+                'photo_url' => 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800',
+                'description' => 'Mendukung koordinasi program, pembinaan, serta pelaksanaan kegiatan kepramukaan di tingkat ranting.',
+            ],
+            [
+                'name' => 'Instansi Pendidikan',
+                'jabatan' => 'Kolaborator Program',
+                'status' => 'Strategis',
+                'photo_url' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800',
+                'description' => 'Menghubungkan kegiatan ambalan dengan proses pembelajaran, pelatihan, dan pengembangan sekolah.',
+            ],
+            [
+                'name' => 'Komunitas Lingkungan',
+                'jabatan' => 'Mitra Sosial',
+                'status' => 'Terlibat',
+                'photo_url' => 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=800',
+                'description' => 'Bersama-sama menyelenggarakan aksi peduli lingkungan, kebersamaan, dan pengabdian masyarakat.',
+            ],
+        ];
 
     return view('pages.mitra', ['partners' => $partners]);
 })->name('mitra');
@@ -151,58 +167,43 @@ Route::get('/pengurus-aktif', function () {
 })->name('active-board');
 
 Route::get('/alumni', function () {
-    $alumni = [
-        [
-            'name' => 'Muhammad Rafi S.',
-            'jabatan' => 'Ketua Alumni',
-            'bio' => 'Alumni yang aktif menjaga silaturahmi dan mendukung pengembangan kegiatan Pramuka.',
-            'photo_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800',
-            'is_active' => true,
-            'sort_order' => 1,
-        ],
-        [
-            'name' => 'Siti Nuraeni',
-            'jabatan' => 'Sekretaris Alumni',
-            'bio' => 'Berperan dalam penguatan jaringan alumni dan kegiatan sosial serta pembinaan generasi muda.',
-            'photo_url' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800',
-            'is_active' => true,
-            'sort_order' => 2,
-        ],
-        [
-            'name' => 'Dimas Pratama',
-            'jabatan' => 'Koordinator Kegiatan',
-            'bio' => 'Mensinergikan alumni dengan ambalan untuk menjaga kesinambungan semangat Pramuka.',
-            'photo_url' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800',
-            'is_active' => true,
-            'sort_order' => 3,
-        ],
-        [
-            'name' => 'Ayu Lestari',
-            'jabatan' => 'Bendahara Alumni',
-            'bio' => 'Mengelola dukungan kegiatan alumni dan menjaga ikatan solidaritas yang kuat.',
-            'photo_url' => 'https://images.unsplash.com/photo-1487412720507-e7ab37603c6f?auto=format&fit=crop&q=80&w=800',
-            'is_active' => true,
-            'sort_order' => 4,
-        ],
-        [
-            'name' => 'Rizki Maulana',
-            'jabatan' => 'Koordinator Hubungan',
-            'bio' => 'Menyambungkan alumni dengan komunitas dan lembaga yang mendukung perkembangan Pramuka.',
-            'photo_url' => 'https://images.unsplash.com/photo-1504593811423-6dd665756598?auto=format&fit=crop&q=80&w=800',
-            'is_active' => true,
-            'sort_order' => 5,
-        ],
-        [
-            'name' => 'Nurhaliza',
-            'jabatan' => 'Anggota Alumni',
-            'bio' => 'Terlibat aktif dalam kegiatan sosial dan pengembangan komunikasi alumni.',
-            'photo_url' => 'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&q=80&w=800',
-            'is_active' => true,
-            'sort_order' => 6,
-        ],
-    ];
-
-    $members = collect($alumni)->filter(fn ($item) => ! empty($item['name']))->sortBy('sort_order')->values();
+    $members = \Illuminate\Support\Facades\Schema::hasTable('alumni')
+        ? \App\Models\Alumni::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->map(fn ($member) => [
+                'name' => $member->name,
+                'jabatan' => $member->jabatan,
+                'status' => $member->status ?: ($member->is_active ? 'Aktif' : 'Non-Aktif'),
+                'photo_url' => $member->photo_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600',
+                'description' => $member->bio ?: 'Alumni aktif yang terus mendukung dan menyalurkan semangat Pramuka untuk generasi berikutnya.',
+            ])
+            ->all()
+        : [
+            [
+                'name' => 'Muhammad Rafi S.',
+                'jabatan' => 'Ketua Alumni',
+                'status' => 'Aktif',
+                'photo_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800',
+                'description' => 'Alumni yang aktif menjaga silaturahmi dan mendukung pengembangan kegiatan Pramuka.',
+            ],
+            [
+                'name' => 'Siti Nuraeni',
+                'jabatan' => 'Sekretaris Alumni',
+                'status' => 'Aktif',
+                'photo_url' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800',
+                'description' => 'Berperan dalam penguatan jaringan alumni dan kegiatan sosial serta pembinaan generasi muda.',
+            ],
+            [
+                'name' => 'Dimas Pratama',
+                'jabatan' => 'Koordinator Kegiatan',
+                'status' => 'Aktif',
+                'photo_url' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800',
+                'description' => 'Mensinergikan alumni dengan ambalan untuk menjaga kesinambungan semangat Pramuka.',
+            ],
+        ];
 
     return view('pages.alumni', ['members' => $members]);
 })->name('alumni');
@@ -213,31 +214,22 @@ Route::view('/prestasi/cabang', 'pages.prestasi.cabang')->name('prestasi.cabang'
 Route::view('/prestasi/jateng', 'pages.prestasi.jateng')->name('prestasi.jateng');
 Route::view('/prestasi/nasional', 'pages.prestasi.nasional')->name('prestasi.nasional');
 
-Route::view('/event', 'pages.event')->name('event');
+Route::get('/event', function () {
+    $events = \Illuminate\Support\Facades\Schema::hasTable('timeline_events')
+        ? \App\Models\TimelineEvent::query()
+            ->where('is_active', true)
+            ->orderBy('date')
+            ->orderBy('sort_order')
+            ->get()
+        : collect();
+
+    return view('pages.event', compact('events'));
+})->name('event');
 
 Route::view('/artikel', 'pages.article')->name('article');
 
-Route::get('/berita', function () {
-    $templateNews = [
-        ['category' => 'Sosial', 'title' => 'Pramuka Peduli Lingkungan Pantai', 'date' => 'Januari 8, 2024', 'description' => 'Aksi membersihkan sampah plastik pantai Bangsri sebagai bentuk pengabdian.', 'image' => 'images/hero/imagehero1.png', 'alt' => 'Pramuka Peduli Lingkungan Pantai'],
-        ['category' => 'Camping', 'title' => 'Kemping Karakter di Hutan Kareta', 'date' => 'Januari 8, 2024', 'description' => 'Perkemahan tiga hari memperkuat kemandirian, kerja tim, dan ketahanan fisik.', 'image' => 'images/hero/imagehero.png', 'alt' => 'Kemping Karakter di Hutan Kareta'],
-        ['category' => 'Budaya', 'title' => 'Gelar Seni Budaya Nusantara', 'date' => 'Januari 8, 2024', 'description' => 'Pertunjukan seni daerah memadukan tradisi dan kreativitas Pramuka.', 'image' => 'images/logokegiatan1.png', 'alt' => 'Gelar Seni Budaya Nusantara'],
-        ['category' => 'Skills', 'title' => 'Latihan Navigasi Darat Menantang', 'date' => 'Januari 8, 2024', 'description' => 'Menguji orientasi lapangan dengan kompas dan peta di medan nyata.', 'image' => 'images/logos/smklogo.png', 'alt' => 'Latihan Navigasi Darat Menantang'],
-        ['category' => 'Event', 'title' => 'Pertemuan Alumni dan Prestasi', 'date' => 'Januari 8, 2024', 'description' => 'Forum alumni merayakan capaian anggota dan memperkuat koneksi Pramuka.', 'image' => 'images/hero/imagehero.png', 'alt' => 'Pertemuan Alumni dan Prestasi'],
-    ];
-
-    $newsItems = [];
-    foreach (range(1, 6) as $row) {
-        foreach ($templateNews as $item) {
-            $newsItems[] = array_merge($item, [
-                'title' => $item['title'] . ' #' . $row,
-                'description' => $item['description'],
-            ]);
-        }
-    }
-
-    return view('pages.news', compact('newsItems'));
-})->name('news');
+Route::get('/berita', [ModuleController::class, 'publicNewsPage'])->name('news');
+Route::get('/berita/{slug}', [ModuleController::class, 'showNewsDetail'])->name('berita.show');
 
 Route::get('/galeri', function () {
     $galleryItems = \App\Models\GalleryItem::query()
@@ -385,7 +377,6 @@ Route::post('/pendaftaran-laksana', function (Illuminate\Http\Request $request) 
 
 Route::view('/kontak', 'pages.contact')->name('contact');
 
-use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\DashboardController;
 
@@ -397,30 +388,26 @@ Route::get('/admin/login', [AdminAuthController::class, 'showLogin'])->name('adm
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
 Route::post('/admin/logout', [AdminAuthController::class, 'logout']);
 
-Route::middleware(['auth', 'verified', \App\Http\Middleware\EnsureUserIsAdmin::class])->group(function () {
+Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->group(function () {
     // Admin panel is mounted at /admin to keep it separate from public site
     Route::get('/admin', [DashboardController::class, 'index'])->name('dashboard');
 
-    Route::get('/admin/news', function () {
-        return view('admin.section', [
-            'title' => 'Kelola Berita',
-            'description' => 'Tambahkan, edit, dan hapus berita yang tampil di website.',
-            'publicRoute' => route('news'),
-            'publicLabel' => 'Lihat Halaman Berita',
-            'fields' => [
-                'Judul berita',
-                'Kategori berita',
-                'Ringkasan / excerpt',
-                'Konten utama',
-                'Gambar utama',
-                'Tanggal publikasi',
-                'Status: draft / terbit',
-            ],
-        ]);
-    })->name('admin.news');
+    Route::get('/admin/news', [ModuleController::class, 'news'])->name('admin.news');
+    Route::post('/admin/news', [ModuleController::class, 'storeNews'])->name('admin.news.store');
+    Route::put('/admin/news/{post}', [ModuleController::class, 'updateNews'])->name('admin.news.update');
+    Route::post('/admin/news/{post}/duplicate', [ModuleController::class, 'duplicateNews'])->name('admin.news.duplicate');
+    Route::delete('/admin/news/{post}', [ModuleController::class, 'deleteNews'])->name('admin.news.delete');
+
+    Route::get('/admin/hero', [ModuleController::class, 'hero'])->name('admin.hero');
+    Route::post('/admin/hero', [ModuleController::class, 'storeHero'])->name('admin.hero.store');
+    Route::put('/admin/hero/{heroSlide}', [ModuleController::class, 'updateHero'])->name('admin.hero.update');
+    Route::post('/admin/hero/{heroSlide}/toggle', [ModuleController::class, 'toggleHero'])->name('admin.hero.toggle');
+    Route::delete('/admin/hero/{heroSlide}', [ModuleController::class, 'deleteHero'])->name('admin.hero.delete');
 
     Route::get('/admin/gallery', [ModuleController::class, 'gallery'])->name('admin.gallery');
     Route::post('/admin/gallery/store', [ModuleController::class, 'storeGallery'])->name('admin.gallery.store');
+    Route::put('/admin/gallery/{id}', [ModuleController::class, 'updateGallery'])->name('admin.gallery.update');
+    Route::post('/admin/gallery/{id}/duplicate', [ModuleController::class, 'duplicateGallery'])->name('admin.gallery.duplicate');
     Route::delete('/admin/gallery/{id}', [ModuleController::class, 'deleteGallery'])->name('admin.gallery.delete');
 
     Route::get('/admin/agenda', function () {
@@ -448,6 +435,7 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\EnsureUserIsAdmin::c
     Route::get('/admin/petugas', [\App\Http\Controllers\Admin\PetugasController::class, 'index'])->name('admin.petugas');
     Route::post('/admin/petugas/store', [\App\Http\Controllers\Admin\PetugasController::class, 'store'])->name('admin.petugas.store');
     Route::post('/admin/petugas/{id}/toggle', [\App\Http\Controllers\Admin\PetugasController::class, 'toggle'])->name('admin.petugas.toggle');
+    Route::post('/admin/petugas/{id}/destroy', [\App\Http\Controllers\Admin\PetugasController::class, 'destroy'])->name('admin.petugas.destroy');
 
     Route::get('/admin/pendaftaran-laksana', function () {
         return view('admin.section', [
@@ -468,13 +456,27 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\EnsureUserIsAdmin::c
 
     Route::get('/admin/pembina', [\App\Http\Controllers\Admin\ModuleController::class, 'pembina'])->name('admin.pembina');
     Route::post('/admin/pembina/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storePembina'])->name('admin.pembina.store');
+    Route::put('/admin/pembina/{pembina}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updatePembina'])->name('admin.pembina.update');
     Route::post('/admin/pembina/{pembina}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'togglePembina'])->name('admin.pembina.toggle');
     Route::delete('/admin/pembina/{pembina}', [\App\Http\Controllers\Admin\ModuleController::class, 'deletePembina'])->name('admin.pembina.delete');
 
     Route::get('/admin/dewan-ambalan', [\App\Http\Controllers\Admin\ModuleController::class, 'dewanAmbalan'])->name('admin.dewan-ambalan');
     Route::post('/admin/dewan-ambalan/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeDewanAmbalan'])->name('admin.dewan-ambalan.store');
+    Route::put('/admin/dewan-ambalan/{dewanAmbalan}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateDewanAmbalan'])->name('admin.dewan-ambalan.update');
     Route::post('/admin/dewan-ambalan/{dewanAmbalan}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleDewanAmbalan'])->name('admin.dewan-ambalan.toggle');
     Route::delete('/admin/dewan-ambalan/{dewanAmbalan}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteDewanAmbalan'])->name('admin.dewan-ambalan.delete');
+
+    Route::get('/admin/mitra', [\App\Http\Controllers\Admin\ModuleController::class, 'mitra'])->name('admin.mitra');
+    Route::post('/admin/mitra/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeMitra'])->name('admin.mitra.store');
+    Route::put('/admin/mitra/{mitra}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateMitra'])->name('admin.mitra.update');
+    Route::post('/admin/mitra/{mitra}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleMitra'])->name('admin.mitra.toggle');
+    Route::delete('/admin/mitra/{mitra}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteMitra'])->name('admin.mitra.delete');
+
+    Route::get('/admin/alumni', [\App\Http\Controllers\Admin\ModuleController::class, 'alumni'])->name('admin.alumni');
+    Route::post('/admin/alumni/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeAlumni'])->name('admin.alumni.store');
+    Route::put('/admin/alumni/{alumni}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateAlumni'])->name('admin.alumni.update');
+    Route::post('/admin/alumni/{alumni}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleAlumni'])->name('admin.alumni.toggle');
+    Route::delete('/admin/alumni/{alumni}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteAlumni'])->name('admin.alumni.delete');
 
     Route::get('/admin/anggota', [\App\Http\Controllers\Admin\ModuleController::class, 'anggota'])->name('admin.anggota');
     Route::post('/admin/anggota/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeAnggota'])->name('admin.anggota.store');
@@ -482,6 +484,12 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\EnsureUserIsAdmin::c
     Route::put('/admin/anggota/{student}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateAnggota'])->name('admin.anggota.update');
     Route::post('/admin/anggota/{student}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleAnggota'])->name('admin.anggota.toggle');
     Route::delete('/admin/anggota/{student}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteAnggota'])->name('admin.anggota.delete');
+
+    Route::get('/admin/timeline', [\App\Http\Controllers\Admin\ModuleController::class, 'timeline'])->name('admin.timeline');
+    Route::post('/admin/timeline/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeTimeline'])->name('admin.timeline.store');
+    Route::put('/admin/timeline/{timelineEvent}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateTimeline'])->name('admin.timeline.update');
+    Route::post('/admin/timeline/{timelineEvent}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleTimeline'])->name('admin.timeline.toggle');
+    Route::delete('/admin/timeline/{timelineEvent}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteTimeline'])->name('admin.timeline.delete');
 
     Route::get('/admin/prestasi', function () {
         return view('admin.modules.prestasi', [
@@ -525,13 +533,67 @@ Route::middleware(['auth', 'verified', \App\Http\Middleware\EnsureUserIsAdmin::c
             $imagePath = 'images/achievement/prestasi1.jpg';
         }
 
-        App\Support\AchievementStore::add($request->only(['title', 'category', 'year', 'winner', 'description']) + [
+        $payload = $request->only(['title', 'category', 'year', 'winner', 'description']) + [
+            'image' => $imagePath,
+            'winner_social_link' => $winnerSocialLink,
+        ];
+
+        if ($request->filled('edit_id')) {
+            App\Support\AchievementStore::update((int) $request->input('edit_id'), $payload);
+
+            return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diperbarui.');
+        }
+
+        App\Support\AchievementStore::add($payload);
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil ditambahkan.');
+    })->name('admin.prestasi.store');
+
+    Route::put('/admin/prestasi/{id}/update', function (Illuminate\Http\Request $request, $id) {
+        $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => ['required', 'string', 'in:Tingkat Ranting,Tingkat Cabang,Tingkat Jateng,Tingkat Nasional'],
+            'year' => 'required|integer|min:2000|max:2100',
+            'winner' => 'required|string|max:255',
+            'winner_social_link' => 'nullable|url|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable',
+            'image_path' => 'nullable|string|max:255',
+        ]);
+
+        $imagePath = $request->input('image_path', 'images/achievement/prestasi1.jpg');
+        $winnerSocialLink = $request->input('winner_social_link', '');
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $file = $request->file('image');
+            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]+/', '-', strtolower(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))) . '.' . $file->getClientOriginalExtension();
+            $directory = public_path('images/achievement');
+
+            if (! is_dir($directory)) {
+                mkdir($directory, 0777, true);
+            }
+
+            $file->move($directory, $filename);
+            $imagePath = 'images/achievement/' . $filename;
+        }
+
+        if (is_string($imagePath) && trim($imagePath) === '') {
+            $imagePath = 'images/achievement/prestasi1.jpg';
+        }
+
+        App\Support\AchievementStore::update((int) $id, $request->only(['title', 'category', 'year', 'winner', 'description']) + [
             'image' => $imagePath,
             'winner_social_link' => $winnerSocialLink,
         ]);
 
-        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil ditambahkan.');
-    })->name('admin.prestasi.store');
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diperbarui.');
+    })->name('admin.prestasi.update');
+
+    Route::post('/admin/prestasi/{id}/duplicate', function ($id) {
+        App\Support\AchievementStore::duplicate((int) $id);
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diduplikasi.');
+    })->name('admin.prestasi.duplicate');
 
     Route::delete('/admin/prestasi/{id}', function ($id) {
         App\Support\AchievementStore::delete((int) $id);

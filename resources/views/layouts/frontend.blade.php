@@ -23,6 +23,7 @@
     </main>
 
     @include('components.footer')
+    @include('components.mobile-bottom-nav')
 
     @stack('scripts')
     @livewireScripts

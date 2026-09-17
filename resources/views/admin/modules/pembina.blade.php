@@ -74,13 +74,17 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3">
-                                <div class="flex items-center gap-2">
+                                <div class="flex flex-wrap items-center gap-2">
                                     <form action="{{ route('admin.pembina.toggle', $pembina) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-[10px] font-semibold text-amber-700 hover:bg-amber-100">
                                             {{ $pembina->is_active ? 'Non-aktifkan' : 'Aktifkan' }}
                                         </button>
                                     </form>
+
+                                    <button type="button" onclick="document.getElementById('edit-pembina-{{ $pembina->id }}').classList.toggle('hidden')" class="rounded-lg border border-indigo-200 bg-indigo-50 px-2.5 py-1.5 text-[10px] font-semibold text-indigo-700 hover:bg-indigo-100">
+                                        Edit
+                                    </button>
 
                                     <form action="{{ route('admin.pembina.delete', $pembina) }}" method="POST" onsubmit="return confirm('Hapus pembina ini?');">
                                         @csrf
@@ -90,6 +94,36 @@
                                         </button>
                                     </form>
                                 </div>
+                            </td>
+                        </tr>
+
+                        <tr id="edit-pembina-{{ $pembina->id }}" class="hidden bg-slate-50">
+                            <td colspan="5" class="px-4 py-4">
+                                <form action="{{ route('admin.pembina.update', $pembina) }}" method="POST" enctype="multipart/form-data" class="grid gap-3 md:grid-cols-2">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <input type="text" name="name" value="{{ old('name', $pembina->name) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Nama lengkap" required>
+                                    <input type="text" name="jabatan" value="{{ old('jabatan', $pembina->jabatan) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Jabatan" required>
+                                    <input type="text" name="phone" value="{{ old('phone', $pembina->phone) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Nomor telepon">
+                                    <input type="email" name="email" value="{{ old('email', $pembina->email) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Email">
+                                    <select name="status" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
+                                        <option value="Aktif" {{ old('status', $pembina->status) === 'Aktif' ? 'selected' : '' }}>Aktif</option>
+                                        <option value="Tidak aktif" {{ old('status', $pembina->status) === 'Tidak aktif' ? 'selected' : '' }}>Tidak aktif</option>
+                                    </select>
+                                    <input type="number" name="sort_order" value="{{ old('sort_order', $pembina->sort_order ?? 0) }}" min="0" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Urutan">
+                                    <textarea name="bio" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm md:col-span-2" placeholder="Deskripsi singkat">{{ old('bio', $pembina->bio) }}</textarea>
+                                    <input type="file" name="photo" accept="image/*" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm md:col-span-2">
+                                    <label class="inline-flex items-center gap-2 text-sm text-slate-600 md:col-span-2">
+                                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $pembina->is_active) ? 'checked' : '' }}>
+                                        Aktif dipublikasikan
+                                    </label>
+                                    <div class="flex justify-end gap-2 md:col-span-2">
+                                        <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500">
+                                            Simpan Perubahan
+                                        </button>
+                                    </div>
+                                </form>
                             </td>
                         </tr>
                     @empty

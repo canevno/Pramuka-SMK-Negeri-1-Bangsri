@@ -43,28 +43,24 @@
                 <table class="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700">
                     <thead class="bg-slate-50">
                         <tr>
-                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Tanggal</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">No</th>
                             <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Sangga</th>
                             <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Ambalan</th>
                             <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Petugas</th>
-                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Status</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Tanggal</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Minggu-ke</th>
                             <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Detail</th>
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-slate-200 bg-white">
-                        @forelse($recapRecords ?? [] as $r)
+                        @forelse($recapRecords ?? [] as $index => $r)
                             <tr>
-                                <td class="px-4 py-4">{{ $r['record_date'] }}</td>
+                                <td class="px-4 py-4">{{ $index + 1 }}</td>
                                 <td class="px-4 py-4">{{ $r['sangga'] ?? $r['kelas'] }}</td>
                                 <td class="px-4 py-4">{{ $r['ambalan'] }}</td>
                                 <td class="px-4 py-4">{{ $r['petugas'] }}</td>
-                                <td class="px-4 py-4">
-                                    @if($r['status'] === 'Selesai')
-                                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold bg-emerald-100 text-emerald-700">{{ $r['status'] }}</span>
-                                    @else
-                                        <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold bg-amber-100 text-amber-700">{{ $r['status'] }}</span>
-                                    @endif
-                                </td>
+                                <td class="px-4 py-4">{{ $r['record_date'] }}</td>
+                                <td class="px-4 py-4">{{ $r['minggu_ke'] }}</td>
                                 <td class="px-4 py-4">
                                     <a href="{{ route('admin.absensi.detail', [
                                         'record_date' => $r['record_date'],
@@ -76,7 +72,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="6" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada rekap absensi.</td>
+                                <td colspan="7" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada rekap absensi.</td>
                             </tr>
                         @endforelse
                     </tbody>

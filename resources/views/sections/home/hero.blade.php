@@ -1,289 +1,131 @@
-<section class="relative w-full overflow-hidden bg-white dark:bg-gray-950 transition-colors duration-200 hero-section">
+@php
+    $heroItems = [];
 
-    {{-- Foto Putra (tengah-kiri) --}}
-    <img
-        src="{{ asset('images/logos/iconambalan1.png') }}"
-        alt="Anggota Pramuka Putra"
-        class="absolute object-contain object-bottom blend-fade-top icon-ambalan-1"
-        style="
-            width: 32%;
-            left: 25%;
-            bottom: 0;
-        "
-    />
+    if (\Illuminate\Support\Facades\Schema::hasTable('hero_slides')) {
+        $heroItems = \App\Models\HeroSlide::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderByDesc('id')
+            ->get()
+            ->map(function ($slide) {
+                $image = $slide->image;
+                if (! empty($image) && ! str_starts_with($image, 'http')) {
+                    $image = asset($image);
+                }
 
-    {{-- Foto Putri (tengah-kanan) --}}
-    <img
-        src="{{ asset('images/logos/iconambalan2.png') }}"
-        alt="Anggota Pramuka Putri"
-        class="absolute object-contain object-bottom blend-fade-top icon-ambalan-2"
-        style="
-            width: 30%;
-            left: 50%;
-            bottom: 0;
-        "
-    />
+                return [
+                    'image' => $image ?: asset('images/hero/kegiatan-1.jpg'),
+                    'title' => $slide->title ?: 'Judul Slide',
+                    'excerpt' => $slide->excerpt ?: 'Deskripsi slide hero belum diisi.',
+                    'href' => $slide->href ?: route('news'),
+                ];
+            })
+            ->values()
+            ->all();
+    }
 
-    {{-- Logo KH. Achmad Fauzan --}}
-    <img
-        src="{{ asset('images/logos/aflogo.png') }}"
-        alt="Logo KH. Achmad Fauzan"
-        class="absolute hero-logo hero-logo-af"
-        style="
-            width: 11.93%;
-            left: 9.9%;
-            top: 61.39%;
-        "
-    />
+    if (empty($heroItems)) {
+        $heroItems = [
+            ['image' => asset('images/hero/kegiatan-1.jpg'), 'title' => 'Upacara Pelantikan Ambalan Tahun Ajaran Baru', 'excerpt' => 'Prosesi pelantikan anggota baru Ambalan KH. Achmad Fauzan dan Dewi Sartika berlangsung khidmat di lapangan upacara SMK Negeri 1 Bangsri.', 'href' => route('news')],
+            ['image' => asset('images/hero/kegiatan-2.jpg'), 'title' => 'Jadi Pengusaha Digital Tak Perlu Tunggu Lulus Sekolah', 'excerpt' => 'Peluang usaha digital dapat dimulai sejak dini, sambil belajar dan membangun kemandirian melalui kreativitas dan teknologi.', 'href' => route('news')],
+            ['image' => asset('images/hero/kegiatan-3.jpg'), 'title' => 'Latihan Kepemimpinan dan Kedisiplinan Ambalan', 'excerpt' => 'Peserta didik mengikuti sesi pelatihan kepemimpinan, kerja sama, dan tanggung jawab dalam membentuk karakter yang kuat.', 'href' => route('news')],
+            ['image' => asset('images/hero/kegiatan-4.jpg'), 'title' => 'Program Pemberdayaan Siswa untuk Kemandirian', 'excerpt' => 'Berbagai kegiatan produktif mendorong siswa untuk belajar mandiri, berinovasi, dan siap menghadapi tantangan masa depan.', 'href' => route('news')],
+            ['image' => asset('images/hero/kegiatan-5.jpg'), 'title' => 'Semangat Kebersamaan dalam Kegiatan Sekolah', 'excerpt' => 'Kegiatan komunitas dan ekstrakurikuler memberi ruang bagi siswa untuk berkembang secara sosial, akademik, dan karakter.', 'href' => route('news')],
+        ];
+    }
+@endphp
 
-    {{-- Logo Dewi Sartika --}}
-    <img
-        src="{{ asset('images/logos/dslogo.png') }}"
-        alt="Logo Dewi Sartika"
-        class="absolute hero-logo hero-logo-ds"
-        style="
-            width: 11.93%;
-            left: 79.27%;
-            top: 61.39%;
-        "
-    />
+<section class="relative w-full overflow-hidden bg-gray-950" x-data="heroCarousel()" x-init="init()">
+    <div class="relative aspect-[7.8/10] w-full sm:aspect-[16/9] lg:aspect-[21/9]">
+        <template x-for="(item, index) in items" :key="index">
+            <div x-show="active === index"
+                 x-transition:enter="transition ease-out duration-700"
+                 x-transition:enter-start="opacity-0"
+                 x-transition:enter-end="opacity-100"
+                 x-transition:leave="transition ease-in duration-500"
+                 x-transition:leave-start="opacity-100"
+                 x-transition:leave-end="opacity-0"
+                 class="absolute inset-0">
 
-    {{-- Nama & Deskripsi KH. Achmad Fauzan --}}
-    <div class="absolute text-center hero-text" style="left: 7.76%; top: 82.5%;">
-        <p class="font-semibold text-black dark:text-white font-['Poppins'] transition-colors duration-200"
-           style="font-size: clamp(14px, 1.5625vw, 30px);">
-            KH. Achmad Fauzan
-        </p>
-        <p class="text-black dark:text-white font-semibold font-['Poppins'] max-w-[15vw] leading-snug mt-1 transition-colors duration-200"
-           style="font-size: clamp(8px, 0.729vw, 14px);">
-            Merupakan Ambalan Pramuka Penegak Putra di Pangkalan SMK Negeri 1 Bangsri, Gugus Depan 03.161
-        </p>
+                <img :src="item.image" :alt="item.title" class="absolute inset-0 h-full w-full object-cover">
+                <div class="absolute inset-0 bg-gradient-to-t from-black via-black/60 to-black/10"></div>
+
+                <div class="absolute inset-0 flex items-center justify-center px-4 sm:px-12 lg:px-20">
+                    <div class="w-full max-w-[270px] -translate-y-1 text-center sm:max-w-4xl">
+                        <h1 class="font-sans text-[1.9rem] font-extrabold leading-[1.02] tracking-tight text-white sm:text-3xl lg:text-5xl"
+                            x-text="item.title"></h1>
+
+                        <p class="mx-auto mt-3 max-w-[17.5rem] text-[11px] font-medium leading-relaxed text-gray-200 sm:max-w-2xl sm:text-base"
+                           x-text="item.excerpt"></p>
+
+                        <a :href="item.href"
+                           class="mt-4 inline-flex items-center justify-center gap-2 text-[11px] font-semibold text-white transition-all duration-200 hover:gap-3 sm:text-sm">
+                            Baca Selengkapnya
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <button @click="prev()" aria-label="Sebelumnya"
+                class="absolute left-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/15 p-2 text-white/80 transition-colors hover:text-white sm:left-3">
+            <svg class="h-6 w-6 sm:h-7 sm:w-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+            </svg>
+        </button>
+        <button @click="next()" aria-label="Berikutnya"
+                class="absolute right-2 top-1/2 z-10 -translate-y-1/2 rounded-full bg-black/15 p-2 text-white/80 transition-colors hover:text-white sm:right-3">
+            <svg class="h-6 w-6 sm:h-7 sm:w-7" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+            </svg>
+        </button>
+
+        <div class="absolute bottom-4 left-1/2 z-10 flex -translate-x-1/2 gap-2">
+            <template x-for="(item, index) in items" :key="'dot-'+index">
+                <button @click="goTo(index)"
+                        :aria-label="'Slide ' + (index + 1)"
+                        class="h-2 rounded-full transition-all duration-300"
+                        :class="active === index ? 'w-6 bg-white' : 'w-2 bg-white/40 hover:bg-white/60'"></button>
+            </template>
+        </div>
     </div>
-
-    {{-- Nama & Deskripsi Dewi Sartika --}}
-    <div class="absolute text-center hero-text" style="left: 77.19%; top: 82.5%;">
-        <p class="font-semibold text-black dark:text-white font-['Poppins'] transition-colors duration-200"
-           style="font-size: clamp(14px, 1.5625vw, 30px);">
-            Dewi Sartika
-        </p>
-        <p class="text-black dark:text-white font-semibold font-['Poppins'] max-w-[15vw] leading-snug mt-1 transition-colors duration-200"
-           style="font-size: clamp(8px, 0.729vw, 14px);">
-            Merupakan Ambalan Pramuka Penegak Putri di Pangkalan SMK Negeri 1 Bangsri, Gugus Depan 03.162
-        </p>
-    </div>
-
-    {{-- Button (Mobile Only) --}}
-    <a 
-        href="{{ route('about') }}"
-        class="hero-button lg:hidden text-black dark:text-white border-2 border-slate-300 dark:border-slate-500 rounded-full px-6 py-2 font-semibold transition-colors duration-200 inline-block">
-        Lihat Selengkapnya
-    </a>
-
 </section>
 
-<style>
-    .blend-fade-top {
-        mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 0.5) 8%, rgba(0, 0, 0, 1) 16%);
-        -webkit-mask-image: linear-gradient(to top, transparent 0%, rgba(0, 0, 0, 0.5) 8%, rgba(0, 0, 0, 1) 16%);
-    }
-
-    /* Hide buttons by default (desktop) */
-    .hero-button {
-        display: none;
-    }
-
-    /* Mobile styles */
-    @media (max-width: 1023px) {
-        .hero-section {
-            min-height: auto;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 40px 20px;
-            margin-top: -40px; /* Dekatkan ke navbar */
-            gap: 15px;
-        }
-
-        /* Hide icon ambalan di mobile */
-        .icon-ambalan-1,
-        .icon-ambalan-2 {
-            display: none;
-        }
-
-        /* Show logo dan text di mobile */
-        .hero-logo,
-        .hero-text {
-            display: block !important;
-            position: static !important;
-            width: auto !important;
-            left: auto !important;
-            top: auto !important;
-            text-align: center;
-            margin: 0;
-        }
-
-        .hero-logo {
-            width: 140px !important;
-            height: auto;
-        }
-
-        /* Description styling for mobile */
-        .hero-text p:first-child {
-            font-size: 16px !important;
-            margin-bottom: 8px;
-        }
-
-        .hero-text p:last-child {
-            font-size: 13px !important;
-            max-width: 280px !important;
-            margin-top: 0 !important;
-            line-height: 1.5;
-        }
-
-        /* Show buttons di mobile */
-        .hero-button {
-            display: block !important;
-            position: static !important;
-            margin-top: 20px !important;
-            margin-bottom: 0 !important;
-        }
-
-        /* Order: Logo KH (3), Text KH (5), Logo DS (4), Text DS (6), Button (7) */
-        .hero-section > :nth-child(3) {
-            order: 1;
-        }
-
-        .hero-section > :nth-child(5) {
-            order: 2;
-        }
-
-        .hero-section > :nth-child(4) {
-            order: 3;
-        }
-
-        .hero-section > :nth-child(6) {
-            order: 4;
-        }
-
-        .hero-section > :nth-child(7) {
-            order: 5;
-        }
-    }
-
-    /* Desktop - maintain aspect-video with negative margin */
-    @media (min-width: 1024px) {
-        .hero-section {
-            aspect-ratio: 16 / 9;
-            margin-top: -248px; /* -mt-62 */
-            min-height: auto;
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding: 0;
-            gap: 0;
-        }
-
-        /* Show icon ambalan di desktop */
-        .icon-ambalan-1,
-        .icon-ambalan-2 {
-            display: block;
-            position: absolute;
-        }
-
-        /* Reset icon ambalan to original size on desktop */
-        .icon-ambalan-1 {
-            width: 32% !important;
-            left: 25% !important;
-            bottom: 0 !important;
-        }
-
-        .icon-ambalan-2 {
-            width: 30% !important;
-            left: 50% !important;
-            bottom: 0 !important;
-        }
-
-        /* Reset logo dan text positioning di desktop */
-        .hero-logo,
-        .hero-text {
-            position: absolute !important;
-            width: auto;
-            display: block;
-            order: auto;
-        }
-
-        .hero-logo {
-            width: 11.93% !important;
-            animation: heroLogoFloat 6s ease-in-out infinite alternate;
-            will-change: transform;
-        }
-
-        .hero-logo-af {
-            animation-delay: 0s;
-        }
-
-        .hero-logo-ds {
-            animation-delay: 0.3s;
-        }
-
-        .hero-text {
-            text-align: center;
-            animation: heroTextFadeIn 0.8s ease-out forwards;
-            animation-delay: 0.4s;
-        }
-
-        /* Hide buttons di desktop */
-        .hero-button {
-            display: none !important;
-        }
-
-        .icon-ambalan-1 {
-            animation: heroIconFloat 8s ease-in-out infinite alternate;
-        }
-
-        .icon-ambalan-2 {
-            animation: heroIconFloat 10s ease-in-out infinite alternate;
-        }
-
-        @keyframes heroLogoFloat {
-            from {
-                transform: translateY(0);
+<script>
+function heroCarousel() {
+    return {
+        items: @json($heroItems),
+        active: 0,
+        timer: null,
+        init() {
+            if (this.items.length > 0) {
+                this.timer = setInterval(() => this.next(), 10000);
             }
-            to {
-                transform: translateY(-12px);
-            }
-        }
-
-        @keyframes heroIconFloat {
-            from {
-                transform: translateY(0);
-            }
-            to {
-                transform: translateY(-24px);
-            }
-        }
-
-        @keyframes heroTextFadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(12px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            .hero-logo,
-            .hero-text,
-            .icon-ambalan-1,
-            .icon-ambalan-2 {
-                animation: none !important;
-                transition: none !important;
+        },
+        next() {
+            if (this.items.length === 0) return;
+            this.active = (this.active + 1) % this.items.length;
+            this.resetTimer();
+        },
+        prev() {
+            if (this.items.length === 0) return;
+            this.active = (this.active - 1 + this.items.length) % this.items.length;
+            this.resetTimer();
+        },
+        goTo(index) {
+            if (this.items.length === 0) return;
+            this.active = index;
+            this.resetTimer();
+        },
+        resetTimer() {
+            clearInterval(this.timer);
+            if (this.items.length > 0) {
+                this.timer = setInterval(() => this.next(), 10000);
             }
         }
     }
-</style>
-
+}
+</script>

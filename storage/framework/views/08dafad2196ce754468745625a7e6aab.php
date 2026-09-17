@@ -48,7 +48,7 @@
                                 <div @click="selectedMember = (selectedMember === <?php echo e($index); ?> ? null : <?php echo e($index); ?>)"
                                     :class="selectedMember === <?php echo e($index); ?>
 
-                                        ? 'bg-[#183a2d] border-[#183a2d] ring-2 ring-[#183a2d]'
+                                        ? 'bg-[#0D1B2A] border-[#0D1B2A] ring-2 ring-[#0D1B2A]'
                                         : 'bg-white border-slate-200 hover:border-slate-300'"
                                     class="relative rounded-xl border p-1.5 cursor-pointer transition-all duration-300 select-none shadow-sm lg:scale-[0.96] lg:hover:scale-[0.97]">
                                     <div class="relative overflow-hidden rounded-lg aspect-square bg-slate-100">
@@ -63,12 +63,12 @@
 
                                         </h3>
                                         <p class="text-xs transition-colors mt-0.5"
-                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-emerald-300' : 'text-slate-500'">
+                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-sky-200' : 'text-slate-500'">
                                             <?php echo e($member['jabatan'] ?? 'Anggota'); ?>
 
                                         </p>
                                         <p class="mt-2 text-[11px] leading-relaxed transition-colors"
-                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-emerald-100' : 'text-slate-600'">
+                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-slate-200' : 'text-slate-600'">
                                             <?php echo e(Str::limit($description, 110)); ?>
 
                                         </p>

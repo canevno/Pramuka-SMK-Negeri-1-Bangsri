@@ -5,31 +5,16 @@
 <?php $__env->startSection('page-description', $description); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="space-y-6">
-    <div class="rounded-2xl border border-slate-200 bg-gradient-to-r from-slate-900 via-slate-800 to-indigo-900 p-6 text-white shadow-sm dark:border-slate-700">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div>
-                <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-300">Modul Admin</p>
-                <h2 class="mt-2 text-2xl font-bold text-white"><?php echo e($title); ?></h2>
-                <p class="mt-2 text-sm text-slate-300"><?php echo e($description); ?></p>
-            </div>
+    <style>
+        .prestasi-scrollbar-hidden {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
 
-            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(!empty($publicRoute) && !empty($publicLabel)): ?>
-                <a href="<?php echo e($publicRoute); ?>" target="_blank" class="inline-flex items-center justify-center gap-2 rounded-xl border border-white/20 bg-white/10 px-4 py-2.5 text-sm font-medium text-white transition hover:bg-white/15">
-                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
-                    <?php echo e($publicLabel); ?>
-
-                </a>
-            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
-        </div>
-    </div>
-
-    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('success')): ?>
-        <div class="flex items-center gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-800 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300">
-            <svg class="h-5 w-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-            <span><?php echo e(session('success')); ?></span>
-        </div>
-    <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+        .prestasi-scrollbar-hidden::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
 
     <?php
         $stats = [
@@ -42,7 +27,7 @@
 
     <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $stats; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex items-center justify-between">
                     <p class="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400"><?php echo e($stat['label']); ?></p>
                     <div class="rounded-xl bg-slate-100 p-2.5 text-slate-600 dark:bg-slate-800 dark:text-slate-300">
@@ -67,7 +52,7 @@
                 </span>
             </div>
 
-            <div class="overflow-x-auto">
+            <div class="prestasi-scrollbar-hidden overflow-x-auto">
                 <table class="min-w-full text-left text-sm text-slate-600 dark:text-slate-300">
                     <thead class="bg-slate-50 text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:bg-slate-800/50 dark:text-slate-400">
                         <tr>
@@ -80,7 +65,7 @@
                     </thead>
                     <tbody class="divide-y divide-slate-200 dark:divide-slate-800">
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $achievements ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $achievement): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
-                            <tr class="align-top transition hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                            <tr class="align-top dark:hover:bg-slate-800/40">
                                 <td class="px-5 py-4">
                                     <div class="font-semibold text-slate-900 dark:text-white"><?php echo e($achievement['title']); ?></div>
                                 </td>
@@ -93,14 +78,37 @@
                                 <td class="px-5 py-4"><?php echo e($achievement['year']); ?></td>
                                 <td class="px-5 py-4 text-slate-700 dark:text-slate-300"><?php echo e($achievement['winner']); ?></td>
                                 <td class="px-5 py-4 text-right">
-                                    <form method="POST" action="<?php echo e(route('admin.prestasi.delete', $achievement['id'])); ?>" onsubmit="return confirm('Apakah Anda yakin ingin menghapus prestasi ini? Tindakan ini tidak dapat dibatalkan.')" class="inline">
-                                        <?php echo csrf_field(); ?>
-                                        <?php echo method_field('DELETE'); ?>
-                                        <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-[11px] font-medium text-red-600 transition hover:border-red-300 hover:bg-red-100 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/15">
-                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                                            Hapus
+                                    <div class="flex justify-end gap-2">
+                                        <button type="button"
+                                            data-edit-id="<?php echo e($achievement['id']); ?>"
+                                            data-edit-title="<?php echo e($achievement['title']); ?>"
+                                            data-edit-category="<?php echo e($achievement['category']); ?>"
+                                            data-edit-year="<?php echo e($achievement['year']); ?>"
+                                            data-edit-winner="<?php echo e($achievement['winner']); ?>"
+                                            data-edit-winner-link="<?php echo e($achievement['winner_social_link'] ?? ''); ?>"
+                                            data-edit-description="<?php echo e($achievement['description'] ?? ''); ?>"
+                                            class="js-edit-achievement inline-flex items-center gap-1.5 rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-[11px] font-medium text-amber-700 transition hover:border-amber-300 hover:bg-amber-100 dark:border-amber-500/20 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/15">
+                                            <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-9.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 7.5-7.5z"></path></svg>
+                                            Edit
                                         </button>
-                                    </form>
+
+                                        <form method="POST" action="<?php echo e(route('admin.prestasi.duplicate', $achievement['id'])); ?>" class="inline">
+                                            <?php echo csrf_field(); ?>
+                                            <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[11px] font-medium text-emerald-700 transition hover:border-emerald-300 hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/15">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                                Duplikat
+                                            </button>
+                                        </form>
+
+                                        <form method="POST" action="<?php echo e(route('admin.prestasi.delete', $achievement['id'])); ?>" onsubmit="return confirm('Apakah Anda yakin ingin menghapus prestasi ini? Tindakan ini tidak dapat dibatalkan.')" class="inline">
+                                            <?php echo csrf_field(); ?>
+                                            <?php echo method_field('DELETE'); ?>
+                                            <button type="submit" class="inline-flex items-center gap-1.5 rounded-lg border border-red-200 bg-red-50 px-2.5 py-1.5 text-[11px] font-medium text-red-600 transition hover:border-red-300 hover:bg-red-100 dark:border-red-500/20 dark:bg-red-500/10 dark:text-red-300 dark:hover:bg-red-500/15">
+                                                <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
                                 </td>
                             </tr>
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
@@ -125,18 +133,19 @@
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Isi detail pencapaian baru.</p>
             </div>
 
-            <form method="POST" action="<?php echo e(route('admin.prestasi.store')); ?>" enctype="multipart/form-data" class="space-y-5 p-5">
+            <form method="POST" action="<?php echo e(route('admin.prestasi.store')); ?>" enctype="multipart/form-data" class="space-y-5 p-5" id="achievement-form">
                 <?php echo csrf_field(); ?>
+                <input type="hidden" name="edit_id" id="edit_id" value="">
 
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Judul Prestasi <span class="text-red-500">*</span></label>
-                    <input type="text" name="title" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Contoh: Juara 1 Lomba Pionering" />
+                    <input id="achievement_title" type="text" name="title" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Contoh: Juara 1 Lomba Pionering" />
                 </div>
 
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
                         <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Kategori <span class="text-red-500">*</span></label>
-                        <select name="category" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                        <select id="achievement_category" name="category" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                             <option value="">Pilih tingkat prestasi</option>
                             <option value="Tingkat Ranting">Tingkat Ranting</option>
                             <option value="Tingkat Cabang">Tingkat Cabang</option>
@@ -146,24 +155,24 @@
                     </div>
                     <div>
                         <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Tahun <span class="text-red-500">*</span></label>
-                        <input type="number" name="year" value="<?php echo e(now()->year); ?>" required min="2000" max="2100" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+                        <input id="achievement_year" type="number" name="year" value="<?php echo e(now()->year); ?>" required min="2000" max="2100" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
                     </div>
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Pemenang / Peserta <span class="text-red-500">*</span></label>
-                    <input type="text" name="winner" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Nama anggota atau regu" />
+                    <input id="achievement_winner" type="text" name="winner" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Nama anggota atau regu" />
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Link Media Sosial Pemenang</label>
-                    <input type="url" name="winner_social_link" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="https://instagram.com/username" />
+                    <input id="achievement_winner_link" type="url" name="winner_social_link" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="https://instagram.com/username" />
                     <p class="mt-1 text-[11px] text-slate-400">Kosongkan jika tidak ingin dihubungkan ke media sosial.</p>
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Deskripsi <span class="text-red-500">*</span></label>
-                    <textarea rows="4" name="description" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Tuliskan deskripsi singkat pencapaian..."></textarea>
+                    <textarea id="achievement_description" rows="4" name="description" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Tuliskan deskripsi singkat pencapaian..."></textarea>
                 </div>
 
                 <div>
@@ -195,9 +204,9 @@
                     <p class="mt-2 text-[11px] text-slate-400">Biarkan default jika tidak ada gambar khusus.</p>
                 </div>
 
-                <button type="submit" class="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
+                <button type="submit" id="achievement-submit-button" class="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                    Simpan Prestasi
+                    <span id="achievement-submit-label">Simpan Prestasi</span>
                 </button>
             </form>
         </div>
@@ -206,6 +215,49 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function () {
+        const form = document.getElementById('achievement-form');
+        const submitLabel = document.getElementById('achievement-submit-label');
+        const editId = document.getElementById('edit_id');
+        const titleInput = document.getElementById('achievement_title');
+        const categoryInput = document.getElementById('achievement_category');
+        const yearInput = document.getElementById('achievement_year');
+        const winnerInput = document.getElementById('achievement_winner');
+        const winnerLinkInput = document.getElementById('achievement_winner_link');
+        const descriptionInput = document.getElementById('achievement_description');
+
+        document.querySelectorAll('.js-edit-achievement').forEach(function (button) {
+            button.addEventListener('click', function () {
+                const id = button.dataset.editId;
+                const title = button.dataset.editTitle || '';
+                const category = button.dataset.editCategory || '';
+                const year = button.dataset.editYear || '<?php echo e(now()->year); ?>';
+                const winner = button.dataset.editWinner || '';
+                const winnerLink = button.dataset.editWinnerLink || '';
+                const description = button.dataset.editDescription || '';
+
+                editId.value = id;
+                titleInput.value = title;
+                categoryInput.value = category;
+                yearInput.value = year;
+                winnerInput.value = winner;
+                winnerLinkInput.value = winnerLink;
+                descriptionInput.value = description;
+
+                form.action = '<?php echo e(route('admin.prestasi.store')); ?>';
+                submitLabel.textContent = 'Perbarui Prestasi';
+                titleInput.focus();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+        });
+
+        form.addEventListener('submit', function () {
+            if (!editId.value) {
+                form.action = '<?php echo e(route('admin.prestasi.store')); ?>';
+                return;
+            }
+
+            form.action = '<?php echo e(route('admin.prestasi.store')); ?>';
+        });
         const uploadBox = document.getElementById('prestasi-upload-box');
         const input = document.getElementById('prestasi-image-input');
         const fileLabel = document.getElementById('prestasi-file-name');
@@ -225,14 +277,15 @@
                 return;
             }
 
-            const reader = new FileReader();
-            reader.onload = function (event) {
-                previewImage.src = event.target.result;
-                previewWrap.classList.remove('hidden');
-                emptyState.classList.add('hidden');
-                fileLabel.textContent = file.name;
+            const objectUrl = URL.createObjectURL(file);
+            previewImage.src = objectUrl;
+            previewWrap.classList.remove('hidden');
+            emptyState.classList.add('hidden');
+            fileLabel.textContent = file.name;
+
+            previewImage.onload = function () {
+                URL.revokeObjectURL(objectUrl);
             };
-            reader.readAsDataURL(file);
         };
 
         uploadBox.addEventListener('click', function (event) {
@@ -259,10 +312,15 @@
         });
 
         uploadBox.addEventListener('drop', function (event) {
+            event.preventDefault();
             const files = event.dataTransfer && event.dataTransfer.files;
             if (files && files.length) {
+                const file = files[0];
+                if (!file.type.startsWith('image/')) {
+                    return;
+                }
                 input.files = files;
-                updatePreview(files[0]);
+                updatePreview(file);
             }
         });
 

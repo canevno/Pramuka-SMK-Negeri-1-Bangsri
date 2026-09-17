@@ -76,7 +76,7 @@
                                 </span>
                             </td>
                             <td class="px-4 py-3">
-                                <div class="flex items-center gap-2">
+                                <div class="flex flex-wrap items-center gap-2">
                                     <form action="<?php echo e(route('admin.pembina.toggle', $pembina)); ?>" method="POST">
                                         <?php echo csrf_field(); ?>
                                         <button type="submit" class="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-[10px] font-semibold text-amber-700 hover:bg-amber-100">
@@ -84,6 +84,10 @@
 
                                         </button>
                                     </form>
+
+                                    <button type="button" onclick="document.getElementById('edit-pembina-<?php echo e($pembina->id); ?>').classList.toggle('hidden')" class="rounded-lg border border-indigo-200 bg-indigo-50 px-2.5 py-1.5 text-[10px] font-semibold text-indigo-700 hover:bg-indigo-100">
+                                        Edit
+                                    </button>
 
                                     <form action="<?php echo e(route('admin.pembina.delete', $pembina)); ?>" method="POST" onsubmit="return confirm('Hapus pembina ini?');">
                                         <?php echo csrf_field(); ?>
@@ -93,6 +97,36 @@
                                         </button>
                                     </form>
                                 </div>
+                            </td>
+                        </tr>
+
+                        <tr id="edit-pembina-<?php echo e($pembina->id); ?>" class="hidden bg-slate-50">
+                            <td colspan="5" class="px-4 py-4">
+                                <form action="<?php echo e(route('admin.pembina.update', $pembina)); ?>" method="POST" enctype="multipart/form-data" class="grid gap-3 md:grid-cols-2">
+                                    <?php echo csrf_field(); ?>
+                                    <?php echo method_field('PUT'); ?>
+
+                                    <input type="text" name="name" value="<?php echo e(old('name', $pembina->name)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Nama lengkap" required>
+                                    <input type="text" name="jabatan" value="<?php echo e(old('jabatan', $pembina->jabatan)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Jabatan" required>
+                                    <input type="text" name="phone" value="<?php echo e(old('phone', $pembina->phone)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Nomor telepon">
+                                    <input type="email" name="email" value="<?php echo e(old('email', $pembina->email)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Email">
+                                    <select name="status" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm">
+                                        <option value="Aktif" <?php echo e(old('status', $pembina->status) === 'Aktif' ? 'selected' : ''); ?>>Aktif</option>
+                                        <option value="Tidak aktif" <?php echo e(old('status', $pembina->status) === 'Tidak aktif' ? 'selected' : ''); ?>>Tidak aktif</option>
+                                    </select>
+                                    <input type="number" name="sort_order" value="<?php echo e(old('sort_order', $pembina->sort_order ?? 0)); ?>" min="0" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm" placeholder="Urutan">
+                                    <textarea name="bio" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm md:col-span-2" placeholder="Deskripsi singkat"><?php echo e(old('bio', $pembina->bio)); ?></textarea>
+                                    <input type="file" name="photo" accept="image/*" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm md:col-span-2">
+                                    <label class="inline-flex items-center gap-2 text-sm text-slate-600 md:col-span-2">
+                                        <input type="checkbox" name="is_active" value="1" <?php echo e(old('is_active', $pembina->is_active) ? 'checked' : ''); ?>>
+                                        Aktif dipublikasikan
+                                    </label>
+                                    <div class="flex justify-end gap-2 md:col-span-2">
+                                        <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500">
+                                            Simpan Perubahan
+                                        </button>
+                                    </div>
+                                </form>
                             </td>
                         </tr>
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>

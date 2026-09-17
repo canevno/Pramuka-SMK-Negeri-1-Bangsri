@@ -10,7 +10,7 @@ $achievements = App\Support\AchievementStore::byLevel('cabang');
                 <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-900 dark:text-white md:text-4xl">Capaian Prestasi Tingkat Kwartir Cabang</h1>
             </div>
             <a href="{{ route('achievement') }}" class="hidden md:inline-flex items-center rounded-lg bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
-                Kembali ke Semua Prestasi
+                Kembali ke Beranda
             </a>
         </div>
         @if($achievements)
@@ -23,7 +23,7 @@ $achievements = App\Support\AchievementStore::byLevel('cabang');
                     <article class="overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-slate-900 dark:border-slate-800 dark:bg-black dark:hover:border-white">
                         <button type="button" class="block w-full text-left" data-achievement-image="{{ $imageUrl }}" data-achievement-title="{{ addslashes($achievement['title'] ?? 'Prestasi') }}" data-achievement-category="{{ addslashes($achievement['category'] ?? 'Prestasi') }}" data-achievement-winner="{{ addslashes($achievement['winner'] ?? 'Anggota') }}" data-achievement-winning-link="{{ addslashes($winnerSocialLink) }}" data-achievement-description="{{ addslashes($achievement['description'] ?? 'Prestasi yang membanggakan.') }}" onclick="openAchievementModal(this)">
                             <div class="h-44 overflow-hidden bg-slate-100 dark:bg-slate-900 sm:h-48">
-                                <img src="{{ $imageUrl }}" alt="{{ $achievement['title'] }}" class="h-full w-full object-cover grayscale transition duration-500 hover:grayscale-0" />
+                                <img src="{{ $imageUrl }}" alt="{{ $achievement['title'] }}" class="h-full w-full object-cover transition duration-500" />
                             </div>
                             <div class="space-y-2 p-4">
                                 <div class="flex items-center justify-between gap-3">

@@ -24,7 +24,7 @@ $achievements = App\Support\AchievementStore::byLevel('ranting');
                     <article class="overflow-hidden rounded-xl border border-slate-200 bg-white transition hover:border-slate-900 dark:border-slate-800 dark:bg-black dark:hover:border-white">
                         <button type="button" class="block w-full text-left" data-achievement-image="<?php echo e($imageUrl); ?>" data-achievement-title="<?php echo e(addslashes($achievement['title'] ?? 'Prestasi')); ?>" data-achievement-category="<?php echo e(addslashes($achievement['category'] ?? 'Prestasi')); ?>" data-achievement-winner="<?php echo e(addslashes($achievement['winner'] ?? 'Anggota')); ?>" data-achievement-winning-link="<?php echo e(addslashes($winnerSocialLink)); ?>" data-achievement-description="<?php echo e(addslashes($achievement['description'] ?? 'Prestasi yang membanggakan.')); ?>" onclick="openAchievementModal(this)">
                             <div class="h-44 overflow-hidden bg-slate-100 dark:bg-slate-900 sm:h-48">
-                                <img src="<?php echo e($imageUrl); ?>" alt="<?php echo e($achievement['title']); ?>" class="h-full w-full object-cover grayscale transition duration-500 hover:grayscale-0" />
+                                <img src="<?php echo e($imageUrl); ?>" alt="<?php echo e($achievement['title']); ?>" class="h-full w-full object-cover transition duration-500" />
                             </div>
                             <div class="space-y-2 p-4">
                                 <div class="flex items-center justify-between gap-3">
@@ -81,7 +81,7 @@ $achievements = App\Support\AchievementStore::byLevel('ranting');
         <!-- Tombol Kembali Khusus Mobile (Paling Bawah) -->
         <div class="mt-10 flex justify-center md:hidden">
             <a href="<?php echo e(route('achievement')); ?>" class="inline-flex items-center rounded-lg bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
-                Kembali ke Semua Prestasi
+                Kembali ke Beranda
             </a>
         </div>
     </div>

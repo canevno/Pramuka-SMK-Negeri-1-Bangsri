@@ -55,6 +55,41 @@ it('allows admin to store a new pembina', function () {
     $this->assertDatabaseHas('pembinas', ['name' => 'Ibu Wati', 'jabatan' => 'Koordinator']);
 });
 
+it('allows admin to update a pembina', function () {
+    $admin = User::factory()->create([
+        'email' => 'admin-pembina-update@example.com',
+        'is_admin' => true,
+    ]);
+
+    $pembina = Pembina::query()->create([
+        'name' => 'Bapak Rahmat',
+        'jabatan' => 'Pembina Lama',
+        'status' => 'Aktif',
+        'is_active' => true,
+        'sort_order' => 4,
+    ]);
+
+    $this->actingAs($admin)
+        ->put(route('admin.pembina.update', $pembina), [
+            'name' => 'Bapak Rahmat Baru',
+            'jabatan' => 'Pembina Utama Baru',
+            'phone' => '08120000004',
+            'email' => 'rahmat.baru@example.com',
+            'status' => 'Aktif',
+            'bio' => 'Peran baru dalam pembinaan.',
+            'is_active' => true,
+            'sort_order' => 7,
+        ])
+        ->assertRedirect(route('admin.pembina'))
+        ->assertSessionHas('success');
+
+    $pembina->refresh();
+    expect($pembina->name)->toBe('Bapak Rahmat Baru');
+    expect($pembina->jabatan)->toBe('Pembina Utama Baru');
+    expect($pembina->bio)->toBe('Peran baru dalam pembinaan.');
+    expect($pembina->sort_order)->toBe(7);
+});
+
 it('allows admin to toggle and delete a pembina', function () {
     $admin = User::factory()->create([
         'email' => 'admin-pembina-actions@example.com',

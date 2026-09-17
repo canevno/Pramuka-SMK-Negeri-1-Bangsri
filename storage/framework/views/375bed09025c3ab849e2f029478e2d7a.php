@@ -189,6 +189,49 @@
                                         </svg>
                                     </button>
 
+                                    <button
+                                        type="button"
+                                        data-edit-item="<?php echo e(json_encode([
+                                            'id' => $item->id,
+                                            'title' => $item->title,
+                                            'category' => $item->category,
+                                            'location' => $item->location,
+                                            'image' => $item->image,
+                                            'description' => $item->description,
+                                            'alt_text' => $item->alt_text,
+                                            'published_at' => $item->published_at ? $item->published_at->format('Y-m-d') : '',
+                                            'is_published' => (bool) $item->is_published,
+                                            'is_featured' => (bool) $item->is_featured,
+                                            'edit_url' => route('admin.gallery.update', $item->id),
+                                        ])); ?>"
+                                        class="rounded-lg p-2 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400"
+                                        title="Edit album"
+                                        aria-label="Edit album"
+                                    >
+                                        <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.684.708.708-2.684a4.5 4.5 0 011.13-1.897L16.862 4.487zm0 0L19.5 7.125"/>
+                                        </svg>
+                                    </button>
+
+                                    <form
+                                        method="POST"
+                                        action="<?php echo e(route('admin.gallery.duplicate', $item->id)); ?>"
+                                        class="inline"
+                                        onsubmit="return confirm('Duplikasi album ini?')"
+                                    >
+                                        <?php echo csrf_field(); ?>
+                                        <button
+                                            type="submit"
+                                            class="rounded-lg p-2 text-gray-500 transition hover:bg-amber-50 hover:text-amber-600 dark:hover:bg-amber-950/40 dark:hover:text-amber-400"
+                                            title="Duplikat album"
+                                            aria-label="Duplikat album"
+                                        >
+                                            <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V8.625c0-.621.504-1.125 1.125-1.125h3.375m7.5 0h3.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 019.75 18.375v-3.375m6.75-10.5v6.75m-3.375-3.375h6.75"/>
+                                            </svg>
+                                        </button>
+                                    </form>
+
                                     <form
                                         method="POST"
                                         action="<?php echo e(route('admin.gallery.delete', $item->id)); ?>"
@@ -279,12 +322,14 @@
             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
             <form
+                id="galleryForm"
                 method="POST"
                 action="<?php echo e(route('admin.gallery.store')); ?>"
                 enctype="multipart/form-data"
                 class="grid grid-cols-1 gap-4 text-xs md:grid-cols-2"
             >
                 <?php echo csrf_field(); ?>
+                <input type="hidden" name="_method" id="galleryFormMethod" value="POST">
 
                 <div class="md:col-span-2">
                     <label for="title" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">
@@ -528,6 +573,7 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
                         Batal
                     </button>
                     <button
+                        id="gallerySubmitButton"
                         type="submit"
                         class="rounded-lg bg-indigo-600 px-5 py-2 font-semibold text-white shadow-sm transition hover:bg-indigo-700"
                     >
@@ -589,12 +635,97 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
     const dropzonePreviewImage = document.getElementById('dropzonePreviewImage');
     const dropzoneFileName = document.getElementById('dropzoneFileName');
     const dropzoneRemoveBtn = document.getElementById('dropzoneRemoveBtn');
+    const galleryForm = document.getElementById('galleryForm');
+    const galleryFormMethod = document.getElementById('galleryFormMethod');
+    const formModalTitle = document.getElementById('formModalTitle');
+    const gallerySubmitButton = document.getElementById('gallerySubmitButton');
 
     let previewObjectUrl = null;
     let toastTimer = null;
 
+    function resetGalleryForm() {
+        if (!galleryForm) return;
+
+        galleryForm.reset();
+        galleryForm.action = '<?php echo e(route('admin.gallery.store')); ?>';
+
+        if (galleryFormMethod) {
+            galleryFormMethod.value = 'POST';
+        }
+
+        if (gallerySubmitButton) {
+            gallerySubmitButton.textContent = 'Simpan';
+        }
+
+        if (formModalTitle) {
+            formModalTitle.textContent = 'Tambah Album Galeri';
+        }
+
+        clearImageFile();
+    }
+
+    function populateGalleryForm(item) {
+        if (!galleryForm || !item) return;
+
+        const fieldMap = {
+            title: item.title ?? '',
+            category: item.category ?? 'kegiatan',
+            location: item.location ?? '',
+            published_at: item.published_at ?? '',
+            alt_text: item.alt_text ?? '',
+            description: item.description ?? '',
+        };
+
+        Object.entries(fieldMap).forEach(([name, value]) => {
+            const field = galleryForm.querySelector(`[name="${name}"]`);
+            if (field) {
+                field.value = value ?? '';
+            }
+        });
+
+        const isPublishedField = galleryForm.querySelector('[name="is_published"]');
+        if (isPublishedField) {
+            isPublishedField.value = item.is_published === true || item.is_published === '1' || item.is_published === 1 ? '1' : '0';
+        }
+
+        const featuredField = galleryForm.querySelector('[name="is_featured"]');
+        if (featuredField) {
+            featuredField.checked = !!item.is_featured;
+        }
+
+        if (galleryFormMethod) {
+            galleryFormMethod.value = 'PUT';
+        }
+
+        if (gallerySubmitButton) {
+            gallerySubmitButton.textContent = 'Perbarui';
+        }
+
+        if (formModalTitle) {
+            formModalTitle.textContent = 'Edit Album Galeri';
+        }
+
+        if (item.image) {
+            const imageUrl = <?php echo json_encode($resolveImage(null), 15, 512) ?>;
+            const currentImage = item.image && item.image.startsWith('http') ? item.image : '<?php echo e(url('/')); ?>' + '/' + item.image.replace(/^\/+/, '');
+            dropzonePreviewImage.src = currentImage;
+            dropzoneFileName.textContent = item.title || 'Gambar album';
+            dropzonePlaceholder.classList.add('hidden');
+            dropzonePreview.classList.remove('hidden');
+            dropzonePreview.classList.add('flex');
+            imageFileInput.value = '';
+        } else {
+            clearImageFile();
+        }
+
+        if (item.edit_url) {
+            galleryForm.action = item.edit_url;
+        }
+    }
+
     function openFormModal() {
         if (!formModal) return;
+        resetGalleryForm();
         formModal.classList.remove('hidden');
         formModal.classList.add('flex');
         document.body.style.overflow = 'hidden';
@@ -602,6 +733,7 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
 
     function closeFormModal() {
         if (!formModal) return;
+        resetGalleryForm();
         formModal.classList.add('hidden');
         formModal.classList.remove('flex');
 
@@ -807,6 +939,18 @@ unset($__errorArgs, $__bag); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendB
         const previewButton = event.target.closest('[data-preview-image]');
         if (previewButton) {
             openImagePreview(previewButton.dataset.previewImage, previewButton.dataset.previewTitle);
+            return;
+        }
+
+        const editButton = event.target.closest('[data-edit-item]');
+        if (editButton) {
+            try {
+                const item = JSON.parse(editButton.dataset.editItem);
+                populateGalleryForm(item);
+                openFormModal();
+            } catch (error) {
+                console.error('Gagal memuat data album untuk edit.', error);
+            }
             return;
         }
 

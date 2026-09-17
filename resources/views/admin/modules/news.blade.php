@@ -5,31 +5,232 @@
 @section('page-description', $description)
 
 @section('content')
-    @include('admin.modules.partials.module-shell', [
-        'title' => $title,
-        'description' => $description,
-        'publicRoute' => $publicRoute ?? null,
-        'publicLabel' => $publicLabel ?? null,
-        'stats' => [
-            ['label' => 'Total Berita', 'value' => '24', 'caption' => 'Artikel aktif'],
-            ['label' => 'Draft', 'value' => '6', 'caption' => 'Belum diterbitkan'],
-            ['label' => 'Terbit', 'value' => '18', 'caption' => 'Sudah publik'],
-            ['label' => 'Kunjungan', 'value' => '3.2k', 'caption' => 'Bulan ini'],
-        ],
-        'table' => [
-            'headers' => ['Judul', 'Kategori', 'Status', 'Tanggal'],
-            'rows' => [
-                ['Pramuka Peduli Lingkungan', 'Sosial', 'Terbit', '08 Jan 2024'],
-                ['Latihan Navigasi Darat', 'Skills', 'Draft', '14 Jan 2024'],
-                ['Pelatihan Dasar Bantara', 'Training', 'Terbit', '21 Jan 2024'],
-            ],
-        ],
-        'formFields' => [
-            ['label' => 'Judul berita', 'placeholder' => 'Masukkan judul berita'],
-            ['label' => 'Kategori', 'placeholder' => 'Sosial / Akademik / Event'],
-            ['label' => 'Tanggal publikasi', 'type' => 'date'],
-            ['label' => 'Status', 'type' => 'select', 'options' => ['Draft', 'Terbit', 'Arsip']],
-            ['label' => 'Ringkasan', 'type' => 'textarea', 'full' => true, 'placeholder' => 'Tuliskan ringkasan berita'],
-        ],
-    ])
+    <section class="space-y-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+            <div>
+                <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">Modul Admin</p>
+                <h2 class="mt-2 text-2xl font-bold text-slate-900">{{ $title }}</h2>
+                <p class="mt-1 text-sm text-slate-500">{{ $description }}</p>
+            </div>
+
+            @if(!empty($publicRoute) && !empty($publicLabel))
+                <a href="{{ $publicRoute }}" class="inline-flex items-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100">
+                    {{ $publicLabel }}
+                </a>
+            @endif
+        </div>
+
+        @if(!empty($stats))
+            <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+                @foreach($stats as $stat)
+                    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                        <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">{{ $stat['label'] }}</p>
+                        <p class="mt-2 text-2xl font-bold text-slate-900">{{ $stat['value'] }}</p>
+                        <p class="mt-1 text-[11px] text-slate-500">{{ $stat['caption'] ?? 'Terbaru' }}</p>
+                    </div>
+                @endforeach
+            </div>
+        @endif
+
+        @if(session('success'))
+            <div class="rounded-2xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if($errors->any())
+            <div class="rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
+                <ul class="list-disc space-y-1 pl-5">
+                    @foreach($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5">
+            <div class="mb-4 flex items-center justify-between">
+                <h3 id="news-form-title" class="text-lg font-semibold text-slate-900">Formulir Berita</h3>
+                <span class="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold text-emerald-700">Siap diproses</span>
+            </div>
+
+            <form id="news-form" action="{{ route('admin.news.store') }}" method="POST" enctype="multipart/form-data" class="grid gap-4 md:grid-cols-2">
+                @csrf
+                <input type="hidden" name="_method" id="news-form-method" value="POST">
+                <input type="hidden" name="news_id" id="news-id" value="">
+                <input type="hidden" name="current_image_path" id="news-current-image-path" value="">
+
+                <label class="block">
+                    <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Judul berita</span>
+                    <input id="news-title" type="text" name="title" required class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500" placeholder="Masukkan judul berita" />
+                </label>
+
+                <label class="block">
+                    <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Kategori</span>
+                    <input id="news-type" type="text" name="type" required class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500" placeholder="Sosial / Prestasi / Kegiatan" />
+                </label>
+
+                <label class="block">
+                    <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Tanggal publikasi</span>
+                    <input id="news-published-at" type="date" name="published_at" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500" />
+                </label>
+
+                <label class="block">
+                    <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Urutan tampil</span>
+                    <input id="news-sort-order" type="number" name="sort_order" min="0" value="{{ $posts->max('sort_order') + 1 ?? 0 }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500" />
+                </label>
+
+                <label class="block">
+                    <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Status</span>
+                    <select id="news-status" name="is_published" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500">
+                        <option value="1">Terbit</option>
+                        <option value="0">Draft</option>
+                    </select>
+                </label>
+
+                <label class="block md:col-span-2">
+                    <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Ringkasan</span>
+                    <textarea id="news-excerpt" name="excerpt" rows="3" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500" placeholder="Tuliskan ringkasan berita"></textarea>
+                </label>
+
+                <label class="block md:col-span-2">
+                    <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Konten utama</span>
+                    <textarea id="news-content" name="content" rows="6" required class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500" placeholder="Tulis isi berita..."></textarea>
+                </label>
+
+                <label class="block md:col-span-2">
+                    <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Gambar utama</span>
+                    <input type="file" name="image" accept="image/*" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none focus:border-indigo-500" />
+                </label>
+
+                <div class="md:col-span-2 flex justify-end gap-3">
+                    <button id="cancel-edit-news" type="button" class="hidden items-center justify-center rounded-xl border border-slate-300 bg-white px-5 py-2.5 text-sm font-semibold text-slate-700 transition hover:bg-slate-100">
+                        Batal
+                    </button>
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-[#0D1B2A] px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-slate-800">
+                        <span id="news-submit-label">Simpan Berita</span>
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        @if($posts->isNotEmpty())
+            <div class="overflow-hidden rounded-2xl border border-slate-200">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-100 text-xs uppercase tracking-[0.12em] text-slate-600">
+                            <tr>
+                                <th class="px-4 py-3">Judul</th>
+                                <th class="px-4 py-3">Kategori</th>
+                                <th class="px-4 py-3">Status</th>
+                                <th class="px-4 py-3">Tanggal</th>
+                                <th class="px-4 py-3">Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody class="divide-y divide-slate-200 bg-white">
+                            @foreach($posts as $post)
+                                <tr>
+                                    <td class="px-4 py-3 font-medium text-slate-900">{{ $post->title }}</td>
+                                    <td class="px-4 py-3">{{ $post->type }}</td>
+                                    <td class="px-4 py-3">
+                                        <span class="inline-flex rounded-full px-2 py-1 text-[10px] font-semibold {{ $post->is_published ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
+                                            {{ $post->is_published ? 'Terbit' : 'Draft' }}
+                                        </span>
+                                    </td>
+                                    <td class="px-4 py-3">{{ $post->published_at?->translatedFormat('d M Y') ?? '-' }}</td>
+                                    <td class="px-4 py-3">
+                                        <div class="flex flex-wrap items-center gap-2">
+                                            <a href="{{ route('news') }}" class="text-xs font-semibold text-slate-600 hover:text-slate-900">Lihat</a>
+                                            <form action="{{ route('admin.news.duplicate', $post) }}" method="POST">
+                                                @csrf
+                                                <button type="submit" class="text-xs font-semibold text-indigo-600 hover:text-indigo-700">Duplikat</button>
+                                            </form>
+                                            <button type="button" data-post-id="{{ $post->id }}" data-title="{{ $post->title }}" data-type="{{ $post->type }}" data-excerpt="{{ $post->excerpt }}" data-content="{{ $post->content }}" data-is-published="{{ $post->is_published ? '1' : '0' }}" data-published-at="{{ $post->published_at?->format('Y-m-d') ?? '' }}" data-sort-order="{{ $post->sort_order ?? 0 }}" data-image-path="{{ $post->image_path ?? '' }}" class="js-edit-news text-xs font-semibold text-amber-600 hover:text-amber-700">Edit</button>
+                                            <form action="{{ route('admin.news.delete', $post) }}" method="POST" onsubmit="return confirm('Hapus berita ini?')">
+                                                @csrf
+                                                @method('DELETE')
+                                                <button type="submit" class="text-xs font-semibold text-red-600 hover:text-red-700">Hapus</button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const form = document.getElementById('news-form');
+            const formTitle = document.getElementById('news-form-title');
+            const submitLabel = document.getElementById('news-submit-label');
+            const cancelBtn = document.getElementById('cancel-edit-news');
+            const methodInput = document.getElementById('news-form-method');
+            const idInput = document.getElementById('news-id');
+            const titleInput = document.getElementById('news-title');
+            const typeInput = document.getElementById('news-type');
+            const excerptInput = document.getElementById('news-excerpt');
+            const contentInput = document.getElementById('news-content');
+            const publishedAtInput = document.getElementById('news-published-at');
+            const statusInput = document.getElementById('news-status');
+            const sortInput = document.getElementById('news-sort-order');
+            const currentImageInput = document.getElementById('news-current-image-path');
+
+            const resetForm = () => {
+                form.action = '{{ route('admin.news.store') }}';
+                methodInput.value = 'POST';
+                idInput.value = '';
+                currentImageInput.value = '';
+                formTitle.textContent = 'Formulir Berita';
+                submitLabel.textContent = 'Simpan Berita';
+                cancelBtn.classList.add('hidden');
+                cancelBtn.classList.remove('inline-flex');
+                form.reset();
+                sortInput.value = '{{ $posts->max('sort_order') + 1 ?? 0 }}';
+                statusInput.value = '1';
+            };
+
+            cancelBtn.addEventListener('click', resetForm);
+
+            document.querySelectorAll('.js-edit-news').forEach(function (button) {
+                button.addEventListener('click', function () {
+                    const postId = button.dataset.postId;
+                    const title = button.dataset.title || '';
+                    const type = button.dataset.type || '';
+                    const excerpt = button.dataset.excerpt || '';
+                    const content = button.dataset.content || '';
+                    const publishedAt = button.dataset.publishedAt || '';
+                    const isPublished = button.dataset.isPublished || '1';
+                    const sortOrder = button.dataset.sortOrder || '0';
+                    const imagePath = button.dataset.imagePath || '';
+
+                    form.action = '{{ url('/admin/news') }}/' + postId;
+                    methodInput.value = 'PUT';
+                    idInput.value = postId;
+                    currentImageInput.value = imagePath;
+                    formTitle.textContent = 'Edit Berita';
+                    submitLabel.textContent = 'Perbarui Berita';
+                    cancelBtn.classList.remove('hidden');
+                    cancelBtn.classList.add('inline-flex');
+
+                    titleInput.value = title;
+                    typeInput.value = type;
+                    excerptInput.value = excerpt;
+                    contentInput.value = content;
+                    publishedAtInput.value = publishedAt;
+                    statusInput.value = isPublished;
+                    sortInput.value = sortOrder;
+
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                });
+            });
+
+            form.addEventListener('submit', function () {
+                methodInput.value = methodInput.value || 'POST';
+            });
+        });
+    </script>
 @endsection

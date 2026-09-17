@@ -53,6 +53,41 @@ it('allows admin to store a new dewan ambalan', function () {
     $this->assertDatabaseHas('dewan_ambalans', ['name' => 'Ibu Lestari', 'jabatan' => 'Sekretaris Dewan Ambalan']);
 });
 
+it('allows admin to update a dewan ambalan', function () {
+    $admin = User::factory()->create([
+        'email' => 'admin-dewan-ambalan-update@example.com',
+        'is_admin' => true,
+    ]);
+
+    $member = DewanAmbalan::query()->create([
+        'name' => 'Bapak Yuda',
+        'jabatan' => 'Ketua Lama',
+        'status' => 'Aktif',
+        'is_active' => true,
+        'sort_order' => 4,
+    ]);
+
+    $this->actingAs($admin)
+        ->put(route('admin.dewan-ambalan.update', $member), [
+            'name' => 'Bapak Yuda Baru',
+            'jabatan' => 'Ketua Dewan Ambalan Baru',
+            'phone' => '08120000006',
+            'email' => 'yuda.baru@example.com',
+            'status' => 'Aktif',
+            'bio' => 'Tugas baru dalam pengelolaan program.',
+            'is_active' => true,
+            'sort_order' => 8,
+        ])
+        ->assertRedirect(route('admin.dewan-ambalan'))
+        ->assertSessionHas('success');
+
+    $member->refresh();
+    expect($member->name)->toBe('Bapak Yuda Baru');
+    expect($member->jabatan)->toBe('Ketua Dewan Ambalan Baru');
+    expect($member->bio)->toBe('Tugas baru dalam pengelolaan program.');
+    expect($member->sort_order)->toBe(8);
+});
+
 it('allows admin to toggle and delete a dewan ambalan', function () {
     $admin = User::factory()->create([
         'email' => 'admin-dewan-ambalan-actions@example.com',

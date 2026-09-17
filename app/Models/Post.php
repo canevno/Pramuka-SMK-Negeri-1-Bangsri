@@ -19,6 +19,7 @@ class Post extends Model
         'content',
         'published_at',
         'is_published',
+        'sort_order',
     ];
 
     protected $casts = [

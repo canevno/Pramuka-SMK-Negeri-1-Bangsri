@@ -76,7 +76,7 @@
                                     <div @click="selectedPembina = (selectedPembina === <?php echo e($pembina->id); ?> ? null : <?php echo e($pembina->id); ?>)"
                                         :class="selectedPembina === <?php echo e($pembina->id); ?>
 
-                                            ? 'bg-[#183a2d] border-[#183a2d] ring-2 ring-[#183a2d]'
+                                            ? 'bg-[#0D1B2A] border-[#0D1B2A] ring-2 ring-[#0D1B2A]'
                                             : 'bg-white border-slate-200 hover:border-slate-300'"
                                         class="relative rounded-xl border p-1.5 cursor-pointer transition-all duration-300 select-none shadow-sm lg:scale-[0.96] lg:hover:scale-[0.97]">
                                         <div class="relative overflow-hidden rounded-lg aspect-square bg-slate-100">
@@ -91,12 +91,12 @@
 
                                             </h3>
                                             <p class="text-[11px] transition-colors mt-0.5"
-                                               :class="selectedPembina === <?php echo e($pembina->id); ?> ? 'text-emerald-300' : 'text-slate-500'">
+                                               :class="selectedPembina === <?php echo e($pembina->id); ?> ? 'text-sky-200' : 'text-slate-500'">
                                                 <?php echo e($pembina->jabatan); ?>
 
                                             </p>
                                             <p class="mt-2 text-[10.5px] leading-relaxed transition-colors"
-                                               :class="selectedPembina === <?php echo e($pembina->id); ?> ? 'text-emerald-100' : 'text-slate-600'">
+                                               :class="selectedPembina === <?php echo e($pembina->id); ?> ? 'text-slate-200' : 'text-slate-600'">
                                                 <?php echo e(Str::limit($description, 100)); ?>
 
                                             </p>

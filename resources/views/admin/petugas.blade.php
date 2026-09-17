@@ -19,7 +19,7 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.petugas.store') }}" method="POST" class="mt-6 grid gap-4 md:grid-cols-5">
+        <form action="{{ route('admin.petugas.store') }}" method="POST" enctype="multipart/form-data" class="mt-6 grid gap-4 md:grid-cols-6">
             @csrf
             <div class="md:col-span-1">
                 <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Nama</label>
@@ -40,7 +40,11 @@
                     <option value="P">Perempuan</option>
                 </select>
             </div>
-            <div class="md:col-span-1 flex items-end">
+            <div class="md:col-span-2">
+                <label class="mb-1 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Foto Profil</label>
+                <input type="file" name="photo" accept="image/*" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 file:mr-3 file:rounded file:border-0 file:bg-emerald-100 file:px-2.5 file:py-1.5 file:text-xs file:font-semibold file:text-emerald-700 focus:border-emerald-500">
+            </div>
+            <div class="md:col-span-6 flex items-end">
                 <button type="submit" class="w-full rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white hover:bg-emerald-700">Tambah Petugas</button>
             </div>
         </form>
@@ -58,6 +62,7 @@
             <table class="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700">
                 <thead class="bg-slate-50">
                     <tr>
+                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Profil</th>
                         <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Nama Petugas</th>
                         <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">NTA</th>
                         <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Kelas Petugas</th>
@@ -69,6 +74,18 @@
                 <tbody class="divide-y divide-slate-200 bg-white">
                     @forelse($registeredPetugas as $item)
                         <tr>
+                            <td class="px-4 py-4">
+                                @php
+                                    $initials = strtoupper(substr($item->nama, 0, 2));
+                                @endphp
+                                @if(!empty($item->photo_url))
+                                    <img src="{{ asset($item->photo_url) }}" alt="Foto {{ $item->nama }}" class="h-11 w-11 rounded-full object-cover ring-2 ring-slate-200">
+                                @else
+                                    <div class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700 ring-2 ring-slate-200">
+                                        {{ $initials }}
+                                    </div>
+                                @endif
+                            </td>
                             <td class="px-4 py-4">{{ $item->nama }}</td>
                             <td class="px-4 py-4">{{ $item->nta }}</td>
                             <td class="px-4 py-4">{{ $item->kelas_petugas }}</td>
@@ -79,17 +96,26 @@
                                 </span>
                             </td>
                             <td class="px-4 py-4">
-                                <form action="{{ route('admin.petugas.toggle', $item->id) }}" method="POST">
-                                    @csrf
-                                    <button type="submit" class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                                        {{ $item->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                    </button>
-                                </form>
+                                <div class="flex items-center gap-2">
+                                    <form action="{{ route('admin.petugas.toggle', $item->id) }}" method="POST">
+                                        @csrf
+                                        <button type="submit" class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                                            {{ $item->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                        </button>
+                                    </form>
+
+                                    <form action="{{ route('admin.petugas.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus petugas ini?')">
+                                        @csrf
+                                        <button type="submit" class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100">
+                                            Hapus
+                                        </button>
+                                    </form>
+                                </div>
                             </td>
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada data petugas.</td>
+                            <td colspan="7" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada data petugas.</td>
                         </tr>
                     @endforelse
                 </tbody>
