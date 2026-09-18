@@ -1,17 +1,20 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Livewire\Settings\Profile;
+use App\Livewire\Settings\Appearance;
+use App\Livewire\Settings\Security;
 
 Route::middleware(['auth'])->group(function () {
     Route::redirect('settings', 'settings/profile');
 
-    Route::livewire('settings/profile', 'pages::settings.profile')->name('profile.edit');
+    Route::get('settings/profile', [Profile::class, 'render'])->name('profile.edit');
 });
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::livewire('settings/appearance', 'pages::settings.appearance')->name('appearance.edit');
+    Route::get('settings/appearance', [Appearance::class, 'render'])->name('appearance.edit');
 
-    Route::livewire('settings/security', 'pages::settings.security')
+    Route::get('settings/security', [Security::class, 'render'])
         ->middleware([
             'password.confirm',
         ])
