@@ -31,12 +31,12 @@
 <section class="bg-[#f8fafc] py-10 dark:bg-slate-950 transition-colors duration-200">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="mb-6 border-b border-slate-200 pb-4 text-center dark:border-slate-800 sm:flex sm:items-center sm:justify-between sm:text-left">
-            <h2 class="text-2xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
+            <h2 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
                 Berita &amp; Pengumuman Terkini
             </h2>
 
             <a href="<?php echo e(route('news')); ?>" class="mt-3 hidden items-center justify-center gap-2 rounded-xl bg-[#0D1B2A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#162b45] sm:mt-0 sm:flex">
-                <span>Lihat Semua</span>
+                <span>tampilkan Selengkapnya</span>
                 <svg class="h-4 w-4 transition-transform duration-200 group-hover:translate-x-1" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
                 </svg>
@@ -49,7 +49,7 @@
             </div>
         <?php else: ?>
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $newsItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $news): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $newsItems; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $news): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                     <article class="flex flex-col overflow-hidden rounded-lg border border-slate-300 bg-white transition duration-200 dark:border-slate-700 dark:bg-slate-900">
                         <a href="<?php echo e(route('berita.show', ['slug' => $news['slug'] ?? Str::slug($news['title'])])); ?>" class="block">
                             <div class="relative aspect-[16/11] w-full overflow-hidden rounded-t-lg bg-slate-100 dark:bg-slate-800">
@@ -99,13 +99,13 @@
                             </div>
                         </div>
                     </article>
-                <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
             </div>
         <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
         <div class="mt-6 flex justify-center sm:hidden">
             <a href="<?php echo e(route('news')); ?>" class="inline-flex items-center justify-center gap-2 rounded-xl bg-[#0D1B2A] px-6 py-3 text-sm font-semibold text-white shadow-sm transition-all hover:bg-[#162b45]">
-                <span>Lihat Semua</span>
+                <span>Tampilkan Selengkapnya</span>
                 <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/>
                 </svg>

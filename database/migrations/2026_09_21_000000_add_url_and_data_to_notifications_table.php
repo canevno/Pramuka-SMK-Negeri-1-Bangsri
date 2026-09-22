@@ -1,0 +1,40 @@
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::table('notifications', function (Blueprint $table) {
+            if (! Schema::hasColumn('notifications', 'url')) {
+                $table->string('url')->nullable()->after('type');
+            }
+
+            if (! Schema::hasColumn('notifications', 'data')) {
+                $table->json('data')->nullable()->after('url');
+            }
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::table('notifications', function (Blueprint $table) {
+            if (Schema::hasColumn('notifications', 'data')) {
+                $table->dropColumn('data');
+            }
+
+            if (Schema::hasColumn('notifications', 'url')) {
+                $table->dropColumn('url');
+            }
+        });
+    }
+};

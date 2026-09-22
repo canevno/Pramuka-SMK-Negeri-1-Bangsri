@@ -162,7 +162,7 @@ class AttendanceController extends Controller
             $cellB = isset($data[1]) ? trim($data[1]) : '';
             $cellC = isset($data[2]) ? trim($data[2]) : '';
 
-            if (preg_match('/^(PERINTIS|PENEGAS|PENCOBA|PENDOBRAK|PELAKSANA)\s+(\d+)\s*(PA|PI)?/i', $cellA, $matches)) {
+            if (preg_match('/^(PERINTIS|PENEGAS|PENCOBA|PENDOBRAK)\s+(\d+)\s*(PA|PI)?/i', $cellA, $matches)) {
                 $currentSangga = strtoupper($matches[1]);
                 $currentSubSangga = (string) $matches[2];
                 continue;
@@ -206,11 +206,13 @@ class AttendanceController extends Controller
             ->values()
             ->all();
 
+        $sangga = array_values(array_filter($sangga, fn ($value) => strtolower((string) $value) !== 'pelaksana'));
+
         if (! empty($sangga)) {
             return $sangga;
         }
 
-        return ['Perintis', 'Penegas', 'Pencoba', 'Pendobrak', 'Pelaksana'];
+        return ['Perintis', 'Penegas', 'Pencoba', 'Pendobrak'];
     }
 
     private function generateWeekLabel(string $bulan, string $tanggal, string $tahun): string

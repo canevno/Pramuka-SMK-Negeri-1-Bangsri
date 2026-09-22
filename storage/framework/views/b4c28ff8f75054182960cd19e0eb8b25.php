@@ -2,12 +2,31 @@
 
 <?php $__env->startSection('content'); ?>
 <div x-data="{ 
-    activeTab: 'kepanduan-dunia',
+    activeTab: '<?php echo e(request()->query('tab', 'kepanduan-dunia')); ?>',
+    syncTabFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const hash = window.location.hash.replace('#', '');
+        const key = params.get('tab') || hash || 'kepanduan-dunia';
+        const validTabs = {
+            'kepanduan-dunia': 'kepanduan-dunia',
+            'Dewan Ambalan': 'Dewan Ambalan',
+            'gerakan-pramuka': 'gerakan-pramuka',
+            'ad-art-munas-2023': 'ad-art-munas-2023',
+            'lambang': 'lambang',
+            'hymne-mars': 'hymne-mars',
+            'uu-pramuka': 'uu-pramuka'
+        };
+        this.activeTab = validTabs[key] || 'kepanduan-dunia';
+    },
     changeTab(tabName) {
         this.activeTab = tabName;
+        const url = new URL(window.location.href);
+        url.searchParams.set('tab', tabName);
+        url.hash = tabName;
+        window.history.replaceState({}, '', url);
         window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-}" class="bg-slate-50 text-slate-900 py-8 sm:py-16 min-h-screen">
+}" x-init="syncTabFromUrl()" class="bg-slate-50 text-slate-900 py-8 sm:py-16 min-h-screen">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-8 items-start">
@@ -71,8 +90,8 @@
             <main class="order-1 lg:order-2 lg:col-span-8 xl:col-span-9">
                 
                 <!-- 1. Kepanduan Dunia -->
-                <section x-show="activeTab === 'kepanduan-dunia'" class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                <section id="kepanduan-dunia" x-show="activeTab === 'kepanduan-dunia'" class="pb-2 sm:pb-12 space-y-6">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                         Kepanduan Dunia
                     </h2>
                     
@@ -146,7 +165,7 @@
 
                 <!-- 2. Kepanduan Indonesia -->
                 <section x-show="activeTab === 'kepanduan-indonesia'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
                         Kepanduan Indonesia
                     </h2>
 
@@ -185,8 +204,8 @@
 
 
                 <!-- 3. Gerakan Pramuka -->
-                <section x-show="activeTab === 'gerakan-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                <section id="gerakan-pramuka" x-show="activeTab === 'gerakan-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
                         Gerakan Pramuka
                     </h2>
 
@@ -237,9 +256,9 @@
 
 
                 <!-- 4. AD - ART Munas 2023 -->
-                <section x-show="activeTab === 'ad-art-munas-2023'" x-cloak class="pb-2 sm:pb-12 space-y-6">
+                <section id="ad-art-munas-2023" x-show="activeTab === 'ad-art-munas-2023'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                             AD - ART Munas 2023
                         </h2>
                         <!-- Tombol Desktop -->
@@ -271,9 +290,9 @@
 
 
                 <!-- 5. Lambang -->
-                <section x-show="activeTab === 'lambang'" x-cloak class="pb-2 sm:pb-12">
+                <section id="lambang" x-show="activeTab === 'lambang'" x-cloak class="pb-2 sm:pb-12">
                     <div class="space-y-6">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                             Lambang Gerakan Pramuka
                         </h2>
 
@@ -339,8 +358,8 @@
 
 
                 <!-- 6. Hymne dan Mars -->
-                <section x-show="activeTab === 'hymne-mars'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                <section id="hymne-mars" x-show="activeTab === 'hymne-mars'" x-cloak class="pb-2 sm:pb-12 space-y-6">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                         Hymne dan Mars Pramuka
                     </h2>
                     
@@ -406,9 +425,9 @@
 
 
                 <!-- 7. UU No 12 Tahun 2010 -->
-                <section x-show="activeTab === 'uu-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
+                <section id="uu-pramuka" x-show="activeTab === 'uu-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <div>
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                             Sejarah Terbitnya Undang-Undang Nomor 12 Tahun 2010
                         </h2>
                         <p class="mt-1 text-sm text-slate-500 font-semibold">
@@ -490,7 +509,7 @@
                     <!-- PDF Preview & Download UU No 12 Tahun 2010 -->
                     <div class="pt-6 space-y-4">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <h3 class="text-xl font-bold tracking-tight text-slate-950">
+                            <h3 class="text-xl font-semibold tracking-tight text-slate-950">
                                 Dokumen PDF UU No. 12 Tahun 2010
                             </h3>
                             <!-- Tombol Desktop -->
@@ -523,7 +542,7 @@
                     <!-- PDF Preview & Download Penjelasan UU No 12 Tahun 2010 -->
                     <div class="pt-6 space-y-4">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <h3 class="text-xl font-bold tracking-tight text-slate-950">
+                            <h3 class="text-xl font-semibold tracking-tight text-slate-950">
                                 Penjelasan Undang-undang Republik Indonesia Nomor 12 Tahun 2010 tentang Gerakan Pramuka
                             </h3>
                             <!-- Tombol Desktop -->

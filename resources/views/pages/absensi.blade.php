@@ -1,8 +1,8 @@
 @extends('layouts.frontend')
 
 @section('content')
-<div class="max-w-full mx-auto px-2 py-8 sm:px-4 lg:px-6">
-    <h1 class="text-2xl font-bold mb-4 text-center">Absensi Anggota Kelas X</h1>
+<div class="max-w-full mx-auto px-4 py-8 sm:px-4 lg:px-6">
+    <h1 class="text-2xl font-bold mb-4 text-center">ABSENSI ANGGOTA</h1>
 
     @if(session('absensi_success'))
         <div id="absensi-toast" class="fixed top-4 right-4 z-50 max-w-sm w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-lg text-slate-900 transition-all duration-300 ease-out">
@@ -28,23 +28,23 @@
             <form id="absensi-verify-form" action="{{ route('absensi.verify') }}" method="POST" class="space-y-4">
                 @csrf
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Nama Petugas <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Budi Santoso" value="{{ old('name') }}">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Nama Petugas</label>
+                    <input type="text" name="name" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none" placeholder="Contoh: Canevno" value="{{ old('name') }}">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Kelas Petugas <span class="text-red-500">*</span></label>
-                    <input type="text" name="kelas" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: X PPLG 1" value="{{ old('kelas') }}">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Kelas Petugas</label>
+                    <input type="text" name="kelas" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none" placeholder="Contoh: XI PPLG 1" value="{{ old('kelas') }}">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">NTA Petugas <span class="text-red-500">*</span></label>
-                    <input type="text" name="nta" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: 12345678" value="{{ old('nta') }}">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">NTA Petugas</label>
+                    <input type="text" name="nta" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none" placeholder="Contoh: 11.20.03.000000.0001" value="{{ old('nta') }}">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Pilih Ambalan <span class="text-red-500">*</span></label>
-                    <select name="ambalan" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Pilih Ambalan</label>
+                    <select name="ambalan" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none bg-white">
                         <option value="" disabled selected>-- Pilih Ambalan --</option>
                         <option value="PA" {{ old('ambalan') === 'PA' ? 'selected' : '' }}>Putra (PA)</option>
                         <option value="PI" {{ old('ambalan') === 'PI' ? 'selected' : '' }}>Putri (PI)</option>
@@ -52,11 +52,11 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Pilih Sangga <span class="text-red-500">*</span></label>
-                    <select name="sangga" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Pilih Sangga </label>
+                    <select name="sangga" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none bg-white">
                         <option value="" disabled selected>-- Pilih Sangga --</option>
                         @php
-                            $defaultSangga = ['Perintis', 'Penegas', 'Pencoba', 'Pendobrak', 'Pelaksana'];
+                            $defaultSangga = ['Perintis', 'Penegas', 'Pencoba', 'Pendobrak'];
                             $listSangga = (isset($sanggaList) && count($sanggaList) > 0) ? $sanggaList : $defaultSangga;
                         @endphp
                         @foreach($listSangga as $sanggaItem)
@@ -84,18 +84,10 @@
             $currentMonthName = $indoMonths[(int)date('n') - 1];
         @endphp
 
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 bg-emerald-50 p-4 border border-emerald-200 rounded-xl">
-            <div>
-                <p class="text-sm text-emerald-900">
-                    Petugas Aktif: <strong>{{ session('absensi_verified.name') }}</strong> 
-                    <span class="text-xs text-emerald-700">
-                        (NTA: {{ session('absensi_verified.nta') }} | Sangga: <strong>{{ session('absensi_verified.sangga') }}</strong> | Ambalan: <strong>{{ $ambalanLabel }}</strong>)
-                    </span>
-                </p>
-            </div>
+        <div class="mb-6 flex justify-end">
             <form action="{{ route('absensi.forget') }}" method="POST">
                 @csrf
-                <button type="submit" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition font-medium">Ganti Petugas</button>
+                <button type="submit" class="rounded-lg bg-[#0D1B2A] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-blue-900">Kembali Tahap 1</button>
             </form>
         </div>
 
@@ -191,7 +183,7 @@
                                     data-row-ambalan="{{ $student['ambalan'] ?? '' }}">
                                     
                                     <td class="px-1.5 sm:px-3 py-2 sm:py-3 text-[11px] sm:text-sm text-gray-800">
-                                        <div class="font-medium leading-tight break-words">{{ $studentName }}</div>
+                                        <div class="font-medium leading-tight wrap-break-word">{{ $studentName }}</div>
                                         <input type="hidden" name="participant_id[{{ $idx }}]" value="{{ $student['id'] ?? '' }}">
                                         <input type="hidden" name="participant_name[{{ $idx }}]" value="{{ $studentName }}">
                                         <input type="hidden" name="participant_kelas[{{ $idx }}]" value="{{ $student['kelas_asal_real'] ?? $student['kelas_asal'] ?? $student['kelas'] ?? session('absensi_verified.kelas', '') }}">
@@ -201,7 +193,7 @@
 
                                     {{-- Keterangan / Status --}}
                                     <td class="px-0.5 sm:px-3 py-2 sm:py-3">
-                                        <div class="grid grid-cols-4 gap-[2px] sm:gap-2">
+                                        <div class="grid grid-cols-4 gap-0.5 sm:gap-2">
                                             @foreach(['Hadir' => 'H', 'Izin' => 'I', 'Sakit' => 'S', 'Alpha' => 'A'] as $status => $label)
                                                 @php $radioId = "status_{$idx}_{$status}"; @endphp
                                                 <label for="{{ $radioId }}" class="cursor-pointer select-none">
@@ -216,7 +208,7 @@
 
                                     {{-- Iuran --}}
                                     <td class="px-0.5 sm:px-3 py-2 sm:py-3">
-                                        <div class="grid grid-cols-2 gap-[2px] sm:gap-2">
+                                        <div class="grid grid-cols-2 gap-0.5 sm:gap-2">
                                             @foreach(['Ya', 'Tidak'] as $iuranVal)
                                                 @php $iuranId = "iuran_{$idx}_{$iuranVal}"; @endphp
                                                 <label for="{{ $iuranId }}" class="cursor-pointer select-none">

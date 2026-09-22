@@ -4,63 +4,88 @@
 <section class="bg-slate-50 py-16 dark:bg-gray-950">
     <div class="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
         <div class="mb-10 text-center">
-            <p class="text-[11px] font-bold uppercase tracking-[0.28em] text-slate-500 dark:text-slate-400">Agenda & Kegiatan</p>
-            <h1 class="mt-4 text-3xl font-black tracking-tight text-slate-900 dark:text-white sm:text-4xl">Timeline Kegiatan Pramuka</h1>
+            <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">Timeline Kegiatan Pramuka</h1>
             <p class="mx-auto mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-300">
                 Daftar kegiatan, jadwal, dan momen penting yang tengah atau akan dilaksanakan oleh ambalan kami.
             </p>
         </div>
 
-        @if(($events ?? collect())->isNotEmpty())
-            <div class="space-y-6">
-                @foreach(($events ?? collect()) as $event)
-                    <article class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm transition hover:shadow-md dark:border-slate-800 dark:bg-slate-900">
-                        <div class="flex flex-col gap-5 md:flex-row md:items-start md:justify-between">
-                            <div class="flex-1">
-                                <div class="mb-3 flex flex-wrap items-center gap-2">
-                                    <span class="rounded-full bg-emerald-100 px-2.5 py-1 text-[10px] font-bold uppercase tracking-[0.16em] text-emerald-700">
-                                        {{ ucfirst($event->status ?? 'upcoming') }}
-                                    </span>
-                                    <span class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400">
-                                        {{ \Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y') }}
-                                    </span>
-                                </div>
+        @php
+            $now = \Illuminate\Support\Carbon::now()->startOfDay();
+            $allEvents = ($events ?? collect())->sortBy('date');
+            $upcoming = $allEvents->filter(fn($e) => \Illuminate\Support\Carbon::parse($e->date)->startOfDay()->greaterThanOrEqualTo($now));
+            $past = $allEvents->filter(fn($e) => \Illuminate\Support\Carbon::parse($e->date)->startOfDay()->lessThan($now));
+        @endphp
 
-                                <h2 class="text-2xl font-bold text-slate-900 dark:text-white">{{ $event->title }}</h2>
-
-                                <div class="mt-4 space-y-2 text-sm text-slate-600 dark:text-slate-300">
-                                    <div class="flex items-center gap-3">
-                                        <svg class="h-4 w-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 6v6l4 2M12 22a10 10 0 100-20 10 10 0 000 20z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                        <span>{{ $event->time ?? 'Waktu belum ditentukan' }}</span>
-                                    </div>
-                                    <div class="flex items-center gap-3">
-                                        <svg class="h-4 w-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6-5.686-8.5-9A5.5 5.5 0 0112 6.5 5.5 5.5 0 0120.5 12c-2.5 3.314-8.5 9-8.5 9z" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="12" r="2.5"/></svg>
-                                        <span>{{ $event->location }}</span>
-                                    </div>
-                                    @if(! empty($event->guide_url))
-                                        <div class="flex items-center gap-3">
-                                            <svg class="h-4 w-4 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 13a3 3 0 100-6 3 3 0 000 6zm-7 7a7 7 0 0114 0M5 20h14" stroke-linecap="round" stroke-linejoin="round"/></svg>
-                                            <a href="{{ $event->guide_url }}" target="_blank" rel="noopener noreferrer" class="font-medium text-emerald-600 underline decoration-emerald-400 underline-offset-4 hover:text-emerald-500">
-                                                Lihat panduan kegiatan
-                                            </a>
-                                        </div>
+        @if($upcoming->isNotEmpty())
+            <div class="mb-8">
+                <h2 class="mb-4 text-xl font-bold text-slate-900 dark:text-white">Upcoming Events</h2>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach($upcoming as $event)
+                        <article class="group overflow-hidden rounded-2xl border border-slate-300 bg-white transition hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+                            <div class="flex items-center justify-center py-6 bg-white">
+                                <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-2xl border border-slate-300 bg-white p-1 shadow-sm dark:border-slate-600 dark:bg-slate-900">
+                                    @php
+                                        $eventLogo = $event->logo_path ?? $event->image ?? null;
+                                    @endphp
+                                    @if(! empty($eventLogo))
+                                        @php
+                                            $logoSrc = preg_match('/^https?:\/\//', $eventLogo) ? $eventLogo : asset('storage/' . ltrim($eventLogo, '/'));
+                                        @endphp
+                                        <img src="{{ $logoSrc }}" alt="Logo Kegiatan" class="w-full h-full object-contain" onerror="this.style.display='none'" />
+                                    @else
+                                        <img src="{{ asset('images/logokegiatan2.png') }}" alt="Logo Kegiatan" class="w-full h-full object-contain" onerror="this.style.display='none'" />
                                     @endif
                                 </div>
                             </div>
-
-                            @if(! empty($event->theme))
-                                <div class="max-w-sm rounded-2xl border border-slate-200 bg-slate-50 p-4 text-sm italic text-slate-600 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                                    {{ $event->theme }}
+                            <div class="p-4">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ $event->title }}</h3>
+                                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ \Illuminate\Support\Str::limit($event->description ?? $event->excerpt ?? $event->theme ?? '', 120) }}</p>
+                                <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ \Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y') }} • {{ $event->time ?? 'Waktu' }}</p>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <a href="{{ route('event.show', ['id' => $event->id]) }}" class="inline-flex items-center gap-2 rounded-md bg-[#0D1B2A] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162b45]">[Informasi Lengkap]</a>
                                 </div>
-                            @endif
-                        </div>
-                    </article>
-                @endforeach
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
             </div>
-        @else
-            <div class="rounded-3xl border border-dashed border-slate-300 bg-white p-10 text-center dark:border-slate-700 dark:bg-slate-900">
-                <p class="text-lg font-semibold text-slate-900 dark:text-white">Belum ada timeline kegiatan.</p>
-                <p class="mt-2 text-sm text-slate-600 dark:text-slate-300">Silakan tambahkan jadwal kegiatan di panel admin untuk menampilkannya di sini.</p>
+        @endif
+
+        @if($past->isNotEmpty())
+            <div class="mt-10">
+                <h2 class="mb-4 text-xl font-bold text-slate-900 dark:text-white">Past events</h2>
+                <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+                    @foreach($past as $event)
+                        <article class="overflow-hidden rounded-lg border border-slate-300 bg-white dark:border-slate-800 dark:bg-slate-900">
+                            <div class="p-3">
+                                <div class="flex items-center justify-between">
+                                    <div class="min-w-0">
+                                        <h4 class="text-sm font-semibold text-slate-900 dark:text-white">{{ $event->title }}</h4>
+                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ \Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y') }}</p>
+                                        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ \Illuminate\Support\Str::limit($event->description ?? $event->excerpt ?? $event->theme ?? '', 120) }}</p>
+                                    </div>
+                                    <div class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-900 ml-4">
+                                        @php
+                                            $eventLogo = $event->logo_path ?? $event->image ?? null;
+                                        @endphp
+                                        @if(! empty($eventLogo))
+                                            @php
+                                                $logoSrc = preg_match('/^https?:\/\//', $eventLogo) ? $eventLogo : asset('storage/' . ltrim($eventLogo, '/'));
+                                            @endphp
+                                            <img src="{{ $logoSrc }}" alt="Logo Kegiatan" class="w-full h-full object-contain" onerror="this.style.display='none'" />
+                                        @else
+                                            <img src="{{ asset('images/logokegiatan2.png') }}" alt="Logo Kegiatan" class="w-full h-full object-contain" onerror="this.style.display='none'" />
+                                        @endif
+                                    </div>
+                                </div>
+                                <div class="mt-3 text-xs text-slate-600 dark:text-slate-400 flex gap-2">
+                                    <a href="{{ route('event.show', ['id' => $event->id]) }}" class="inline-flex items-center gap-2 rounded-md bg-[#0D1B2A] px-3 py-1 text-xs font-semibold text-white hover:bg-[#162b45]">[Informasi Lengkap]</a>
+                                </div>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
             </div>
         @endif
     </div>

@@ -39,7 +39,7 @@
                         </div>
                     <?php else: ?>
                         <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
                                     $image = $member['photo_url'] ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600';
                                     $description = trim((string) ($member['description'] ?? $member['bio'] ?? '')) ?: 'Alumni aktif yang terus mendukung dan menyalurkan semangat Pramuka untuk generasi berikutnya.';
@@ -48,12 +48,12 @@
                                 <div @click="selectedMember = (selectedMember === <?php echo e($index); ?> ? null : <?php echo e($index); ?>)"
                                     :class="selectedMember === <?php echo e($index); ?>
 
-                                        ? 'bg-[#183a2d] border-[#183a2d] ring-2 ring-[#183a2d]'
+                                        ? 'bg-[#0D1B2A] border-[#0D1B2A] ring-2 ring-[#0D1B2A]'
                                         : 'bg-white border-slate-200 hover:border-slate-300'"
                                     class="relative rounded-xl border p-1.5 cursor-pointer transition-all duration-300 select-none shadow-sm lg:scale-[0.96] lg:hover:scale-[0.97]">
                                     <div class="relative overflow-hidden rounded-lg aspect-square bg-slate-100">
                                         <img src="<?php echo e($image); ?>" alt="<?php echo e($member['name'] ?? 'Alumni'); ?>" class="w-full h-full object-cover transition duration-300"
-                                            :class="selectedMember === <?php echo e($index); ?> ? 'grayscale-0' : 'grayscale hover:grayscale-0'">
+                                            :class="selectedMember === <?php echo e($index); ?> ? 'grayscale-0' : 'grayscale-0'">
                                     </div>
 
                                     <div class="px-2 pt-2.5 pb-1">
@@ -63,18 +63,18 @@
 
                                         </h3>
                                         <p class="text-xs transition-colors mt-0.5"
-                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-emerald-300' : 'text-slate-500'">
+                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-sky-200' : 'text-slate-500'">
                                             <?php echo e($member['jabatan'] ?? 'Alumni'); ?>
 
                                         </p>
                                         <p class="mt-2 text-[11px] leading-relaxed transition-colors"
-                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-emerald-100' : 'text-slate-600'">
+                                           :class="selectedMember === <?php echo e($index); ?> ? 'text-slate-200' : 'text-slate-600'">
                                             <?php echo e(Str::limit($description, 110)); ?>
 
                                         </p>
                                     </div>
                                 </div>
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </div>
                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </div>

@@ -39,7 +39,7 @@
                         <input type="hidden" name="jenis_kelamin" id="jenisKelaminDropdownValue" required>
                         <div id="jenisKelaminDropdownOptions" class="absolute z-30 mt-2 hidden w-full overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg ring-1 ring-black ring-opacity-5 dark:border-slate-700 dark:bg-slate-900">
                             <button type="button" data-value="Laki-laki" class="w-full px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:outline-none dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white">Laki-laki</button>
-                            <button type="button" data-value="Perempuan" class="w-full px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:outline-none dark:text-slate-200 dark:hover:bg-slate-800 dark:hover=text-white">Perempuan</button>
+                            <button type="button" data-value="Perempuan" class="w-full px-4 py-3 text-left text-sm text-slate-700 transition hover:bg-slate-100 hover:text-slate-900 focus:bg-slate-100 focus:outline-none dark:text-slate-200 dark:hover:bg-slate-800 dark:hover:text-white">Perempuan</button>
                         </div>
                     </div>
                 </div>

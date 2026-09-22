@@ -3,7 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\BantaraRegistration; // Sesuaikan nama model Anda
+use App\Models\BantaraRegistration;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -40,6 +41,19 @@ class PendaftaranAdminController extends Controller
 
         $registration->update([
             'status_verifikasi' => $newStatus,
+        ]);
+
+        Notification::query()->create([
+            'title' => 'Status pendaftaran Bantara diperbarui',
+            'message' => 'Pendaftaran ' . $registration->nama . ' berstatus ' . ucfirst($request->status) . '.',
+            'type' => $request->status === 'approved' ? 'success' : ($request->status === 'rejected' ? 'warning' : 'info'),
+            'is_read' => false,
+            'url' => route('admin.pendaftaran'),
+            'data' => [
+                'registration_type' => 'bantara',
+                'registration_id' => $registration->id,
+                'status' => $request->status,
+            ],
         ]);
 
         return redirect()->back()->with('success', 'Status pendaftaran berhasil diperbarui!');

@@ -160,7 +160,7 @@ return [
     |
     */
 
-    'features' => [
+    'features' => array_filter([
         Features::registration(),
         Features::resetPasswords(),
         Features::emailVerification(),
@@ -169,9 +169,9 @@ return [
             'confirmPassword' => true,
             // 'window' => 0
         ]),
-        // Features::passkeys([
-        //     'confirmPassword' => true,
-        // ]),
-    ],
+        method_exists(Features::class, 'passkeys') ? Features::passkeys([
+            'confirmPassword' => true,
+        ]) : null,
+    ]),
 
 ];

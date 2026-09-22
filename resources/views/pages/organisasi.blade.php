@@ -6,7 +6,7 @@
         <div class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8 lg:p-10">
             <div class="mb-8 text-center">
                 <p class="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-[#0D1B2A]">Organisasi</p>
-                <h1 class="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Struktur dan Kepengurusan</h1>
+                <h1 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Struktur dan Kepengurusan</h1>
             </div>
 
             <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
@@ -26,7 +26,7 @@
                     <p class="mt-2 text-sm text-slate-600">Pengawas etika, integritas, dan pengambilan keputusan organisasi.</p>
                 </a>
 
-                <a href="{{ route('dewan-ambalan') }}" class="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-[#0D1B2A] hover:shadow-md">
+                <a id="dewan-ambalan" href="{{ route('dewan-ambalan') }}" class="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-[#0D1B2A] hover:shadow-md">
                     <div class="mb-4 overflow-hidden rounded-xl">
                         <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=900" alt="Dewan Ambalan" class="h-44 w-full object-cover transition duration-300 group-hover:scale-105">
                     </div>

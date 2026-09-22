@@ -110,7 +110,7 @@ if ($nextEvent === null && $latestEvent !== null) {
             <div class="order-1 flex-1 min-w-0 w-full md:w-auto">
 
                 {{-- Event title --}}
-                <h2 class="text-2xl md:text-3xl font-extrabold text-gray-900 dark:text-white leading-tight mb-3 md:mb-4 tracking-tight text-center md:text-left">
+                <h2 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl text-center md:text-left mb-3 md:mb-4">
                     {{ is_array($nextEvent) ? ($nextEvent['title'] ?? 'Kegiatan') : ($nextEvent->title ?? 'Kegiatan') }}
                 </h2>
 

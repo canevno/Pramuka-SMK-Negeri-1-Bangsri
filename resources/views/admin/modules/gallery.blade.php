@@ -525,7 +525,7 @@
 </div>
 
 {{-- Image Preview Modal --}}
-<div id="imagePreviewModal" class="fixed inset-0 z-[60] hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="imagePreviewTitle">
+<div id="imagePreviewModal" class="fixed inset-0 z-60 hidden items-center justify-center p-4" role="dialog" aria-modal="true" aria-labelledby="imagePreviewTitle">
     <div class="absolute inset-0 bg-slate-950/70" onclick="closeImagePreview()"></div>
 
     <div class="relative w-full max-w-3xl overflow-hidden rounded-xl border border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-gray-900">
@@ -555,7 +555,7 @@
 </div>
 
 {{-- Toast --}}
-<div id="toast" class="fixed bottom-5 right-5 z-[70] hidden rounded-lg bg-emerald-600 px-4 py-3 text-xs font-semibold text-white shadow-lg"></div>
+<div id="toast" class="fixed bottom-5 right-5 z-70 hidden rounded-lg bg-emerald-600 px-4 py-3 text-xs font-semibold text-white shadow-lg"></div>
 
 <script>
     const defaultImage = @json($resolveImage(null));
@@ -740,7 +740,7 @@
         if (!toast) return;
 
         toast.textContent = message;
-        toast.className = 'fixed bottom-5 right-5 z-[70] rounded-lg px-4 py-3 text-xs font-semibold text-white shadow-lg transition';
+        toast.className = 'fixed bottom-5 right-5 z-70 rounded-lg px-4 py-3 text-xs font-semibold text-white shadow-lg transition';
         toast.classList.add(type === 'error' ? 'bg-red-600' : 'bg-emerald-600');
 
         clearTimeout(toastTimer);

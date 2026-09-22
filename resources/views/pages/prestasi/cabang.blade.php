@@ -7,9 +7,9 @@ $achievements = App\Support\AchievementStore::byLevel('cabang');
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="mb-8 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div class="text-center md:text-left">
-                <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-900 dark:text-white md:text-4xl">Capaian Prestasi Tingkat Kwartir Cabang</h1>
+                <h1 class="mt-2 text-3xl font-bold tracking-tight text-slate-900 dark:text-white md:text-4xl">Capaian Prestasi Tingkat Kwartir Cabang</h1>
             </div>
-            <a href="{{ route('achievement') }}" class="hidden md:inline-flex items-center rounded-lg bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
+            <a href="{{ route('home') }}" class="hidden md:inline-flex items-center rounded-lg bg-slate-900 px-5 py-2.5 text-xs font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
                 Kembali ke Beranda
             </a>
         </div>
@@ -77,8 +77,8 @@ $achievements = App\Support\AchievementStore::byLevel('cabang');
 
         <!-- Tombol Kembali Khusus Mobile (Paling Bawah) -->
         <div class="mt-10 flex justify-center md:hidden">
-            <a href="{{ route('achievement') }}" class="inline-flex items-center rounded-lg bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
-                Kembali ke Semua Prestasi
+            <a href="{{ route('home') }}" class="inline-flex items-center rounded-lg bg-slate-900 px-6 py-3 text-sm font-semibold text-white transition hover:bg-slate-800 dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
+                Kembali ke Beranda
             </a>
         </div>
     </div>

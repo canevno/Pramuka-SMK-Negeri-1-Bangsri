@@ -1,8 +1,8 @@
 
 
 <?php $__env->startSection('content'); ?>
-<div class="max-w-full mx-auto px-2 py-8 sm:px-4 lg:px-6">
-    <h1 class="text-2xl font-bold mb-4 text-center">Absensi Anggota Kelas X</h1>
+<div class="max-w-full mx-auto px-4 py-8 sm:px-4 lg:px-6">
+    <h1 class="text-2xl font-bold mb-4 text-center">ABSENSI ANGGOTA</h1>
 
     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(session('absensi_success')): ?>
         <div id="absensi-toast" class="fixed top-4 right-4 z-50 max-w-sm w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-lg text-slate-900 transition-all duration-300 ease-out">
@@ -29,23 +29,23 @@
             <form id="absensi-verify-form" action="<?php echo e(route('absensi.verify')); ?>" method="POST" class="space-y-4">
                 <?php echo csrf_field(); ?>
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Nama Petugas <span class="text-red-500">*</span></label>
-                    <input type="text" name="name" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: Budi Santoso" value="<?php echo e(old('name')); ?>">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Nama Petugas</label>
+                    <input type="text" name="name" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none" placeholder="Contoh: Canevno" value="<?php echo e(old('name')); ?>">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Kelas Petugas <span class="text-red-500">*</span></label>
-                    <input type="text" name="kelas" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: X PPLG 1" value="<?php echo e(old('kelas')); ?>">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Kelas Petugas</label>
+                    <input type="text" name="kelas" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none" placeholder="Contoh: XI PPLG 1" value="<?php echo e(old('kelas')); ?>">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">NTA Petugas <span class="text-red-500">*</span></label>
-                    <input type="text" name="nta" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none" placeholder="Contoh: 12345678" value="<?php echo e(old('nta')); ?>">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">NTA Petugas</label>
+                    <input type="text" name="nta" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none" placeholder="Contoh: 11.20.03.000000.0001" value="<?php echo e(old('nta')); ?>">
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Pilih Ambalan <span class="text-red-500">*</span></label>
-                    <select name="ambalan" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Pilih Ambalan</label>
+                    <select name="ambalan" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none bg-white">
                         <option value="" disabled selected>-- Pilih Ambalan --</option>
                         <option value="PA" <?php echo e(old('ambalan') === 'PA' ? 'selected' : ''); ?>>Putra (PA)</option>
                         <option value="PI" <?php echo e(old('ambalan') === 'PI' ? 'selected' : ''); ?>>Putri (PI)</option>
@@ -53,16 +53,16 @@
                 </div>
 
                 <div>
-                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Pilih Sangga <span class="text-red-500">*</span></label>
-                    <select name="sangga" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none bg-white">
+                    <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 mb-1">Pilih Sangga </label>
+                    <select name="sangga" required class="w-full border border-slate-300 p-2.5 rounded-lg text-sm text-slate-900 focus:ring-2 focus:ring-[#0D1B2A] focus:border-[#0D1B2A] outline-none bg-white">
                         <option value="" disabled selected>-- Pilih Sangga --</option>
                         <?php
-                            $defaultSangga = ['Perintis', 'Penegas', 'Pencoba', 'Pendobrak', 'Pelaksana'];
+                            $defaultSangga = ['Perintis', 'Penegas', 'Pencoba', 'Pendobrak'];
                             $listSangga = (isset($sanggaList) && count($sanggaList) > 0) ? $sanggaList : $defaultSangga;
                         ?>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $listSangga; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sanggaItem): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $listSangga; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $sanggaItem): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <option value="<?php echo e($sanggaItem); ?>" <?php echo e(old('sangga') === $sanggaItem || session('absensi_verified.sangga') === $sanggaItem ? 'selected' : ''); ?>><?php echo e($sanggaItem); ?></option>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </select>
                 </div>
 
@@ -85,18 +85,10 @@
             $currentMonthName = $indoMonths[(int)date('n') - 1];
         ?>
 
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3 mb-6 bg-emerald-50 p-4 border border-emerald-200 rounded-xl">
-            <div>
-                <p class="text-sm text-emerald-900">
-                    Petugas Aktif: <strong><?php echo e(session('absensi_verified.name')); ?></strong> 
-                    <span class="text-xs text-emerald-700">
-                        (NTA: <?php echo e(session('absensi_verified.nta')); ?> | Sangga: <strong><?php echo e(session('absensi_verified.sangga')); ?></strong> | Ambalan: <strong><?php echo e($ambalanLabel); ?></strong>)
-                    </span>
-                </p>
-            </div>
+        <div class="mb-6 flex justify-end">
             <form action="<?php echo e(route('absensi.forget')); ?>" method="POST">
                 <?php echo csrf_field(); ?>
-                <button type="submit" class="text-xs bg-red-600 hover:bg-red-700 text-white px-3 py-1.5 rounded-lg transition font-medium">Ganti Petugas</button>
+                <button type="submit" class="rounded-lg bg-[#0D1B2A] px-3 py-1.5 text-xs font-medium text-white transition hover:bg-blue-900">Kembali Tahap 1</button>
             </form>
         </div>
 
@@ -117,12 +109,12 @@
                         <svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.292l3.71-4.06a.75.75 0 111.1 1.02l-4.25 4.657a.75.75 0 01-1.1 0L5.21 8.27a.75.75 0 01.02-1.06z" clip-rule="evenodd" /></svg>
                     </div>
                     <div id="bulanDropdownOptions" class="absolute z-30 mt-2 hidden w-full max-h-60 overflow-auto rounded-lg border border-slate-200 bg-white shadow-lg ring-1 ring-black ring-opacity-5">
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $indoMonths; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $indoMonths; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $m): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <button type="button" data-bulan="<?php echo e($m); ?>" class="bulan-option w-full px-4 py-2 text-left text-sm text-slate-700 hover:bg-slate-100 focus:outline-none">
                                 <?php echo e($m); ?>
 
                             </button>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
                 </div>
 
@@ -157,7 +149,7 @@
                                 $rawSubList = ['1', '2', '3', '4', '5'];
                             }
                         ?>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $rawSubList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subItem): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $rawSubList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $subItem): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                             <?php
                                 $displayLabel = $namaSanggaAktif . ' ' . $subItem;
                             ?>
@@ -165,7 +157,7 @@
                                 <?php echo e($displayLabel); ?>
 
                             </button>
-                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
                 </div>
             </div>
@@ -182,7 +174,7 @@
                             </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = $roster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $student): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $roster; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $student): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
                                     $idx = $loop->index;
                                     $studentName = $student['nama'] ?? $student['name'] ?? '';
@@ -194,7 +186,7 @@
                                     data-row-ambalan="<?php echo e($student['ambalan'] ?? ''); ?>">
                                     
                                     <td class="px-1.5 sm:px-3 py-2 sm:py-3 text-[11px] sm:text-sm text-gray-800">
-                                        <div class="font-medium leading-tight break-words"><?php echo e($studentName); ?></div>
+                                        <div class="font-medium leading-tight wrap-break-word"><?php echo e($studentName); ?></div>
                                         <input type="hidden" name="participant_id[<?php echo e($idx); ?>]" value="<?php echo e($student['id'] ?? ''); ?>">
                                         <input type="hidden" name="participant_name[<?php echo e($idx); ?>]" value="<?php echo e($studentName); ?>">
                                         <input type="hidden" name="participant_kelas[<?php echo e($idx); ?>]" value="<?php echo e($student['kelas_asal_real'] ?? $student['kelas_asal'] ?? $student['kelas'] ?? session('absensi_verified.kelas', '')); ?>">
@@ -204,8 +196,8 @@
 
                                     
                                     <td class="px-0.5 sm:px-3 py-2 sm:py-3">
-                                        <div class="grid grid-cols-4 gap-[2px] sm:gap-2">
-                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = ['Hadir' => 'H', 'Izin' => 'I', 'Sakit' => 'S', 'Alpha' => 'A']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                                        <div class="grid grid-cols-4 gap-0.5 sm:gap-2">
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = ['Hadir' => 'H', 'Izin' => 'I', 'Sakit' => 'S', 'Alpha' => 'A']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $status => $label): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <?php $radioId = "status_{$idx}_{$status}"; ?>
                                                 <label for="<?php echo e($radioId); ?>" class="cursor-pointer select-none">
                                                     <input type="radio" id="<?php echo e($radioId); ?>" name="status[<?php echo e($idx); ?>]" value="<?php echo e($status); ?>" class="peer sr-only" <?php echo e($status === 'Hadir' ? 'checked' : ''); ?> required>
@@ -214,14 +206,14 @@
 
                                                     </span>
                                                 </label>
-                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                         </div>
                                     </td>
 
                                     
                                     <td class="px-0.5 sm:px-3 py-2 sm:py-3">
-                                        <div class="grid grid-cols-2 gap-[2px] sm:gap-2">
-                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__currentLoopData = ['Ya', 'Tidak']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $iuranVal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                                        <div class="grid grid-cols-2 gap-0.5 sm:gap-2">
+                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = ['Ya', 'Tidak']; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $iuranVal): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <?php $iuranId = "iuran_{$idx}_{$iuranVal}"; ?>
                                                 <label for="<?php echo e($iuranId); ?>" class="cursor-pointer select-none">
                                                     <input type="radio" id="<?php echo e($iuranId); ?>" name="iuran[<?php echo e($idx); ?>]" value="<?php echo e($iuranVal); ?>" class="peer sr-only" <?php echo e($iuranVal === 'Ya' ? 'checked' : ''); ?> required>
@@ -230,12 +222,12 @@
 
                                                     </span>
                                                 </label>
-                                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                         </div>
                                     </td>
 
                                 </tr>
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                             <tr id="absensi-empty-row" class="hidden bg-white">
                                 <td colspan="3" class="px-3 py-6 text-center text-sm text-slate-500">Belum / tidak ada daftar anggota untuk Sub Sangga ini</td>
                             </tr>

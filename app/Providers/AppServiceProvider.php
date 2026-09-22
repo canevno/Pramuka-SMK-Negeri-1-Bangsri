@@ -31,8 +31,9 @@ class AppServiceProvider extends ServiceProvider
         // Provide notification data to all admin views if table exists
         if (Schema::hasTable('notifications')) {
             View::composer('admin.*', function ($view) {
-                $view->with('unreadNotifications', Notification::latest()->take(10)->get())
-                     ->with('unreadCount', Notification::where('is_read', false)->count());
+                $notifications = Notification::latest()->take(20)->get();
+                $view->with('unreadNotifications', $notifications)
+                     ->with('unreadCount', $notifications->where('is_read', false)->count());
             });
         }
     }

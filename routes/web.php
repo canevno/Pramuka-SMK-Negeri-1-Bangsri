@@ -208,12 +208,6 @@ Route::get('/alumni', function () {
     return view('pages.alumni', ['members' => $members]);
 })->name('alumni');
 
-Route::redirect('/prestasi', '/#prestasi')->name('achievement');
-Route::view('/prestasi/ranting', 'pages.prestasi.ranting')->name('prestasi.ranting');
-Route::view('/prestasi/cabang', 'pages.prestasi.cabang')->name('prestasi.cabang');
-Route::view('/prestasi/jateng', 'pages.prestasi.jateng')->name('prestasi.jateng');
-Route::view('/prestasi/nasional', 'pages.prestasi.nasional')->name('prestasi.nasional');
-
 Route::get('/event', function () {
     $events = \Illuminate\Support\Facades\Schema::hasTable('timeline_events')
         ? \App\Models\TimelineEvent::query()
@@ -225,6 +219,8 @@ Route::get('/event', function () {
 
     return view('pages.event', compact('events'));
 })->name('event');
+
+Route::get('/event/{id}', [\App\Http\Controllers\Admin\ModuleController::class, 'showTimelineEvent'])->name('event.show');
 
 Route::view('/artikel', 'pages.article')->name('article');
 
@@ -256,11 +252,6 @@ Route::get('/search', function (Illuminate\Http\Request $request) {
         ['title' => 'Dewan Ambalan', 'route' => route('dewan-ambalan'), 'keywords' => 'dewan ambalan pengurus ambalan'],
         ['title' => 'Pengurus Aktif', 'route' => route('active-board'), 'keywords' => 'pengurus aktif anggota dewan'],
         ['title' => 'Alumni', 'route' => route('alumni'), 'keywords' => 'alumni mantan anggota'],
-        ['title' => 'Prestasi', 'route' => route('achievement'), 'keywords' => 'prestasi juara lomba tingkat nasional daerah'],
-        ['title' => 'Prestasi Ranting', 'route' => route('prestasi.ranting'), 'keywords' => 'prestasi ranting juara lomba tingkat ranting'],
-        ['title' => 'Prestasi Cabang', 'route' => route('prestasi.cabang'), 'keywords' => 'prestasi cabang juara lomba tingkat cabang'],
-        ['title' => 'Prestasi Jateng', 'route' => route('prestasi.jateng'), 'keywords' => 'prestasi jateng juara lomba provinsi'],
-        ['title' => 'Prestasi Nasional', 'route' => route('prestasi.nasional'), 'keywords' => 'prestasi nasional juara lomba nasional'],
         ['title' => 'Event', 'route' => route('event'), 'keywords' => 'event agenda kegiatan'],
         ['title' => 'Artikel', 'route' => route('article'), 'keywords' => 'artikel tulisan informasi edukasi'],
         ['title' => 'Berita', 'route' => route('news'), 'keywords' => 'berita informasi kegiatan'],
@@ -327,53 +318,10 @@ Route::get('/search', function (Illuminate\Http\Request $request) {
 })->name('search');
 
 Route::view('/pendaftaran-bantara', 'pages.pendaftaran-bantara')->name('pendaftaran-bantara');
-Route::post('/pendaftaran-bantara', function (Illuminate\Http\Request $request) {
-    $request->validate([
-        'nama' => 'required|string',
-        'kelas' => 'required|string',
-        'jenis_kelamin' => 'required|string',
-        'rt' => 'required|string',
-        'rw' => 'required|string',
-        'kecamatan' => 'required|string',
-        'kabupaten' => 'required|string',
-        'tempat_tanggal_lahir' => 'required|string',
-        'motivasi' => 'required|string',
-        'whatsapp' => 'required|string',
-        'nomor_orang_tua' => 'required|string',
-        'surat_izin' => 'required|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
-    ]);
-
-    if ($request->hasFile('surat_izin') && $request->file('surat_izin')->isValid()) {
-        $request->file('surat_izin')->store('pendaftaran-bantara');
-    }
-
-    return redirect()->route('pendaftaran-bantara')->with('pendaftaran_success', 'Pendaftaran berhasil!');
-})->name('pendaftaran-bantara.submit');
+Route::post('/pendaftaran-bantara', [\App\Http\Controllers\BantaraRegistrationController::class, 'store'])->name('pendaftaran-bantara.submit');
 
 Route::view('/pendaftaran-laksana', 'pages.pendaftaran-laksana')->name('pendaftaran-laksana');
-Route::post('/pendaftaran-laksana', function (Illuminate\Http\Request $request) {
-    $request->validate([
-        'nama' => 'required|string',
-        'nta' => 'required|string',
-        'kelas' => 'required|string',
-        'jenis_kelamin' => 'required|string',
-        'rt' => 'required|string',
-        'rw' => 'required|string',
-        'kecamatan' => 'required|string',
-        'kabupaten' => 'required|string',
-        'tempat_tanggal_lahir' => 'required|string',
-        'motivasi' => 'required|string',
-        'whatsapp' => 'required|string',
-        'nomor_orang_tua' => 'required|string',
-        'surat_izin' => 'required|file|mimes:jpg,jpeg,png,webp,pdf|max:5120',
-    ]);
-
-    if ($request->hasFile('surat_izin') && $request->file('surat_izin')->isValid()) {
-        $request->file('surat_izin')->store('pendaftaran-laksana');
-    }
-
-    return redirect()->route('pendaftaran-laksana')->with('pendaftaran_success', 'Pendaftaran berhasil!');
-})->name('pendaftaran-laksana.submit');
+Route::post('/pendaftaran-laksana', [\App\Http\Controllers\LaksanaRegistrationController::class, 'store'])->name('pendaftaran-laksana.submit');
 
 Route::view('/kontak', 'pages.contact')->name('contact');
 
@@ -437,22 +385,16 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::post('/admin/petugas/{id}/toggle', [\App\Http\Controllers\Admin\PetugasController::class, 'toggle'])->name('admin.petugas.toggle');
     Route::post('/admin/petugas/{id}/destroy', [\App\Http\Controllers\Admin\PetugasController::class, 'destroy'])->name('admin.petugas.destroy');
 
-    Route::get('/admin/pendaftaran-laksana', function () {
-        return view('admin.section', [
-            'title' => 'Kelola Pendaftaran Laksana',
-            'description' => 'Kelola pendaftaran khusus peserta Laksana.',
-            'publicRoute' => route('pendaftaran-laksana'),
-            'publicLabel' => 'Lihat Halaman Pendaftaran Laksana',
-            'fields' => [
-                'Nama lengkap',
-                'Golongan',
-                'Asal sekolah / gugus',
-                'Tanggal lahir',
-                'Surat izin / dokumen',
-                'Status verifikasi',
-            ],
-        ]);
-    })->name('admin.pendaftaran-laksana');
+    Route::get('/admin/notifications', [\App\Http\Controllers\Admin\NotificationController::class, 'index'])->name('admin.notifications.index');
+    Route::get('/admin/notifications/{notification}/visit', [\App\Http\Controllers\Admin\NotificationController::class, 'visit'])->name('admin.notifications.visit');
+    Route::post('/admin/notifications/{notification}/read', [\App\Http\Controllers\Admin\NotificationController::class, 'markRead'])->name('admin.notifications.read');
+    Route::post('/admin/notifications/read-all', [\App\Http\Controllers\Admin\NotificationController::class, 'markAllRead'])->name('admin.notifications.read-all');
+
+    Route::get('/admin/pendaftaran-laksana', [\App\Http\Controllers\Admin\PendaftaranLaksanaAdminController::class, 'index'])->name('admin.pendaftaran-laksana');
+    Route::patch('/admin/pendaftaran-laksana/{id}/status', [\App\Http\Controllers\Admin\PendaftaranLaksanaAdminController::class, 'updateStatus'])->name('admin.pendaftaran-laksana.updateStatus');
+    Route::delete('/admin/pendaftaran-laksana/{id}', [\App\Http\Controllers\Admin\PendaftaranLaksanaAdminController::class, 'destroy'])->name('admin.pendaftaran-laksana.destroy');
+    Route::get('/admin/pendaftaran-laksana/{id}/surat', [\App\Http\Controllers\Admin\PendaftaranLaksanaAdminController::class, 'showSurat'])->name('admin.pendaftaran-laksana.surat');
+    Route::get('/admin/pendaftaran-laksana/{id}/download', [\App\Http\Controllers\Admin\PendaftaranLaksanaAdminController::class, 'downloadSurat'])->name('admin.pendaftaran-laksana.download');
 
     Route::get('/admin/pembina', [\App\Http\Controllers\Admin\ModuleController::class, 'pembina'])->name('admin.pembina');
     Route::post('/admin/pembina/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storePembina'])->name('admin.pembina.store');
@@ -491,116 +433,6 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::post('/admin/timeline/{timelineEvent}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleTimeline'])->name('admin.timeline.toggle');
     Route::delete('/admin/timeline/{timelineEvent}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteTimeline'])->name('admin.timeline.delete');
 
-    Route::get('/admin/prestasi', function () {
-        return view('admin.modules.prestasi', [
-            'title' => 'Kelola Prestasi',
-            'description' => 'Tambah dan kelola prestasi anggota.',
-            'publicRoute' => route('achievement'),
-            'publicLabel' => 'Lihat Halaman Prestasi',
-            'achievements' => App\Support\AchievementStore::all(),
-        ]);
-    })->name('admin.prestasi');
-
-    Route::post('/admin/prestasi/store', function (Illuminate\Http\Request $request) {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => ['required', 'string', 'in:Tingkat Ranting,Tingkat Cabang,Tingkat Jateng,Tingkat Nasional'],
-            'year' => 'required|integer|min:2000|max:2100',
-            'winner' => 'required|string|max:255',
-            'winner_social_link' => 'nullable|url|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable',
-            'image_path' => 'nullable|string|max:255',
-        ]);
-
-        $imagePath = $request->input('image_path', $request->input('image', 'images/achievement/prestasi1.jpg'));
-        $winnerSocialLink = $request->input('winner_social_link', '');
-
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file = $request->file('image');
-            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]+/', '-', strtolower(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))) . '.' . $file->getClientOriginalExtension();
-            $directory = public_path('images/achievement');
-
-            if (! is_dir($directory)) {
-                mkdir($directory, 0777, true);
-            }
-
-            $file->move($directory, $filename);
-            $imagePath = 'images/achievement/' . $filename;
-        }
-
-        if (is_string($imagePath) && trim($imagePath) === '') {
-            $imagePath = 'images/achievement/prestasi1.jpg';
-        }
-
-        $payload = $request->only(['title', 'category', 'year', 'winner', 'description']) + [
-            'image' => $imagePath,
-            'winner_social_link' => $winnerSocialLink,
-        ];
-
-        if ($request->filled('edit_id')) {
-            App\Support\AchievementStore::update((int) $request->input('edit_id'), $payload);
-
-            return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diperbarui.');
-        }
-
-        App\Support\AchievementStore::add($payload);
-
-        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil ditambahkan.');
-    })->name('admin.prestasi.store');
-
-    Route::put('/admin/prestasi/{id}/update', function (Illuminate\Http\Request $request, $id) {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'category' => ['required', 'string', 'in:Tingkat Ranting,Tingkat Cabang,Tingkat Jateng,Tingkat Nasional'],
-            'year' => 'required|integer|min:2000|max:2100',
-            'winner' => 'required|string|max:255',
-            'winner_social_link' => 'nullable|url|max:255',
-            'description' => 'required|string',
-            'image' => 'nullable',
-            'image_path' => 'nullable|string|max:255',
-        ]);
-
-        $imagePath = $request->input('image_path', 'images/achievement/prestasi1.jpg');
-        $winnerSocialLink = $request->input('winner_social_link', '');
-
-        if ($request->hasFile('image') && $request->file('image')->isValid()) {
-            $file = $request->file('image');
-            $filename = time() . '_' . preg_replace('/[^A-Za-z0-9\-_]+/', '-', strtolower(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME))) . '.' . $file->getClientOriginalExtension();
-            $directory = public_path('images/achievement');
-
-            if (! is_dir($directory)) {
-                mkdir($directory, 0777, true);
-            }
-
-            $file->move($directory, $filename);
-            $imagePath = 'images/achievement/' . $filename;
-        }
-
-        if (is_string($imagePath) && trim($imagePath) === '') {
-            $imagePath = 'images/achievement/prestasi1.jpg';
-        }
-
-        App\Support\AchievementStore::update((int) $id, $request->only(['title', 'category', 'year', 'winner', 'description']) + [
-            'image' => $imagePath,
-            'winner_social_link' => $winnerSocialLink,
-        ]);
-
-        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diperbarui.');
-    })->name('admin.prestasi.update');
-
-    Route::post('/admin/prestasi/{id}/duplicate', function ($id) {
-        App\Support\AchievementStore::duplicate((int) $id);
-
-        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diduplikasi.');
-    })->name('admin.prestasi.duplicate');
-
-    Route::delete('/admin/prestasi/{id}', function ($id) {
-        App\Support\AchievementStore::delete((int) $id);
-
-        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil dihapus.');
-    })->name('admin.prestasi.delete');
-
     Route::get('/admin/downloads', function () {
         return view('admin.section', [
             'title' => 'Kelola File Download',
@@ -615,66 +447,14 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
         ]);
     })->name('admin.downloads');
 
-    Route::get('/admin/pendaftaran', function () {
-        return view('admin.section', [
-            'title' => 'Kelola Pendaftaran',
-            'description' => 'Kelola form dan data pendaftaran peserta.',
-            'publicRoute' => route('pendaftaran-bantara'),
-            'publicLabel' => 'Lihat Halaman Pendaftaran Bantara',
-            'fields' => [
-                'Jenis pendaftaran',
-                'Nama peserta',
-                'Golongan',
-                'Sekolah / asal',
-                'Tanggal lahir',
-                'File surat izin',
-                'Status verifikasi',
-            ],
-        ]);
-    })->name('admin.pendaftaran');
+    Route::get('/admin/pendaftaran', [\App\Http\Controllers\Admin\PendaftaranAdminController::class, 'index'])->name('admin.pendaftaran');
+    Route::patch('/admin/pendaftaran/{id}/status', [\App\Http\Controllers\Admin\PendaftaranAdminController::class, 'updateStatus'])->name('admin.pendaftaran.updateStatus');
+    Route::delete('/admin/pendaftaran/{id}', [\App\Http\Controllers\Admin\PendaftaranAdminController::class, 'destroy'])->name('admin.pendaftaran.destroy');
+    Route::get('/admin/pendaftaran/{id}/surat', [\App\Http\Controllers\Admin\PendaftaranAdminController::class, 'showSurat'])->name('admin.pendaftaran.surat');
+    Route::get('/admin/pendaftaran/{id}/download', [\App\Http\Controllers\Admin\PendaftaranAdminController::class, 'downloadSurat'])->name('admin.pendaftaran.download');
 
-    Route::get('/admin/users', function () {
-        return view('admin.section', [
-            'title' => 'Pengguna/Admin',
-            'description' => 'Kelola akun pengguna dan hak akses admin.',
-            'fields' => [
-                'Nama lengkap',
-                'Email',
-                'Password',
-                'Role / hak akses',
-                'Status aktif',
-            ],
-        ]);
-    })->name('admin.users');
-
-    Route::get('/admin/settings', function () {
-        return view('admin.section', [
-            'title' => 'Pengaturan Website',
-            'description' => 'Atur konfigurasi umum website dan tampilan publik.',
-            'fields' => [
-                'Judul website',
-                'Deskripsi singkat',
-                'Logo situs',
-                'Warna brand',
-                'Kontak admin',
-            ],
-        ]);
-    })->name('admin.settings');
-
-    Route::get('/admin/comments', function () {
-        return view('admin.section', [
-            'title' => 'Kelola Komentar',
-            'description' => 'Review dan moderasi komentar pengguna.',
-            'fields' => [
-                'Nama pengirim',
-                'Email',
-                'Isi komentar',
-                'Status moderasi',
-                'Tanggal komentar',
-                'Balasan admin',
-            ],
-        ]);
-    })->name('admin.comments');
+    Route::get('/admin/settings', [\App\Http\Controllers\Admin\SiteSettingsController::class, 'index'])->name('admin.settings');
+    Route::post('/admin/settings', [\App\Http\Controllers\Admin\SiteSettingsController::class, 'store'])->name('admin.settings.store');
 });
 
 require __DIR__.'/settings.php';

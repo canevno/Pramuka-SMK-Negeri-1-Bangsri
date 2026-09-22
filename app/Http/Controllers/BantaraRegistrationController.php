@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\BantaraRegistration;
+use App\Models\Notification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
@@ -52,7 +53,7 @@ class BantaraRegistrationController extends Controller
         }
 
         // 3. Simpan data lengkap ke database
-        BantaraRegistration::create([
+        $registration = BantaraRegistration::create([
             'nama' => $validated['nama'],
             'kelas' => $validated['kelas'],
             'jenis_kelamin' => $jk, // Menyimpan nilai 'L'/'P' atau 'Laki-laki'/'Perempuan'
@@ -66,6 +67,18 @@ class BantaraRegistrationController extends Controller
             'nomor_orang_tua' => $validated['nomor_orang_tua'],
             'surat_izin_path' => $filePath,
             'status_verifikasi' => 'pending',
+        ]);
+
+        Notification::query()->create([
+            'title' => 'Pendaftaran Bantara baru',
+            'message' => 'Pendaftaran baru dari ' . $registration->nama . ' menunggu verifikasi admin.',
+            'type' => 'info',
+            'is_read' => false,
+            'url' => route('admin.pendaftaran'),
+            'data' => [
+                'registration_type' => 'bantara',
+                'registration_id' => $registration->id,
+            ],
         ]);
 
         // 4. Redirect kembali dengan pesan sukses

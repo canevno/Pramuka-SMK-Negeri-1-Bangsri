@@ -17,6 +17,7 @@ class TimelineEvent extends Model
         'time',
         'location',
         'guide_url',
+        'description',
         'theme',
         'status',
         'is_active',

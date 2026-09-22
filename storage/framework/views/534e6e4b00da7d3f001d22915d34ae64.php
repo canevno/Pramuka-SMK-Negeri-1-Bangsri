@@ -64,7 +64,7 @@
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-slate-200 bg-white">
-                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::openLoop(); ?><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $events ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::startLoopIteration(); ?><?php endif; ?>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $events ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
                             <td class="px-4 py-3 font-medium text-slate-900"><?php echo e($event->title); ?></td>
                             <td class="px-4 py-3"><?php echo e(\Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y')); ?><br><span class="text-[11px] text-slate-500"><?php echo e($event->time ?? 'Waktu belum diatur'); ?></span></td>
@@ -117,11 +117,12 @@
                                         <option value="ongoing" <?php echo e(old('status', $event->status) === 'ongoing' ? 'selected' : ''); ?>>Sedang berlangsung</option>
                                         <option value="completed" <?php echo e(old('status', $event->status) === 'completed' ? 'selected' : ''); ?>>Selesai</option>
                                     </select>
+                                    <textarea name="description" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm md:col-span-2" placeholder="Deskripsi singkat kegiatan (maks 500 karakter)"><?php echo e(old('description', $event->description)); ?></textarea>
                                     <textarea name="theme" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm md:col-span-2" placeholder="Tema kegiatan"><?php echo e(old('theme', $event->theme)); ?></textarea>
 
                                     <div class="md:col-span-2">
                                         <label class="block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500">Logo kegiatan</label>
-                                        <div class="mt-2 flex items-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-white p-3">
+                                        <div class="mt-2 flex items-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-white p-3 file-drop-zone">
                                             <input type="file" name="logo" accept="image/*" class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white">
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(! empty($event->logo_path)): ?>
                                                 <img src="<?php echo e(asset('storage/' . $event->logo_path)); ?>" alt="Logo kegiatan" class="h-12 w-12 rounded-xl object-cover border border-slate-200">
@@ -141,7 +142,7 @@
                                 </form>
                             </td>
                         </tr>
-                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::endLoop(); ?><?php endif; ?><?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><?php \Livewire\Features\SupportCompiledWireKeys\SupportCompiledWireKeys::closeLoop(); ?><?php endif; ?>
+                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
                             <td colspan="5" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada data timeline kegiatan.</td>
                         </tr>
@@ -179,9 +180,14 @@
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Urutan</span>
                 <input type="number" name="sort_order" value="0" min="0" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
             </label>
+                                        <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Deskripsi singkat (akan tampil di halaman utama dan halaman detail)</span>
+                                        <textarea name="description" rows="3" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" placeholder="Deskripsi singkat kegiatan (maks 500 karakter)"></textarea>
+                                    </label>
 
-            <label class="block md:col-span-2">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Lokasi</span>
+                                    <label class="block">
+                                        <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Tema kegiatan</span>
+                                        <textarea name="theme" rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" placeholder="Tuliskan tema atau motto kegiatan"></textarea>
+                                    </label>
                 <input type="text" name="location" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" placeholder="Masukkan lokasi kegiatan" required>
             </label>
 
@@ -212,14 +218,14 @@
                 <textarea name="theme" rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" placeholder="Tuliskan tema atau motto kegiatan"></textarea>
             </label>
 
-            <div class="md:col-span-2">
+                <div class="md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Logo kegiatan mendatang</span>
                 <div class="mt-2 rounded-2xl border-2 border-dashed border-slate-300 bg-white p-4 transition hover:border-indigo-400 dark:border-slate-700 dark:bg-slate-900">
-                    <label class="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-8 text-center dark:border-slate-700 dark:bg-slate-800">
+                    <label class="file-drop-zone flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-8 text-center dark:border-slate-700 dark:bg-slate-800">
                         <svg class="h-10 w-10 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 16V4m0 0l-4 4m4-4l4 4M5 18.5A2.5 2.5 0 007.5 21h9A2.5 2.5 0 0019 18.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
                         <div>
                             <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">Seret & lepas logo di sini</p>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">PNG, JPG, WEBP hingga 2 MB</p>
+                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">PNG, JPG, WEBP</p>
                         </div>
                         <input type="file" name="logo" accept="image/*" class="hidden">
                     </label>
@@ -235,5 +241,73 @@
     </div>
 </div>
 <?php $__env->stopSection(); ?>
+
+<?php $__env->startPush('scripts'); ?>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    document.querySelectorAll('.file-drop-zone').forEach(function (zone) {
+        var input = zone.querySelector('input[type=file]');
+        if (! input) return;
+
+        zone.addEventListener('dragover', function (e) {
+            e.preventDefault();
+            zone.classList.add('ring-2', 'ring-indigo-300');
+        });
+
+        ['dragleave', 'dragend', 'drop'].forEach(function(evt){
+            zone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                zone.classList.remove('ring-2', 'ring-indigo-300');
+            });
+        });
+
+        zone.addEventListener('drop', function (e) {
+            e.preventDefault();
+            var files = e.dataTransfer.files;
+            if (! files || files.length === 0) return;
+            try {
+                // Use DataTransfer to create a FileList we can assign
+                var dt = new DataTransfer();
+                for (var i = 0; i < files.length; i++) {
+                    dt.items.add(files[i]);
+                }
+                input.files = dt.files;
+
+                // Trigger change event
+                var ev = new Event('change', { bubbles: true });
+                input.dispatchEvent(ev);
+
+                // Show preview if possible
+                var file = input.files[0];
+                if (file) {
+                    var img = zone.querySelector('img');
+                    if (! img) {
+                        img = document.createElement('img');
+                        img.className = 'mt-3 h-12 w-12 rounded-xl object-contain border border-slate-200';
+                        zone.appendChild(img);
+                    }
+                    img.src = URL.createObjectURL(file);
+                }
+            } catch (err) {
+                console.warn('Could not set dropped files on input', err);
+            }
+        });
+
+        // When file input changes (via picker), show preview as well
+        input.addEventListener('change', function () {
+            var f = input.files && input.files[0];
+            if (! f) return;
+            var img = zone.querySelector('img');
+            if (! img) {
+                img = document.createElement('img');
+                img.className = 'mt-3 h-12 w-12 rounded-xl object-contain border border-slate-200';
+                zone.appendChild(img);
+            }
+            img.src = URL.createObjectURL(f);
+        });
+    });
+});
+</script>
+<?php $__env->stopPush(); ?>
 
 <?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views/admin/modules/timeline.blade.php ENDPATH**/ ?>

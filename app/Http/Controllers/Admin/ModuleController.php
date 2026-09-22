@@ -8,6 +8,7 @@ use App\Models\DewanAmbalan;
 use App\Models\GalleryItem;
 use App\Models\HeroSlide;
 use App\Models\Mitra;
+use App\Models\Setting;
 use App\Models\Pembina;
 use App\Models\Post;
 use App\Models\TimelineEvent;
@@ -132,89 +133,59 @@ class ModuleController extends Controller
 
     public function hero()
     {
-        $slides = collect();
+        $settings = [];
 
-        if (Schema::hasTable('hero_slides')) {
-            $slides = HeroSlide::query()
-                ->orderBy('sort_order')
-                ->orderByDesc('id')
-                ->get();
+        if (Schema::hasTable('settings')) {
+            $settings = Setting::query()->pluck('value', 'key')->all();
         }
 
         return view('admin.modules.hero', [
-            'title' => 'Kelola Hero Section',
-            'description' => 'Atur konten banner utama yang tampil di halaman depan website.',
+            'title' => 'Kelola Hero Frontend',
+            'description' => 'Upload 3 gambar utama yang akan tampil di homepage. Cukup upload gambar dan hapus bila diperlukan.',
             'publicRoute' => route('home'),
             'publicLabel' => 'Lihat Halaman Depan',
-            'slides' => $slides,
-            'stats' => [
-                ['label' => 'Total Slide', 'value' => (string) $slides->count(), 'caption' => 'Banner aktif dan draft'],
-                ['label' => 'Aktif', 'value' => (string) $slides->where('is_active', true)->count(), 'caption' => 'Tampil di beranda'],
-                ['label' => 'Nonaktif', 'value' => (string) $slides->where('is_active', false)->count(), 'caption' => 'Disembunyikan'],
-            ],
+            'settings' => $settings,
         ]);
     }
 
     public function storeHero(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'excerpt' => 'nullable|string|max:500',
-            'href' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
+        $request->validate([
+            'hero_image_1' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'hero_image_2' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'hero_image_3' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
         ]);
 
-        $slide = HeroSlide::query()->create([
-            'title' => $validated['title'],
-            'excerpt' => $validated['excerpt'] ?? null,
-            'href' => $validated['href'] ?? route('news'),
-            'image' => $this->resolveHeroImagePath($request),
-            'is_active' => (bool) ($validated['is_active'] ?? true),
-            'sort_order' => $validated['sort_order'] ?? HeroSlide::query()->max('sort_order') + 1,
-        ]);
+        foreach ([1, 2, 3] as $slot) {
+            $key = 'hero_image_' . $slot;
 
-        return redirect()->route('admin.hero')->with('success', 'Slide hero "' . $slide->title . '" berhasil ditambahkan.');
+            if ($request->hasFile($key)) {
+                $path = $request->file($key)->store('settings', 'public');
+                Setting::setValue($key, $path);
+                continue;
+            }
+
+            if ($request->boolean('remove_' . $key)) {
+                Setting::query()->where('key', $key)->delete();
+            }
+        }
+
+        return redirect()->route('admin.hero')->with('success', 'Gambar hero berhasil disimpan.');
     }
 
     public function updateHero(Request $request, HeroSlide $heroSlide)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'excerpt' => 'nullable|string|max:500',
-            'href' => 'nullable|string|max:255',
-            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-        ]);
-
-        $heroSlide->update([
-            'title' => $validated['title'],
-            'excerpt' => $validated['excerpt'] ?? null,
-            'href' => $validated['href'] ?? route('news'),
-            'image' => $request->hasFile('image') ? $this->resolveHeroImagePath($request) : ($heroSlide->image ?? null),
-            'is_active' => (bool) ($validated['is_active'] ?? $heroSlide->is_active),
-            'sort_order' => $validated['sort_order'] ?? $heroSlide->sort_order,
-        ]);
-
-        return redirect()->route('admin.hero')->with('success', 'Slide hero "' . $heroSlide->title . '" berhasil diperbarui.');
+        return redirect()->route('admin.hero')->with('success', 'Pengelolaan hero hanya menggunakan 3 gambar utama.');
     }
 
     public function toggleHero(HeroSlide $heroSlide)
     {
-        $heroSlide->update([
-            'is_active' => ! $heroSlide->is_active,
-        ]);
-
-        return redirect()->route('admin.hero')->with('success', 'Status slide hero berhasil diperbarui.');
+        return redirect()->route('admin.hero')->with('success', 'Pengelolaan hero hanya menggunakan 3 gambar utama.');
     }
 
     public function deleteHero(HeroSlide $heroSlide)
     {
-        $heroSlide->delete();
-
-        return redirect()->route('admin.hero')->with('success', 'Slide hero berhasil dihapus.');
+        return redirect()->route('admin.hero')->with('success', 'Pengelolaan hero hanya menggunakan 3 gambar utama.');
     }
 
     public function storeNews(Request $request)
@@ -573,10 +544,11 @@ class ModuleController extends Controller
             'location' => 'required|string|max:255',
             'guide_url' => 'nullable|url|max:255',
             'theme' => 'nullable|string',
+            'description' => 'nullable|string',
             'status' => 'nullable|string|in:upcoming,ongoing,completed',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp',
         ]);
 
         $logoPath = null;
@@ -584,7 +556,7 @@ class ModuleController extends Controller
             $logoPath = $request->file('logo')->store('timeline', 'public');
         }
 
-        TimelineEvent::query()->create([
+        $payload = [
             'title' => trim($validated['title']),
             'date' => $validated['date'],
             'time' => $validated['time'] ?? null,
@@ -595,7 +567,13 @@ class ModuleController extends Controller
             'status' => $validated['status'] ?? 'upcoming',
             'is_active' => (bool) ($validated['is_active'] ?? true),
             'sort_order' => (int) ($validated['sort_order'] ?? 0),
-        ]);
+        ];
+
+        if (Schema::hasColumn('timeline_events', 'description')) {
+            $payload['description'] = $validated['description'] ?? null;
+        }
+
+        TimelineEvent::query()->create($payload);
 
         return redirect()->route('admin.timeline')->with('success', 'Timeline kegiatan berhasil ditambahkan.');
     }
@@ -609,10 +587,11 @@ class ModuleController extends Controller
             'location' => 'required|string|max:255',
             'guide_url' => 'nullable|url|max:255',
             'theme' => 'nullable|string',
+            'description' => 'nullable|string',
             'status' => 'nullable|string|in:upcoming,ongoing,completed',
             'is_active' => 'nullable|boolean',
             'sort_order' => 'nullable|integer|min:0',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:2048',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp',
         ]);
 
         $logoPath = $timelineEvent->logo_path;
@@ -624,7 +603,7 @@ class ModuleController extends Controller
             $logoPath = $request->file('logo')->store('timeline', 'public');
         }
 
-        $timelineEvent->fill([
+        $payload = [
             'title' => trim($validated['title']),
             'date' => $validated['date'],
             'time' => $validated['time'] ?? $timelineEvent->time,
@@ -635,7 +614,13 @@ class ModuleController extends Controller
             'status' => $validated['status'] ?? $timelineEvent->status,
             'is_active' => (bool) ($validated['is_active'] ?? $timelineEvent->is_active),
             'sort_order' => (int) ($validated['sort_order'] ?? $timelineEvent->sort_order ?? 0),
-        ]);
+        ];
+
+        if (Schema::hasColumn('timeline_events', 'description')) {
+            $payload['description'] = $validated['description'] ?? $timelineEvent->description;
+        }
+
+        $timelineEvent->fill($payload);
 
         $timelineEvent->save();
 
@@ -655,6 +640,13 @@ class ModuleController extends Controller
         $timelineEvent->delete();
 
         return redirect()->route('admin.timeline')->with('success', 'Timeline kegiatan berhasil dihapus.');
+    }
+
+    public function showTimelineEvent($id)
+    {
+        $event = Schema::hasTable('timeline_events') ? TimelineEvent::query()->findOrFail($id) : abort(404);
+
+        return view('pages.event-detail', compact('event'));
     }
 
     public function pendaftaranLaksana()
@@ -1278,16 +1270,6 @@ class ModuleController extends Controller
         \App\Models\Student::query()->delete();
 
         return redirect()->route('admin.anggota')->with('success', 'Semua data anggota dewan berhasil dihapus.');
-    }
-
-    public function prestasi()
-    {
-        return view('admin.modules.prestasi', [
-            'title' => 'Kelola Prestasi',
-            'description' => 'Tambah dan kelola prestasi anggota.',
-            'publicRoute' => route('achievement'),
-            'publicLabel' => 'Lihat Halaman Prestasi',
-        ]);
     }
 
     public function downloads()

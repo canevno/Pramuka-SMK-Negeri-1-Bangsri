@@ -2,7 +2,7 @@
 
 @section('content')
 <div x-data="{ 
-    activeTab: 'ambalan',
+    activeTab: 'ambalan-fauzan',
     changeTab(tabName) {
         this.activeTab = tabName;
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -10,18 +10,18 @@
 }" class="bg-slate-50 text-slate-900 pt-4 pb-8 sm:pt-8 sm:pb-16 min-h-screen">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
 
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-4 lg:gap-5 items-start">
             
             <!-- SIDEBAR KIRI -->
-            <aside class="order-2 lg:order-1 lg:col-span-4 xl:col-span-3 sticky top-32 self-start z-20">
-                <nav class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm space-y-4">
+            <aside class="order-2 lg:order-1 lg:col-span-4 xl:col-span-3 lg:sticky lg:top-24 self-start z-20">
+                <nav class="space-y-2 bg-transparent p-0 shadow-none">
                     
                     <!-- Kategori: Profil -->
-                    <div class="border-b border-slate-100 pb-4">
-                        <span class="block px-3 py-1.5 text-base font-bold text-slate-950 mb-2">
+                    <div class="border-b border-slate-100 pb-2">
+                        <span class="block px-2.5 py-1 text-base font-bold text-slate-950 mb-1">
                             Profil
                         </span>
-                        <div class="space-y-1 pl-2">
+                        <div class="space-y-0.5 pl-2">
                             <button @click="changeTab('kepanduan-dunia')" 
                                 :class="activeTab === 'kepanduan-dunia' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
                                 class="w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition">
@@ -106,7 +106,7 @@
                 
                 <!-- 1. Kepanduan Dunia -->
                 <section x-show="activeTab === 'kepanduan-dunia'" class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 mb-4">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
                         Kepanduan Dunia
                     </h2>
                     
@@ -166,7 +166,7 @@
 
                 <!-- 2. Kepanduan Indonesia -->
                 <section x-show="activeTab === 'kepanduan-indonesia'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 mb-4">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
                         Kepanduan Indonesia
                     </h2>
 
@@ -200,7 +200,7 @@
 
                 <!-- 3. Gerakan Pramuka -->
                 <section x-show="activeTab === 'gerakan-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 mb-4">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
                         Gerakan Pramuka
                     </h2>
 
@@ -243,149 +243,48 @@
 
                 <!-- 4. Ambalan KH. Achmad Fauzan (Putra) -->
                 <section x-show="activeTab === 'ambalan-fauzan'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    
-                    <!-- KONTAINER LOGO & ICON -->
-                    <div class="flex items-end justify-center gap-6 sm:gap-16 -mt-4 sm:-mt-6 pt-0 pb-3 border-b border-slate-200/80">
-                        
-                        <!-- Icon Ambalan -->
-                        <div class="relative flex flex-col items-center overflow-hidden">
-                            <img src="{{ asset('images/logos/iconambalan1.png') }}" 
-                                 alt="Icon Ambalan Putra" 
-                                 class="h-64 sm:h-96 w-auto object-contain [mask-image:linear-gradient(to_bottom,black_75%,transparent_100%)] sm:[mask-image:linear-gradient(to_bottom,black_85%,transparent_100%)]">
-                            
-                            <div class="absolute bottom-0 inset-x-0 h-16 sm:h-10 bg-gradient-to-t from-slate-50 via-slate-50/80 to-transparent pointer-events-none"></div>
-                        </div>
-
-                        <!-- Logo Ambalan KH. Achmad Fauzan -->
-                        <div class="flex flex-col items-center pb-5 sm:pb-8">
+                    <div class="flex justify-center">
+                        <div class="overflow-hidden rounded-2xl bg-transparent p-1">
                             <img src="{{ asset('images/logos/aflogo.png') }}" 
                                  alt="Logo Ambalan KH. Achmad Fauzan" 
-                                 class="h-48 sm:h-68 w-auto object-contain -translate-y-1 sm:-translate-y-2">
+                                 class="mx-auto h-[180px] w-full max-w-[180px] object-contain sm:h-[220px] sm:max-w-[220px]">
                         </div>
-
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-4 text-justify text-slate-700 leading-relaxed">
-                        <strong class="block text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                        <strong class="block border-b border-slate-100 pb-3 text-xl font-bold text-slate-900">
                             Biografi Singkat KH. Achmad Fauzan
                         </strong>
-                        <p>
-                            <strong>KH. Achmad Fauzan</strong> merupakan salah satu tokoh ulama karismatik dan pejuang kemerdekaan terkemuka dari Jepara. Beliau dikenal sebagai sosok pendidik, pejuang syariat, dan pahlawan lokal yang gigih menentang penjajahan Belanda serta membela kedaulatan NKRI. 
-                        </p>
-                        <p>
-                            Semasa hidupnya, beliau tidak hanya mengajarkan ilmu-ilmu keagamaan dan moralitas di tengah masyarakat, tetapi juga aktif menggembleng para pemuda untuk memiliki keberanian fisik dan mental dalam mempertahankan kemerdekaan Indonesia. Ketegasan, kejujuran, dan kesederhanaan hidup beliau menjadi cermin utama karakter kepemimpinan Islam dan nasionalis.
-                        </p>
-                    </div>
-
-                    <div class="grid gap-6 md:grid-cols-2">
-                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
-                            <div class="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
-                                Visi Ambalan Putra
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900">Kader Penegak yang Tangguh & Berintegritas</h3>
-                            <p class="text-sm text-slate-600 leading-relaxed text-justify">
-                                Mewujudkan Pramuka Penegak Putra yang religius, berani membela kebenaran, berjiwa ksatria, serta memiliki kedisiplinan tinggi berlandaskan Tri Satya dan Dasa Darma.
+                        <div class="mt-4 space-y-4 text-justify text-base leading-relaxed text-slate-700">
+                            <p>
+                                <strong>KH. Achmad Fauzan</strong> merupakan salah satu tokoh ulama karismatik dan pejuang kemerdekaan terkemuka dari Jepara. Beliau dikenal sebagai sosok pendidik, pejuang syariat, dan pahlawan lokal yang gigih menentang penjajahan Belanda serta membela kedaulatan NKRI.
                             </p>
-                        </div>
-
-                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
-                            <div class="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
-                                Misi Utama
-                            </div>
-                            <ul class="space-y-2 text-sm text-slate-700">
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-600 shrink-0"></span>
-                                    <span>Menggembleng fisik dan mental anggota melalui ketangkasan lapangan dan teknik kepramukaan (<em>scout skill</em>).</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-600 shrink-0"></span>
-                                    <span>Menanamkan prinsip kepemimpinan tegas, adil, dan bertanggung jawab.</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-600 shrink-0"></span>
-                                    <span>Menumbuhkan jiwa kesetiakawanan sosial dan kesiapan berbakti bagi pangkalan serta masyarakat.</span>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-
-                    <div class="rounded-2xl border border-emerald-100 bg-emerald-50/60 p-6 sm:p-8 space-y-4">
-                        <h3 class="text-lg font-bold text-slate-900">Fokus Pembinaan Ambalan KH. Achmad Fauzan</h3>
-                        <div class="grid gap-4 sm:grid-cols-3">
-                            <div class="rounded-xl bg-white p-4 border border-emerald-100 shadow-xs">
-                                <strong class="block text-emerald-900 font-bold text-base mb-1">1. Religius & Moralitas</strong>
-                                <p class="text-xs text-slate-600 leading-relaxed">Menjadikan nilai-nilai keagamaan sebagai benteng utama dalam bersikap dan bertindak sehari-hari.</p>
-                            </div>
-                            <div class="rounded-xl bg-white p-4 border border-emerald-100 shadow-xs">
-                                <strong class="block text-emerald-900 font-bold text-base mb-1">2. Ketangkasan & Kemandirian</strong>
-                                <p class="text-xs text-slate-600 leading-relaxed">Melatih ketahanan fisik, survival, serta navigasi darat untuk kesiapan menghadapi tantangan luar ruangan.</p>
-                            </div>
-                            <div class="rounded-xl bg-white p-4 border border-emerald-100 shadow-xs">
-                                <strong class="block text-emerald-900 font-bold text-base mb-1">3. Leadership & Organisasi</strong>
-                                <p class="text-xs text-slate-600 leading-relaxed">Melatih manajemen Sangga, tata kelola kegiatan, dan kemampuan pengambilan keputusan dalam kondisi kritis.</p>
-                            </div>
+                            <p>
+                                Semasa hidupnya, beliau tidak hanya mengajarkan ilmu-ilmu keagamaan dan moralitas di tengah masyarakat, tetapi juga aktif menggembleng para pemuda untuk memiliki keberanian fisik dan mental dalam mempertahankan kemerdekaan Indonesia. Ketegasan, kejujuran, dan kesederhanaan hidup beliau menjadi cermin utama karakter kepemimpinan Islam dan nasionalis.
+                            </p>
                         </div>
                     </div>
                 </section>
 
                 <!-- 5. Ambalan Dewi Sartika (Putri) -->
                 <section x-show="activeTab === 'ambalan-sartika'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <header class="overflow-hidden rounded-2xl bg-gradient-to-r from-emerald-800 via-emerald-700 to-green-600 text-white shadow-md">
-                        <div class="flex flex-col sm:flex-row items-center gap-6 px-6 py-8 sm:px-10">
-                            <img src="{{ asset('images/logos/dslogo.png') }}" alt="Logo Ambalan Dewi Sartika" class="h-24 w-24 object-contain bg-white/10 p-2 rounded-xl backdrop-blur-sm shrink-0">
-                            <div class="text-center sm:text-left">
-                                <span class="text-xs font-bold uppercase tracking-[0.25em] text-emerald-200">Ambalan Putri • Gudep SMKN 1 Bangsri</span>
-                                <h1 class="mt-1 text-2xl font-black tracking-tight sm:text-4xl">
-                                    Dewi Sartika
-                                </h1>
-                                <p class="mt-2 text-sm text-emerald-100 max-w-2xl">
-                                    Meneladani semangat perintis pendidikan perempuan, kemandirian, dan kepedulian sosial pahlawan nasional Raden Dewi Sartika.
-                                </p>
-                            </div>
+                    <div class="flex justify-center">
+                        <div class="overflow-hidden rounded-2xl bg-transparent p-1">
+                            <img src="{{ asset('images/logos/dslogo.png') }}" alt="Logo Ambalan Dewi Sartika" class="mx-auto h-[180px] w-full max-w-[180px] object-contain sm:h-[220px] sm:max-w-[220px]">
                         </div>
-                    </header>
-
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-4 text-justify text-slate-700 leading-relaxed">
-                        <strong class="block text-xl font-bold text-slate-900 border-b border-slate-100 pb-3">
-                            Biografi Singkat Raden Dewi Sartika
-                        </strong>
-                        <p>
-                            <strong>Raden Dewi Sartika</strong> adalah salah satu tokoh perintis pendidikan bagi kaum perempuan di Indonesia. Beliau mendirikan *Sakola Istri* pada tahun 1904 di Bandung, yang menjadi pilar penting pembinaan keterampilan, moralitas, dan kemandirian wanita bumiputera.
-                        </p>
-                        <p>
-                            Perjuangan beliau menginspirasi pembentukan Ambalan Putri sebagai wadah untuk melatih Pramuka Penegak Putri agar berwawasan luas, terampil, berkarakter luhur, serta siap menjadi pelopor kebaikan di lingkungan keluarga dan masyarakat.
-                        </p>
                     </div>
 
-                    <div class="grid gap-6 md:grid-cols-2">
-                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
-                            <div class="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
-                                Visi Ambalan Putri
-                            </div>
-                            <h3 class="text-lg font-bold text-slate-900">Perempuan Muda Berkarakter & Mandiri</h3>
-                            <p class="text-sm text-slate-600 leading-relaxed text-justify">
-                                Mewujudkan Pramuka Penegak Putri yang berakhlak mulia, cerdas, kreatif, dan berdaya saing tinggi serta berlandaskan nilai Tri Satya dan Dasa Darma.
+                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                        <strong class="block border-b border-slate-100 pb-3 text-xl font-bold text-slate-900">
+                            Biografi Singkat Raden Dewi Sartika
+                        </strong>
+                        <div class="mt-4 space-y-4 text-justify text-base leading-relaxed text-slate-700">
+                            <p>
+                                <strong>Raden Dewi Sartika</strong> adalah salah satu tokoh perintis pendidikan bagi kaum perempuan di Indonesia. Beliau mendirikan <em>Sakola Istri</em> pada tahun 1904 di Bandung, yang menjadi pilar penting pembinaan keterampilan, moralitas, dan kemandirian wanita bumiputera.
                             </p>
-                        </div>
-
-                        <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm space-y-3">
-                            <div class="inline-block rounded-lg bg-emerald-100 px-3 py-1 text-xs font-bold uppercase tracking-wider text-emerald-800">
-                                Misi Utama
-                            </div>
-                            <ul class="space-y-2 text-sm text-slate-700">
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-600 shrink-0"></span>
-                                    <span>Menanamkan nilai kebangsaan, kedisiplinan, dan kesetiakawanan sosial.</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-600 shrink-0"></span>
-                                    <span>Mengembangkan kemampuan kepemimpinan, kerja sama, dan kecakapan hidup.</span>
-                                </li>
-                                <li class="flex items-start gap-2">
-                                    <span class="mt-1 h-1.5 w-1.5 rounded-full bg-emerald-600 shrink-0"></span>
-                                    <span>Menumbuhkan sikap mandiri, santun, serta tanggap terhadap isu kemasyarakatan.</span>
-                                </li>
-                            </ul>
+                            <p>
+                                Perjuangan beliau menginspirasi pembentukan Ambalan Putri sebagai wadah untuk melatih Pramuka Penegak Putri agar berwawasan luas, terampil, berkarakter luhur, serta siap menjadi pelopor kebaikan di lingkungan keluarga dan masyarakat.
+                            </p>
                         </div>
                     </div>
                 </section>
@@ -393,7 +292,7 @@
                 <!-- 6. AD - ART Munas 2023 -->
                 <section x-show="activeTab === 'ad-art-munas-2023'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                             AD - ART Munas 2023
                         </h2>
                         <a href="https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC" 
@@ -423,7 +322,7 @@
                 <!-- 7. Lambang -->
                 <section x-show="activeTab === 'lambang'" x-cloak class="pb-2 sm:pb-12">
                     <div class="space-y-6">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 mb-4">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                             Lambang Gerakan Pramuka
                         </h2>
 
@@ -481,13 +380,13 @@
 
                 <!-- 8. Hymne dan Mars -->
                 <section x-show="activeTab === 'hymne-mars'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 mb-4">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
                         Hymne dan Mars Pramuka
                     </h2>
                     
                     <div class="grid gap-6 sm:grid-cols-2">
                         <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3">
+                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
                                 Hymne Pramuka
                             </h3>
                             <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
@@ -509,7 +408,7 @@
                         </div>
 
                         <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3">
+                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
                                 Mars Jayalah Pramuka
                             </h3>
                             <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
@@ -536,7 +435,7 @@
                 <!-- 9. UU No 12 Tahun 2010 -->
                 <section x-show="activeTab === 'uu-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <div class="mb-4">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                             Sejarah Terbitnya Undang-Undang Nomor 12 Tahun 2010
                         </h2>
                         <p class="mt-1 text-sm text-slate-500 font-semibold">
@@ -604,7 +503,7 @@
 
                     <div class="pt-6 space-y-4">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <h3 class="text-xl font-bold tracking-tight text-slate-950">
+                            <h3 class="text-xl font-semibold tracking-tight text-slate-950">
                                 Dokumen PDF UU No. 12 Tahun 2010
                             </h3>
                             <a href="https://drive.google.com/uc?export=download&id=1XIAsjUAx-uDO_e1v68GqPSJhPFa43He0" 
@@ -633,7 +532,7 @@
 
                     <div class="pt-6 space-y-4">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <h3 class="text-xl font-bold tracking-tight text-slate-950">
+                            <h3 class="text-xl font-semibold tracking-tight text-slate-950">
                                 Penjelasan Undang-undang Republik Indonesia Nomor 12 Tahun 2010 tentang Gerakan Pramuka
                             </h3>
                             <a href="https://drive.google.com/uc?export=download&id=1AiHetcK-5IBjq4xFD6XGnoEyPF-1P_jK" 
@@ -667,14 +566,14 @@
                         <img src="{{ asset('kwarnaslogo.png') }}" 
                              alt="Logo Kwarnas" 
                              class="h-28 sm:h-40 w-auto object-contain shrink-0 order-1 sm:order-2">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
                             Visi, Misi, Dan Tujuan Kwartir Nasional (Kwarnas)
                         </h2>
                     </div>
 
                     <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-6 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
                         <div class="space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Visi Pengembangan Gerakan Pramuka
                             </h3>
                             <p>
@@ -689,7 +588,7 @@
                         </div>
 
                         <div class="space-y-4 pt-4 border-t border-slate-100">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Misi Perencanaan dan Pengembangan Gerakan Pramuka
                             </h3>
                             <p>
@@ -722,7 +621,7 @@
                         </div>
 
                         <div class="space-y-4 pt-4 border-t border-slate-100">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Tujuan Pengembangan Gerakan Pramuka
                             </h3>
                             <p>
@@ -760,14 +659,14 @@
                                  class="h-24 sm:h-36 w-auto object-contain">
                         </div>
                         
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
                             Visi, Misi, Dan Tujuan Ambalan Pangkalan
                         </h2>
                     </div>
 
                     <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-6 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
                         <div class="space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Visi Ambalan
                             </h3>
                             <p>
@@ -782,7 +681,7 @@
                         </div>
 
                         <div class="space-y-4 pt-4 border-t border-slate-100">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Misi Ambalan
                             </h3>
                             <p>
@@ -804,7 +703,7 @@
                         </div>
 
                         <div class="space-y-4 pt-4 border-t border-slate-100">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Tujuan Ambalan
                             </h3>
                             <p>

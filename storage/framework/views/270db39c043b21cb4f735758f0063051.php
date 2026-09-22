@@ -26,7 +26,7 @@
                     <p class="mt-2 text-sm text-slate-600">Pengawas etika, integritas, dan pengambilan keputusan organisasi.</p>
                 </a>
 
-                <a href="<?php echo e(route('dewan-ambalan')); ?>" class="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-[#0D1B2A] hover:shadow-md">
+                <a id="dewan-ambalan" href="<?php echo e(route('dewan-ambalan')); ?>" class="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-[#0D1B2A] hover:shadow-md">
                     <div class="mb-4 overflow-hidden rounded-xl">
                         <img src="https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=900" alt="Dewan Ambalan" class="h-44 w-full object-cover transition duration-300 group-hover:scale-105">
                     </div>
