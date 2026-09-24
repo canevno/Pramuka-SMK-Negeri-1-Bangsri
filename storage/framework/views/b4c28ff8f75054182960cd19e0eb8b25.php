@@ -95,11 +95,11 @@
                         Kepanduan Dunia
                     </h2>
                     
-                    <div class="mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-2 shadow-sm sm:max-w-[460px]">
-                        <div class="h-[180px] overflow-hidden rounded-xl bg-slate-100 sm:h-[210px]">
+                    <div class="mx-auto w-full max-w-[820px] overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 shadow-sm">
+                        <div class="h-[180px] overflow-hidden bg-slate-100 sm:h-[240px] lg:h-[300px]">
                             <img src="<?php echo e(asset('images/download.jpg')); ?>" 
                                  alt="Kepanduan Dunia - Baden Powell" 
-                                 class="h-full w-full object-contain object-center">
+                                 class="h-full w-full object-cover object-center">
                         </div>
                     </div>
 
@@ -366,7 +366,7 @@
                     <div class="grid gap-6 sm:grid-cols-2">
                         <!-- Card Hymne Pramuka -->
                         <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3">
+                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
                                 Hymne Pramuka
                             </h3>
                             
@@ -394,7 +394,7 @@
 
                         <!-- Card Mars Pramuka -->
                         <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3">
+                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
                                 Mars Jayalah Pramuka
                             </h3>
 

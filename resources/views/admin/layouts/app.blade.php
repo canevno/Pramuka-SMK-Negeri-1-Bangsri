@@ -6,8 +6,41 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     
     <title>@yield('title', $title ?? 'Dashboard Admin') - Scoutmind</title>
+
+    <script>
+        (function () {
+            function getStoredTheme() {
+                try {
+                    const savedTheme = localStorage.getItem('theme') || localStorage.getItem('color-theme');
+                    if (savedTheme === 'dark' || savedTheme === 'light') {
+                        return savedTheme;
+                    }
+                } catch (e) {}
+
+                return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+            }
+
+            function applyTheme(theme) {
+                const root = document.documentElement;
+                const isDark = theme === 'dark';
+                root.classList.toggle('dark', isDark);
+                root.style.colorScheme = isDark ? 'dark' : 'light';
+                try {
+                    localStorage.setItem('theme', theme);
+                    localStorage.setItem('color-theme', theme);
+                } catch (e) {}
+            }
+
+            applyTheme(getStoredTheme());
+
+            document.addEventListener('livewire:navigated', function () {
+                applyTheme(getStoredTheme());
+            });
+        })();
+    </script>
     
     @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @livewireScripts
 
     <style>
         /* Hide scrollbar di sidebar tapi tetap bisa scroll */
@@ -25,8 +58,20 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #1f2937; }
         
-        * {
-            transition: background-color 0.2s ease, border-color 0.2s ease;
+        /* Theme switching should feel instant; avoid global transitions across every element. */
+        html, body,
+        #admin-shell,
+        aside,
+        header,
+        nav,
+        main,
+        section,
+        button,
+        a,
+        input,
+        select,
+        textarea {
+            transition: background-color 0ms linear, border-color 0ms linear, color 0ms linear, box-shadow 0ms linear !important;
         }
 
         /* Sticky sidebar */
@@ -49,14 +94,23 @@
             flex-shrink: 0;
         }
 
-        /* Professional Sticky Navbar */
+        /* Professional Fixed Navbar */
         .navbar-sticky {
-            position: sticky;
+            position: fixed;
             top: 0;
-            z-index: 40;
+            left: 0;
+            right: 0;
+            z-index: 50;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
             border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+        }
+
+        @media (min-width: 1024px) {
+            .navbar-sticky {
+                left: 15rem;
+                width: calc(100% - 15rem);
+            }
         }
 
         .dark .navbar-sticky {
@@ -76,12 +130,66 @@
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
         }
 
+        html.dark,
+        .dark body,
+        .dark #admin-shell {
+            background-color: #0b1120 !important;
+            color: #e5e7eb !important;
+        }
+
+        .dark .bg-white,
+        .dark .bg-white\/90,
+        .dark .bg-slate-50,
+        .dark .bg-gray-50,
+        .dark .bg-gray-100,
+        .dark [class*="bg-white"],
+        .dark [class*="bg-slate-50"],
+        .dark [class*="bg-gray-50"],
+        .dark [class*="bg-gray-100"] {
+            background-color: #111827 !important;
+        }
+
+        .dark .border-gray-200,
+        .dark .border-slate-200,
+        .dark .dark\:border-gray-800,
+        .dark .dark\:border-slate-800,
+        .dark [class*="border-gray-200"],
+        .dark [class*="border-slate-200"] {
+            border-color: rgba(148, 163, 184, 0.2) !important;
+        }
+
+        .dark .text-gray-900,
+        .dark .text-slate-900,
+        .dark [class*="text-gray-900"],
+        .dark [class*="text-slate-900"] {
+            color: #f8fafc !important;
+        }
+
+        .dark .text-gray-700,
+        .dark .text-slate-700,
+        .dark [class*="text-gray-700"],
+        .dark [class*="text-slate-700"] {
+            color: #d1d5db !important;
+        }
+
     </style>
 </head>
-<body id="admin-shell" class="h-full font-sans antialiased text-gray-800 dark:text-gray-200" x-data="{ fullscreen: false }">
+<body id="admin-shell" class="h-full font-sans antialiased text-gray-800 dark:text-gray-200" x-data="{ fullscreen: false, mobileSidebarOpen: false }">
 
     <div class="min-h-full flex">
-        
+
+        <!-- Mobile Backdrop -->
+        <div x-show="mobileSidebarOpen" x-cloak
+             @click="mobileSidebarOpen = false"
+             class="fixed inset-0 z-30 bg-slate-900/40 backdrop-blur-sm lg:hidden"
+             x-transition:enter="transition ease-out duration-200"
+             x-transition:enter-start="opacity-0"
+             x-transition:enter-end="opacity-100"
+             x-transition:leave="transition ease-in duration-150"
+             x-transition:leave-start="opacity-100"
+             x-transition:leave-end="opacity-0">
+        </div>
+
         <!-- ================= SIDEBAR ================= -->
         <aside class="hidden lg:flex lg:flex-shrink-0">
             <div class="sidebar-sticky w-60 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0a0a0a]">
@@ -129,7 +237,7 @@
                             @else
                                 @php $active = request()->routeIs($item['route']); @endphp
                                 <li>
-                                    <a href="{{ route($item['route']) }}" 
+                                    <a href="{{ route($item['route']) }}" wire:navigate
                                        class="group flex items-center px-2.5 py-2 text-xs font-medium rounded-md transition-all duration-150 
                                        {{ $active 
                                           ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-sm' 
@@ -170,15 +278,22 @@
         </aside>
 
         <!-- ================= MAIN CONTENT ================= -->
-        <div class="flex flex-col flex-1 overflow-hidden">
+        <div class="flex flex-col flex-1 min-w-0 overflow-hidden">
             
             <!-- Professional Sticky Navbar -->
-            <header class="navbar-sticky h-16 flex items-center justify-between px-6 bg-white/90 dark:bg-[#0a0a0a]/90">
+            <header class="navbar-sticky h-16 flex items-center justify-between px-4 sm:px-6 bg-white/90 dark:bg-[#0a0a0a]/90">
                 
-                <!-- Left: Breadcrumb & Page Title -->
-                <div class="flex items-center space-x-4 flex-1 min-w-0">
-                    <nav class="hidden md:flex items-center space-x-2 text-xs">
-                        <a href="{{ route('dashboard') }}" class="flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                <!-- Left: Mobile menu + Breadcrumb -->
+                <div class="flex items-center gap-3 flex-1 min-w-0">
+                    <button type="button" class="lg:hidden inline-flex h-9 w-9 items-center justify-center rounded-lg border border-gray-200 bg-white text-gray-600 shadow-sm hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-950 dark:text-gray-300 dark:hover:bg-gray-900"
+                            @click="mobileSidebarOpen = !mobileSidebarOpen" aria-label="Buka menu admin">
+                        <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                        </svg>
+                    </button>
+
+                    <nav class="hidden md:flex items-center space-x-2 text-xs min-w-0">
+                        <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
@@ -190,19 +305,23 @@
                             @yield('page-title', 'Dashboard')
                         </span>
                     </nav>
+
+                    <span class="md:hidden text-sm font-semibold text-gray-900 truncate dark:text-white">
+                        @yield('page-title', 'Dashboard')
+                    </span>
                 </div>
 
                 <!-- Right: Actions -->
-                <div class="flex items-center space-x-2">
+                <div class="flex items-center gap-2 sm:gap-2.5">
                     
                     <!-- Theme Toggle -->
                     <div class="flex items-center bg-gray-100 dark:bg-gray-900 p-1 rounded-lg border border-gray-200 dark:border-gray-800">
-                        <button id="theme-light" class="theme-btn px-2.5 py-1 text-[10px] font-semibold rounded-md transition-all">
+                        <button id="theme-light" class="theme-btn px-2 py-1 text-[10px] font-semibold rounded-md transition-all">
                             <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                             </svg>
                         </button>
-                        <button id="theme-dark" class="theme-btn px-2.5 py-1 text-[10px] font-semibold rounded-md transition-all">
+                        <button id="theme-dark" class="theme-btn px-2 py-1 text-[10px] font-semibold rounded-md transition-all">
                             <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                             </svg>
@@ -290,7 +409,7 @@
                                 </div>
                             </div>
                             <div class="p-2">
-                                <a href="{{ route('admin.settings') }}" class="flex items-center gap-2.5 px-2.5 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors">
+                                <a href="{{ route('admin.settings') }}" wire:navigate class="flex items-center gap-2.5 px-2.5 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors">
                                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     Pengaturan
                                 </a>
@@ -310,8 +429,8 @@
             </header>
 
             <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto p-6 bg-gray-50 dark:bg-black">
-                <div class="max-w-7xl mx-auto">
+            <main class="flex-1 overflow-y-auto bg-gray-50 p-4 pt-20 sm:p-6 sm:pt-20 dark:bg-black">
+                <div class="mx-auto max-w-7xl">
                     @if(isset($slot) && is_object($slot) && method_exists($slot, 'isNotEmpty') && $slot->isNotEmpty())
                         {{ $slot }}
                     @else
@@ -320,6 +439,97 @@
                 </div>
             </main>
         </div>
+
+        <!-- Mobile Sidebar -->
+        <aside x-show="mobileSidebarOpen" x-cloak
+               x-transition:enter="transition ease-out duration-200"
+               x-transition:enter-start="-translate-x-full opacity-0"
+               x-transition:enter-end="translate-x-0 opacity-100"
+               x-transition:leave="transition ease-in duration-150"
+               x-transition:leave-start="translate-x-0 opacity-100"
+               x-transition:leave-end="-translate-x-full opacity-0"
+               class="fixed inset-y-0 left-0 z-40 w-72 max-w-[82vw] border-r border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-[#0a0a0a] lg:hidden">
+            <div class="flex h-16 items-center justify-between border-b border-gray-200 px-4 dark:border-gray-800">
+                <div class="flex items-center space-x-2.5">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-xs font-bold text-white shadow-sm shadow-emerald-500/30">S</div>
+                    <div>
+                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Scoutmind</p>
+                        <p class="text-[10px] text-gray-500 dark:text-gray-500">Admin Panel</p>
+                    </div>
+                </div>
+                <button type="button" @click="mobileSidebarOpen = false" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-900 dark:hover:text-gray-200">
+                    <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+                    </svg>
+                </button>
+            </div>
+
+            <nav class="nav-scrollable custom-scrollbar px-3 py-4">
+                @php
+                    $mobileMenu = [
+                        ['label' => 'Dashboard', 'route' => 'dashboard', 'icon' => 'M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z'],
+                        ['label' => 'Berita', 'route' => 'admin.news', 'icon' => 'M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5'],
+                        ['label' => 'Hero', 'route' => 'admin.hero', 'icon' => 'M4.5 18.75V5.25A2.25 2.25 0 016.75 3h10.5a2.25 2.25 0 012.25 2.25v13.5m-15 0h15M7.5 7.5h9m-9 3h9m-9 3h6'],
+                        ['label' => 'Timeline', 'route' => 'admin.timeline', 'icon' => 'M12 6v6l4 2m4-2a8 8 0 11-16 0 8 8 0 0116 0z'],
+                        ['section' => 'Administrasi'],
+                        ['label' => 'Absensi', 'route' => 'admin.absensi', 'icon' => 'M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m8.25-2.142V5.25'],
+                        ['label' => 'Petugas', 'route' => 'admin.petugas', 'icon' => 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z'],
+                        ['label' => 'Pendaftaran Bantara', 'route' => 'admin.pendaftaran', 'icon' => 'M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m0 12.75h7.5m-7.5 3H12M10.5 2.25H5.625c-.621 0-1.125.504-1.125 1.125v17.25c0 .621.504 1.125 1.125 1.125h12.75c.621 0 1.125-.504 1.125-1.125V11.25a9 9 0 00-9-9z'],
+                        ['label' => 'Pendaftaran Laksana', 'route' => 'admin.pendaftaran-laksana', 'icon' => 'M11.35 3.836c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0111.25 2.25h1.5c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C6.845 4.01 6 4.973 6 6.108V8.25m8.25-2.142V5.25'],
+                        ['label' => 'Galeri', 'route' => 'admin.gallery', 'icon' => 'M2.25 15.75l5.159-5.159a2.25 2.25 0 013.182 0l5.159 5.159m-1.5-1.5l1.409-1.409a2.25 2.25 0 013.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 001.5-1.5V6a1.5 1.5 0 00-1.5-1.5H3.75A1.5 1.5 0 002.25 6v12a1.5 1.5 0 001.5 1.5zm10.5-11.25h.008v.008h-.008V8.25zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z'],
+                        ['label' => 'Pembina', 'route' => 'admin.pembina', 'icon' => 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z'],
+                        ['label' => 'Dewan Ambalan', 'route' => 'admin.dewan-ambalan', 'icon' => 'M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a6.002 6.002 0 00-.94 3.197M12 12.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z'],
+                        ['label' => 'Anggota Dewan', 'route' => 'admin.anggota', 'icon' => 'M18 18.72a9.094 9.094 0 003.741-.479 3 3 0 00-4.682-2.72m.94 3.198l.001.031c0 .225-.012.447-.037.666A11.944 11.944 0 0112 21c-2.17 0-4.207-.576-5.963-1.584A6.062 6.062 0 016 18.719m12 0a5.971 5.971 0 00-.941-3.197m0 0A5.995 5.995 0 0012 12.75a5.995 5.995 0 00-5.058 2.772m0 0a6.002 6.002 0 00-.94 3.197M12 12.75a3.75 3.75 0 100-7.5 3.75 3.75 0 000 7.5z'],
+                        ['label' => 'Mitra', 'route' => 'admin.mitra', 'icon' => 'M5.25 6.75A2.25 2.25 0 017.5 4.5h9a2.25 2.25 0 012.25 2.25v10.5A2.25 2.25 0 0116.5 19.5h-9a2.25 2.25 0 01-2.25-2.25V6.75zm2.25 1.5h6.75m-6.75 3h9m-9 3h4.5'],
+                        ['label' => 'Alumni', 'route' => 'admin.alumni', 'icon' => 'M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z'],
+                        ['label' => 'Pengaturan', 'route' => 'admin.settings', 'icon' => 'M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 010 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 010-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.281z M15 12a3 3 0 11-6 0 3 3 0 016 0z'],
+                    ];
+                @endphp
+
+                <ul class="space-y-0.5">
+                    @foreach($mobileMenu as $item)
+                        @if(isset($item['section']))
+                            <li class="pt-4 pb-1.5">
+                                <p class="px-2.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-600">
+                                    {{ $item['section'] }}
+                                </p>
+                            </li>
+                        @else
+                            @php $active = request()->routeIs($item['route']); @endphp
+                            <li>
+                                <a href="{{ route($item['route']) }}" wire:navigate @click="mobileSidebarOpen = false"
+                                   class="group flex items-center rounded-md px-2.5 py-2 text-xs font-medium transition-all duration-150 {{ $active ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-gray-200' }}">
+                                    <svg class="mr-2.5 h-4 w-4 flex-shrink-0 {{ $active ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <path d="{{ $item['icon'] }}"/>
+                                    </svg>
+                                    {{ $item['label'] }}
+                                </a>
+                            </li>
+                        @endif
+                    @endforeach
+                </ul>
+            </nav>
+
+            <div class="border-t border-gray-200 px-3 py-3 dark:border-gray-800">
+                <div class="flex items-center space-x-2.5 rounded-xl bg-gray-50 p-2.5 dark:bg-gray-950/60">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-xs font-bold text-white shadow-sm">
+                        A
+                    </div>
+                    <div class="min-w-0 flex-1">
+                        <p class="truncate text-xs font-semibold text-gray-900 dark:text-white">Administrator</p>
+                        <p class="truncate text-[10px] text-gray-500 dark:text-gray-500">Super Admin</p>
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}">
+                        @csrf
+                        <button type="submit" class="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/20 dark:hover:text-red-400" title="Logout">
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                            </svg>
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </aside>
     </div>
 
     <!-- ================= TOAST ================= -->
@@ -366,17 +576,26 @@
             }
         }
 
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
+        function applyStoredAdminTheme() {
+            try {
+                const storedTheme = localStorage.getItem('theme') || localStorage.getItem('color-theme');
+                const isDark = storedTheme === 'dark' || (!storedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches);
+                document.documentElement.classList.toggle('dark', isDark);
+                document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+            } catch (e) {
+                document.documentElement.classList.remove('dark');
+                document.documentElement.style.colorScheme = 'light';
+            }
+            updateThemeButtons();
         }
 
-        updateThemeButtons();
+        applyStoredAdminTheme();
 
         if (themeLight) {
             themeLight.addEventListener('click', function() {
                 document.documentElement.classList.remove('dark');
+                document.documentElement.style.colorScheme = 'light';
+                localStorage.setItem('theme', 'light');
                 localStorage.setItem('color-theme', 'light');
                 updateThemeButtons();
             });
@@ -385,10 +604,16 @@
         if (themeDark) {
             themeDark.addEventListener('click', function() {
                 document.documentElement.classList.add('dark');
+                document.documentElement.style.colorScheme = 'dark';
+                localStorage.setItem('theme', 'dark');
                 localStorage.setItem('color-theme', 'dark');
                 updateThemeButtons();
             });
         }
+
+        document.addEventListener('livewire:navigated', function () {
+            applyStoredAdminTheme();
+        });
 
         // Fullscreen Toggle
         function toggleFullscreen() {

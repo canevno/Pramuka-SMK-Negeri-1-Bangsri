@@ -50,7 +50,7 @@
         @else
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 @foreach($newsItems as $news)
-                    <article class="flex flex-col overflow-hidden rounded-lg border border-slate-300 bg-white transition duration-200 dark:border-slate-700 dark:bg-slate-900">
+                    <article class="flex flex-col overflow-hidden rounded-lg border border-slate-400 bg-white transition duration-200 shadow-sm dark:border-slate-600 dark:bg-slate-900">
                         <a href="{{ route('berita.show', ['slug' => $news['slug'] ?? Str::slug($news['title'])]) }}" class="block">
                             <div class="relative aspect-[16/11] w-full overflow-hidden rounded-t-lg bg-slate-100 dark:bg-slate-800">
                                 <div class="absolute left-3 top-3 z-10 rounded bg-[#0D1B2A] px-2 py-1 text-[10px] font-black uppercase tracking-wider text-white">
@@ -78,7 +78,7 @@
                                 </p>
                             </div>
 
-                            <div class="mt-4 flex items-center justify-between gap-2 border-t border-slate-200 pt-2 text-[10px] text-slate-500 dark:border-slate-700 dark:text-slate-400">
+                            <div class="mt-4 flex items-center justify-between gap-2 border-t border-slate-300 pt-2 text-[10px] text-slate-500 dark:border-slate-600 dark:text-slate-400">
                                 <div class="flex items-center gap-1.5">
                                     <svg class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>

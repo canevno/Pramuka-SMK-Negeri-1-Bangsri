@@ -6,8 +6,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-100 p-6">
-    <div class="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-md">
-        <h1 class="text-2xl font-bold mb-6">Manajemen Petugas Absensi</h1>
+    <div class="max-w-6xl mx-auto bg-white p-6 rounded-xl shadow-md dark:bg-slate-900 dark:text-slate-100">
+        <h1 class="text-2xl font-bold mb-6 text-slate-900 dark:text-white">Manajemen Petugas Absensi</h1>
 
         <!-- Form Tambah Petugas (Updated: Grid 5 kolom) -->
         <form action="{{ route('admin.petugas.store') }}" method="POST" class="grid grid-cols-1 md:grid-cols-5 gap-4 mb-8">

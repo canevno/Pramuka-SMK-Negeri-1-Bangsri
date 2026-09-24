@@ -12,11 +12,11 @@
         </div>
     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-    <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+    <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900/80">
         <div class="flex items-center justify-between gap-4">
             <div>
-                <h2 class="text-xl font-semibold text-slate-950">Tambah Petugas</h2>
-                <p class="mt-1 text-sm text-slate-500">Tambah petugas baru untukke absensi dan pengelolaan rekam.</p>
+                <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Tambah Petugas</h2>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Tambah petugas baru untukke absensi dan pengelolaan rekam.</p>
             </div>
         </div>
 
@@ -51,28 +51,28 @@
         </form>
     </section>
 
-    <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm">
+    <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900/80">
         <div class="flex items-center justify-between gap-4">
             <div>
-                <h2 class="text-xl font-semibold text-slate-950">Daftar Petugas</h2>
-                <p class="mt-1 text-sm text-slate-500">Data petugas yang sudah terdaftar di sistem.</p>
+                <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Daftar Petugas</h2>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Data petugas yang sudah terdaftar di sistem.</p>
             </div>
         </div>
 
-        <div class="mt-6 overflow-hidden rounded-[1.75rem] border border-slate-200">
-            <table class="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700">
-                <thead class="bg-slate-50">
+        <div class="mt-6 overflow-hidden rounded-[1.75rem] border border-slate-200 dark:border-slate-700">
+            <table class="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700 dark:divide-slate-700 dark:text-slate-200">
+                <thead class="bg-slate-50 dark:bg-slate-800/80">
                     <tr>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Profil</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Nama Petugas</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">NTA</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Kelas Petugas</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Jenis Kelamin</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Status</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500">Aksi</th>
+                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Profil</th>
+                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Nama Petugas</th>
+                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">NTA</th>
+                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Kelas Petugas</th>
+                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Jenis Kelamin</th>
+                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Status</th>
+                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Aksi</th>
                     </tr>
                 </thead>
-                <tbody class="divide-y divide-slate-200 bg-white">
+                <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900/40">
                     <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $registeredPetugas; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                         <tr>
                             <td class="px-4 py-4">
@@ -119,7 +119,7 @@
                         </tr>
                     <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                         <tr>
-                            <td colspan="7" class="px-4 py-6 text-center text-sm text-slate-500">Belum ada data petugas.</td>
+                            <td colspan="7" class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada data petugas.</td>
                         </tr>
                     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                 </tbody>

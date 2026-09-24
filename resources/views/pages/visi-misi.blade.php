@@ -112,11 +112,11 @@
                         Kepanduan Dunia
                     </h2>
                     
-                    <div class="mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-2 shadow-sm sm:max-w-[460px]">
-                        <div class="h-[180px] overflow-hidden rounded-xl bg-slate-100 sm:h-[210px]">
+                    <div class="mx-auto w-full max-w-[820px] overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 shadow-sm">
+                        <div class="h-[180px] overflow-hidden bg-slate-100 sm:h-[240px] lg:h-[300px]">
                             <img src="{{ asset('images/download.jpg') }}" 
                                  alt="Kepanduan Dunia - Baden Powell" 
-                                 class="h-full w-full object-contain object-center">
+                                 class="h-full w-full object-cover object-center">
                         </div>
                     </div>
 
