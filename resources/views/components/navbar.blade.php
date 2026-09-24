@@ -325,9 +325,9 @@
     </div>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" x-cloak x-show="mobileMenuOpen" @keydown.escape.window="mobileMenuOpen = false" class="lg:hidden fixed inset-0 z-50 overflow-hidden">
+    <div id="mobile-menu" x-cloak x-show="mobileMenuOpen" @keydown.escape.window="mobileMenuOpen = false" class="lg:hidden fixed inset-0 z-[70] overflow-hidden">
         <div class="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity" @click="mobileMenuOpen = false"></div>
-        <div class="mobile-menu-panel absolute inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-gray-950 shadow-2xl overflow-y-auto border-l border-slate-200 dark:border-slate-800 transition-transform duration-300"
+        <div class="mobile-menu-panel relative z-[70] absolute inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-gray-950 shadow-2xl overflow-y-auto border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 pointer-events-auto"
             x-show="mobileMenuOpen"
             x-transition:enter="transition-transform ease-out duration-300" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
             x-transition:leave="transition-transform ease-in duration-200" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">

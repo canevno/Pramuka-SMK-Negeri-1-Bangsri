@@ -28,10 +28,14 @@ class AppServiceProvider extends ServiceProvider
     {
         $this->configureDefaults();
 
-        // Provide notification data to all admin views if table exists
+        // Provide recent notification data to the admin dropdown while tracking unread count separately.
         if (Schema::hasTable('notifications')) {
             View::composer('admin.*', function ($view) {
-                $notifications = Notification::latest()->take(20)->get();
+                $notifications = Notification::query()
+                    ->latest()
+                    ->take(20)
+                    ->get();
+
                 $view->with('unreadNotifications', $notifications)
                      ->with('unreadCount', $notifications->where('is_read', false)->count());
             });

@@ -138,13 +138,13 @@
 
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Judul Prestasi <span class="text-red-500">*</span></label>
-                    <input id="achievement_title" type="text" name="title" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Contoh: Juara 1 Lomba Pionering" />
+                    <input id="achievement_title" type="text" name="title" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Contoh: Juara 1 Lomba Pionering" />
                 </div>
 
                 <div class="grid gap-4 sm:grid-cols-2">
                     <div>
                         <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Kategori <span class="text-red-500">*</span></label>
-                        <select id="achievement_category" name="category" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
+                        <select id="achievement_category" name="category" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white">
                             <option value="">Pilih tingkat prestasi</option>
                             <option value="Tingkat Ranting">Tingkat Ranting</option>
                             <option value="Tingkat Cabang">Tingkat Cabang</option>
@@ -154,33 +154,33 @@
                     </div>
                     <div>
                         <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Tahun <span class="text-red-500">*</span></label>
-                        <input id="achievement_year" type="number" name="year" value="{{ now()->year }}" required min="2000" max="2100" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
+                        <input id="achievement_year" type="number" name="year" value="{{ now()->year }}" required min="2000" max="2100" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white" />
                     </div>
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Pemenang / Peserta <span class="text-red-500">*</span></label>
-                    <input id="achievement_winner" type="text" name="winner" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Nama anggota atau regu" />
+                    <input id="achievement_winner" type="text" name="winner" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Nama anggota atau regu" />
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Link Media Sosial Pemenang</label>
-                    <input id="achievement_winner_link" type="url" name="winner_social_link" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="https://instagram.com/username" />
+                    <input id="achievement_winner_link" type="url" name="winner_social_link" class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="https://instagram.com/username" />
                     <p class="mt-1 text-[11px] text-slate-400">Kosongkan jika tidak ingin dihubungkan ke media sosial.</p>
                 </div>
 
                 <div>
                     <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Deskripsi <span class="text-red-500">*</span></label>
-                    <textarea id="achievement_description" rows="4" name="description" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 focus:ring-2 focus:ring-indigo-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Tuliskan deskripsi singkat pencapaian..."></textarea>
+                    <textarea id="achievement_description" rows="4" name="description" required class="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/10 dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500" placeholder="Tuliskan deskripsi singkat pencapaian..."></textarea>
                 </div>
 
                 <div>
                     <input type="hidden" name="image_path" value="images/achievement/prestasi1.jpg">
                     <label class="mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Gambar Prestasi</label>
 
-                    <div id="prestasi-upload-box" class="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-3 transition-all duration-200 hover:border-indigo-400 hover:bg-indigo-50/80 dark:border-slate-700 dark:from-slate-800/90 dark:via-slate-900 dark:to-indigo-950/60 dark:hover:border-indigo-500">
+                    <div id="prestasi-upload-box" class="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-3 transition-all duration-200 hover:border-emerald-400 hover:bg-emerald-50/80 dark:border-slate-700 dark:from-slate-800/90 dark:via-slate-900 dark:to-emerald-950/60 dark:hover:border-emerald-500">
                         <div id="prestasi-empty-state" class="flex min-h-[170px] flex-col items-center justify-center gap-3 rounded-xl border border-slate-200/80 bg-white/70 px-4 py-5 text-center shadow-inner dark:border-slate-700 dark:bg-slate-950/30">
-                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 shadow-sm dark:bg-indigo-500/10 dark:text-indigo-300">
+                            <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 shadow-sm dark:bg-emerald-500/10 dark:text-emerald-300">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path></svg>
                             </div>
                             <div>
@@ -203,7 +203,7 @@
                     <p class="mt-2 text-[11px] text-slate-400">Biarkan default jika tidak ada gambar khusus.</p>
                 </div>
 
-                <button type="submit" id="achievement-submit-button" class="flex w-full items-center justify-center gap-2 rounded-xl bg-indigo-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
+                <button type="submit" id="achievement-submit-button" class="flex w-full items-center justify-center gap-2 rounded-xl bg-emerald-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:ring-offset-2 dark:focus:ring-offset-slate-900">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
                     <span id="achievement-submit-label">Simpan Prestasi</span>
                 </button>
@@ -297,7 +297,7 @@
         ['dragenter', 'dragover'].forEach((eventName) => {
             uploadBox.addEventListener(eventName, function (event) {
                 event.preventDefault();
-                uploadBox.classList.add('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.add('border-emerald-400', 'bg-emerald-50/80', 'shadow-md');
                 uploadBox.classList.remove('border-slate-300');
             });
         });
@@ -305,7 +305,7 @@
         ['dragleave', 'drop'].forEach((eventName) => {
             uploadBox.addEventListener(eventName, function (event) {
                 event.preventDefault();
-                uploadBox.classList.remove('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.remove('border-emerald-400', 'bg-emerald-50/80', 'shadow-md');
                 uploadBox.classList.add('border-slate-300');
             });
         });

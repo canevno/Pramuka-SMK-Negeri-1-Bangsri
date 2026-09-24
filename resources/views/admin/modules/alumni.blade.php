@@ -27,40 +27,40 @@
         </div>
     @endif
 
-    <div class="rounded-xl border border-blue-200 bg-blue-50 p-4 dark:border-blue-500/30 dark:bg-blue-500/10">
+    <div class="rounded-xl border border-emerald-200 bg-emerald-50 p-4 dark:border-emerald-500/30 dark:bg-emerald-500/10">
         <div class="flex gap-3">
-            <div class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-blue-100 dark:bg-blue-500/20">
-                <svg class="h-3 w-3 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+            <div class="flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-emerald-100 dark:bg-emerald-500/20">
+                <svg class="h-3 w-3 text-emerald-600 dark:text-emerald-400" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M18 5v8a2 2 0 01-2 2h-5l-5 4v-4H4a2 2 0 01-2-2V5a2 2 0 012-2h12a2 2 0 012 2zm-11-1a1 1 0 11-2 0 1 1 0 012 0z" clip-rule="evenodd" />
                 </svg>
             </div>
             <div class="flex-1">
-                <p class="text-sm font-semibold text-blue-900 dark:text-blue-300">Informasi: Sinkronisasi Otomatis</p>
-                <p class="mt-0.5 text-sm text-blue-800 dark:text-blue-200">Setiap perubahan data alumni akan langsung tampil di <a href="{{ route('alumni') }}" class="font-semibold underline hover:no-underline">halaman alumni publik</a>.</p>
+                <p class="text-sm font-semibold text-emerald-900 dark:text-emerald-300">Informasi: Sinkronisasi Otomatis</p>
+                <p class="mt-0.5 text-sm text-emerald-800 dark:text-emerald-200">Setiap perubahan data alumni akan langsung tampil di <a href="{{ route('alumni') }}" class="font-semibold underline hover:no-underline">halaman alumni publik</a>.</p>
             </div>
         </div>
     </div>
 
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Total Alumni</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{{ $stats['total'] ?? 0 }}</p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Semua data</p>
+    <div class="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/80 sm:p-4">
+            <p class="text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Total Alumni</p>
+            <p class="mt-2 text-lg font-bold text-slate-900 dark:text-white sm:text-2xl">{{ $stats['total'] ?? 0 }}</p>
+            <p class="mt-1 text-[9px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Semua data</p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Aktif</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{{ $stats['aktif'] ?? 0 }}</p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Saat ini</p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/80 sm:p-4">
+            <p class="text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Aktif</p>
+            <p class="mt-2 text-lg font-bold text-slate-900 dark:text-white sm:text-2xl">{{ $stats['aktif'] ?? 0 }}</p>
+            <p class="mt-1 text-[9px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Saat ini</p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Non-Aktif</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{{ $stats['nonaktif'] ?? 0 }}</p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Dihentikan</p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/80 sm:p-4">
+            <p class="text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Non-Aktif</p>
+            <p class="mt-2 text-lg font-bold text-slate-900 dark:text-white sm:text-2xl">{{ $stats['nonaktif'] ?? 0 }}</p>
+            <p class="mt-1 text-[9px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Dihentikan</p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Jabatan</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{{ $stats['jabatan'] ?? 0 }}</p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Terisi</p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/80 sm:p-4">
+            <p class="text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Jabatan</p>
+            <p class="mt-2 text-lg font-bold text-slate-900 dark:text-white sm:text-2xl">{{ $stats['jabatan'] ?? 0 }}</p>
+            <p class="mt-1 text-[9px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Terisi</p>
         </div>
     </div>
 
@@ -94,7 +94,7 @@
                                         </button>
                                     </form>
 
-                                    <button type="button" onclick="document.getElementById('edit-alumni-{{ $member->id }}').classList.toggle('hidden')" class="rounded-lg border border-indigo-200 bg-indigo-50 px-2.5 py-1.5 text-[10px] font-semibold text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-300 dark:hover:bg-indigo-500/20">
+                                    <button type="button" onclick="document.getElementById('edit-alumni-{{ $member->id }}').classList.toggle('hidden')" class="rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[10px] font-semibold text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20">
                                         Edit
                                     </button>
 
@@ -129,7 +129,7 @@
                                         Aktif dipublikasikan
                                     </label>
                                     <div class="flex justify-end gap-2 md:col-span-2">
-                                        <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500">
+                                        <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500">
                                             Simpan Perubahan
                                         </button>
                                     </div>
@@ -157,9 +157,9 @@
 
             <div class="md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Foto alumni</span>
-                <div id="alumni-upload-box" class="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-br from-slate-50 via-white to-indigo-50 p-3 transition-all duration-200 hover:border-indigo-400 hover:bg-indigo-50/80 dark:border-slate-600 dark:from-slate-900 dark:via-slate-800 dark:to-indigo-900/20 dark:hover:border-indigo-500 dark:hover:bg-indigo-500/5">
+                <div id="alumni-upload-box" class="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-gradient-to-br from-slate-50 via-white to-emerald-50 p-3 transition-all duration-200 hover:border-emerald-400 hover:bg-emerald-50/80 dark:border-slate-600 dark:from-slate-900 dark:via-slate-800 dark:to-emerald-900/20 dark:hover:border-emerald-500 dark:hover:bg-emerald-500/5">
                     <div id="alumni-empty-state" class="flex min-h-[170px] flex-col items-center justify-center gap-3 rounded-xl border border-slate-200/80 bg-white/70 px-4 py-5 text-center shadow-inner dark:border-slate-700/80 dark:bg-slate-800/50">
-                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600 shadow-sm dark:bg-indigo-900/30 dark:text-indigo-400">
+                        <div class="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600 shadow-sm dark:bg-emerald-900/30 dark:text-emerald-400">
                             <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
                                 <path d="M12 16V4m0 0l-4 4m4-4l4 4M4 16.5V18a2.5 2.5 0 0 0 2.5 2.5h11A2.5 2.5 0 0 0 20 18v-1.5" stroke-linecap="round" stroke-linejoin="round"/>
                             </svg>
@@ -185,17 +185,17 @@
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Nama alumni</span>
-                <input type="text" name="name" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-indigo-400" placeholder="Masukkan nama lengkap" required>
+                <input type="text" name="name" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-emerald-400" placeholder="Masukkan nama lengkap" required>
             </label>
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Jabatan</span>
-                <input type="text" name="jabatan" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-indigo-400" placeholder="Ketua Alumni / Koordinator" required>
+                <input type="text" name="jabatan" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-emerald-400" placeholder="Ketua Alumni / Koordinator" required>
             </label>
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Status</span>
-                <select name="status" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-indigo-400">
+                <select name="status" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-emerald-400">
                     <option value="Aktif">Aktif</option>
                     <option value="Tidak aktif">Tidak aktif</option>
                 </select>
@@ -203,16 +203,16 @@
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Urutan</span>
-                <input type="number" name="sort_order" value="0" min="0" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-indigo-400">
+                <input type="number" name="sort_order" value="0" min="0" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-emerald-400">
             </label>
 
             <label class="block md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Deskripsi singkat</span>
-                <textarea name="bio" rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-indigo-400" placeholder="Deskripsi peran alumni dalam mendukung Pramuka"></textarea>
+                <textarea name="bio" rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:focus:border-emerald-400" placeholder="Deskripsi peran alumni dalam mendukung Pramuka"></textarea>
             </label>
 
             <div class="md:col-span-2 flex justify-end">
-                <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">
+                <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500">
                     Simpan Alumni
                 </button>
             </div>
@@ -262,7 +262,7 @@
         ['dragenter', 'dragover'].forEach((eventName) => {
             uploadBox.addEventListener(eventName, function (event) {
                 event.preventDefault();
-                uploadBox.classList.add('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.add('border-emerald-400', 'bg-emerald-50/80', 'shadow-md');
                 uploadBox.classList.remove('border-slate-300');
             });
         });
@@ -270,7 +270,7 @@
         ['dragleave', 'drop'].forEach((eventName) => {
             uploadBox.addEventListener(eventName, function (event) {
                 event.preventDefault();
-                uploadBox.classList.remove('border-indigo-400', 'bg-indigo-50/80', 'shadow-md');
+                uploadBox.classList.remove('border-emerald-400', 'bg-emerald-50/80', 'shadow-md');
                 uploadBox.classList.add('border-slate-300');
             });
         });

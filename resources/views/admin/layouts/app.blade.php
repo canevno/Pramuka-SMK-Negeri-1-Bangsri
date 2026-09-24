@@ -172,6 +172,36 @@
             color: #d1d5db !important;
         }
 
+        /* Remove blue admin focus highlight */
+        :focus,
+        :focus-visible {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus,
+        button:focus,
+        a:focus,
+        [role="button"]:focus,
+        [tabindex]:focus {
+            outline: none !important;
+            box-shadow: none !important;
+        }
+
+        input:focus,
+        select:focus,
+        textarea:focus {
+            border-color: rgba(148, 163, 184, 0.9) !important;
+        }
+
+        .dark input:focus,
+        .dark select:focus,
+        .dark textarea:focus {
+            border-color: rgba(148, 163, 184, 0.75) !important;
+        }
+
     </style>
 </head>
 <body id="admin-shell" class="h-full font-sans antialiased text-gray-800 dark:text-gray-200" x-data="{ fullscreen: false, mobileSidebarOpen: false }">
@@ -196,7 +226,7 @@
                 
                 <div class="sidebar-fixed-header h-14 flex items-center px-5 border-b border-gray-200 dark:border-gray-800">
                     <div class="flex items-center space-x-2.5">
-                        <div class="w-7 h-7 rounded-lg bg-emerald-600 flex items-center justify-center text-white font-bold text-xs shadow-sm shadow-emerald-500/30">S</div>
+                        <img src="{{ asset('images/logos/smklogo.png') }}" alt="Logo SMK" class="h-8 w-8 object-contain rounded-md bg-white p-0.5 shadow-sm" />
                         <div>
                             <p class="text-sm font-semibold text-gray-900 dark:text-white">Scoutmind</p>
                             <p class="text-[10px] text-gray-500 dark:text-gray-500">Admin Panel</p>
@@ -240,9 +270,9 @@
                                     <a href="{{ route($item['route']) }}" wire:navigate
                                        class="group flex items-center px-2.5 py-2 text-xs font-medium rounded-md transition-all duration-150 
                                        {{ $active 
-                                          ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-sm' 
+                                          ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300 shadow-sm' 
                                           : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-gray-200' }}">
-                                        <svg class="mr-2.5 h-4 w-4 flex-shrink-0 {{ $active ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                        <svg class="mr-2.5 h-4 w-4 flex-shrink-0 {{ $active ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="{{ $item['icon'] }}"/>
                                         </svg>
                                         {{ $item['label'] }}
@@ -256,7 +286,7 @@
                 <div class="sidebar-fixed-footer border-t border-gray-200 dark:border-gray-800 px-3 py-3">
                     <div class="flex items-center space-x-2.5">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-600 to-green-700 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                                 A
                             </div>
                         </div>
@@ -339,8 +369,8 @@
                     </button>
 
                     <!-- Notifications -->
-                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                        <button @click="open = !open" class="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                    <div class="relative z-50" x-data="{ open: false }" @click.away="open = false">
+                        <button type="button" id="admin-notification-toggle" x-on:click.stop="open = !open" aria-expanded="false" :aria-expanded="open" aria-controls="admin-notification-panel" class="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
@@ -349,31 +379,31 @@
                             @endif
                         </button>
 
-                        <div x-show="open" x-cloak class="hidden absolute right-0 mt-2 w-80 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
-                            <div class="px-4 py-3 border-b border-gray-100 dark:border-gray-800 flex items-center justify-between">
-                                <h3 class="text-xs font-bold text-gray-900 dark:text-white uppercase tracking-wider">Notifikasi</h3>
+                        <div id="admin-notification-panel" x-show="open" x-cloak class="absolute right-0 mt-2 w-[min(17rem,calc(100vw-1rem))] max-w-[calc(100vw-1rem)] sm:w-80 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
+                            <div class="flex items-center justify-between border-b border-gray-100 px-3 py-2.5 dark:border-gray-800 sm:px-4 sm:py-3">
+                                <h3 class="text-[10px] font-bold uppercase tracking-wider text-gray-900 dark:text-white sm:text-xs">Notifikasi</h3>
                                 @if(isset($unreadCount) && $unreadCount > 0)
-                                    <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-semibold">{{ $unreadCount }} Belum Dibaca</span>
+                                    <span class="text-[9px] font-semibold text-emerald-700 dark:text-emerald-400 sm:text-[10px]">{{ $unreadCount }} Belum Dibaca</span>
                                 @endif
                             </div>
-                            <div class="max-h-96 overflow-y-auto custom-scrollbar">
+                            <div class="max-h-80 overflow-y-auto custom-scrollbar sm:max-h-96">
                                 @forelse($unreadNotifications ?? [] as $notif)
-                                    <a href="{{ route('admin.notifications.visit', $notif) }}" class="block px-4 py-3 hover:bg-gray-50 dark:hover:bg-gray-900/50 transition-colors border-b border-gray-100 dark:border-gray-800 last:border-0">
-                                        <p class="text-xs font-semibold text-gray-900 dark:text-white">{{ $notif->title ?? 'Notifikasi' }}</p>
-                                        <p class="text-[10px] text-gray-500 dark:text-gray-500 mt-1 line-clamp-2">{{ $notif->message ?? 'Tidak ada pesan' }}</p>
-                                        <p class="text-[10px] text-gray-400 dark:text-gray-600 mt-2">{{ isset($notif->created_at) ? $notif->created_at->diffForHumans() : 'Baru saja' }}</p>
+                                    <a href="{{ route('admin.notifications.visit', $notif) }}" class="block border-b border-gray-100 px-3 py-2.5 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-900/50 last:border-0 sm:px-4 sm:py-3">
+                                        <p class="text-[11px] font-semibold text-gray-900 dark:text-white sm:text-xs">{{ $notif->title ?? 'Notifikasi' }}</p>
+                                        <p class="mt-1 line-clamp-2 text-[9.5px] text-gray-500 dark:text-gray-500 sm:text-[10px]">{{ $notif->message ?? 'Tidak ada pesan' }}</p>
+                                        <p class="mt-1.5 text-[8.5px] text-gray-400 dark:text-gray-600 sm:text-[10px]">{{ isset($notif->created_at) ? $notif->created_at->diffForHumans() : 'Baru saja' }}</p>
                                     </a>
                                 @empty
-                                    <div class="px-4 py-8 text-center">
-                                        <svg class="w-8 h-8 text-gray-300 dark:text-gray-700 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <div class="px-3 py-6 text-center sm:px-4 sm:py-8">
+                                        <svg class="mx-auto h-7 w-7 text-gray-300 dark:text-gray-700 sm:h-8 sm:w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                                         </svg>
-                                        <p class="text-xs text-gray-500 dark:text-gray-600 mt-2 font-medium">Tidak ada notifikasi</p>
+                                        <p class="mt-2 text-[10px] font-medium text-gray-500 dark:text-gray-600 sm:text-xs">Tidak ada notifikasi</p>
                                     </div>
                                 @endforelse
                             </div>
-                            <div class="border-t border-gray-100 px-3 py-2 dark:border-gray-800">
-                                <a href="{{ route('admin.notifications.index') }}" class="block rounded-lg px-3 py-2 text-center text-[10px] font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-900">
+                            <div class="border-t border-gray-100 px-2 py-2 dark:border-gray-800 sm:px-3">
+                                <a href="{{ route('admin.notifications.index') }}" class="block rounded-lg px-2.5 py-2 text-center text-[9px] font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-900 sm:px-3 sm:text-[10px]">
                                     Lihat semua notifikasi
                                 </a>
                             </div>
@@ -381,34 +411,41 @@
                     </div>
 
                     <!-- User Profile Dropdown -->
-                    <div class="relative" x-data="{ open: false }" @click.away="open = false">
-                        <button @click="open = !open" class="flex items-center gap-2 pl-2 pr-1 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                    <div class="relative z-50" x-data="{ open: false }" @click.away="open = false">
+                        @php
+                            $adminUser = auth()->user();
+                            $adminInitials = $adminUser?->initials() ?: 'A';
+                            $adminAvatar = $adminUser?->profilePhotoUrl() ?: 'https://ui-avatars.com/api/?name=' . urlencode($adminUser?->name ?: 'Admin') . '&background=084d97&color=fff';
+                        @endphp
+                        <button type="button" @click.stop="open = !open" :aria-expanded="open" class="flex items-center gap-2 pl-2 pr-1 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
                             <div class="relative">
-                                <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-xs font-bold shadow-sm">
-                                    A
-                                </div>
-                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-500 border-2 border-white dark:border-[#0a0a0a] rounded-full"></span>
+                                <img src="{{ $adminAvatar }}" alt="{{ $adminUser?->name ?? 'Admin' }}" class="h-8 w-8 rounded-full object-cover ring-2 ring-white dark:ring-[#0a0a0a] shadow-sm">
+                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-600 border-2 border-white dark:border-[#0a0a0a] rounded-full"></span>
                             </div>
                             <div class="hidden md:block text-left">
-                                <p class="text-xs font-semibold text-gray-900 dark:text-white leading-tight">Administrator</p>
-                                <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">Super Admin</p>
+                                <p class="text-xs font-semibold text-gray-900 dark:text-white leading-tight">{{ $adminUser?->name ?? 'Administrator' }}</p>
+                                <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">{{ $adminUser?->jabatan ?? 'Super Admin' }}</p>
                             </div>
                             <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
 
-                        <div x-show="open" x-cloak class="hidden absolute right-0 mt-2 w-64 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
-                            <div class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/20 dark:to-green-950/20">
+                        <div x-show="open" x-cloak class="absolute right-0 mt-2 w-[min(16rem,calc(100vw-1.5rem))] max-w-[calc(100vw-1.5rem)] sm:w-64 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
+                            <div class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/20">
                                 <div class="flex items-center gap-3">
-                                    <div class="w-10 h-10 rounded-full bg-gradient-to-br from-emerald-500 to-green-600 flex items-center justify-center text-white text-sm font-bold shadow-md">A</div>
+                                    <img src="{{ $adminAvatar }}" alt="{{ $adminUser?->name ?? 'Admin' }}" class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-[#0a0a0a] shadow-md">
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-bold text-gray-900 dark:text-white truncate">Administrator</p>
-                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 truncate">admin@scoutmind.id</p>
+                                        <p class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $adminUser?->name ?? 'Administrator' }}</p>
+                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 truncate">{{ $adminUser?->email ?? 'admin@scoutmind.id' }}</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="p-2">
+                            <div class="p-2 space-y-1">
+                                <a href="{{ route('admin.profile.edit') }}" wire:navigate class="flex items-center gap-2.5 px-2.5 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors">
+                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0"/></svg>
+                                    Edit Profil
+                                </a>
                                 <a href="{{ route('admin.settings') }}" wire:navigate class="flex items-center gap-2.5 px-2.5 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors">
                                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     Pengaturan
@@ -451,7 +488,7 @@
                class="fixed inset-y-0 left-0 z-40 w-72 max-w-[82vw] border-r border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-[#0a0a0a] lg:hidden">
             <div class="flex h-16 items-center justify-between border-b border-gray-200 px-4 dark:border-gray-800">
                 <div class="flex items-center space-x-2.5">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-lg bg-emerald-600 text-xs font-bold text-white shadow-sm shadow-emerald-500/30">S</div>
+                    <img src="{{ asset('images/logos/smklogo.png') }}" alt="Logo SMK" class="h-8 w-8 object-contain rounded-md bg-white p-0.5 shadow-sm" />
                     <div>
                         <p class="text-sm font-semibold text-gray-900 dark:text-white">Scoutmind</p>
                         <p class="text-[10px] text-gray-500 dark:text-gray-500">Admin Panel</p>
@@ -498,8 +535,8 @@
                             @php $active = request()->routeIs($item['route']); @endphp
                             <li>
                                 <a href="{{ route($item['route']) }}" wire:navigate @click="mobileSidebarOpen = false"
-                                   class="group flex items-center rounded-md px-2.5 py-2 text-xs font-medium transition-all duration-150 {{ $active ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-gray-200' }}">
-                                    <svg class="mr-2.5 h-4 w-4 flex-shrink-0 {{ $active ? 'text-emerald-600 dark:text-emerald-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                   class="group flex items-center rounded-md px-2.5 py-2 text-xs font-medium transition-all duration-150 {{ $active ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-gray-200' }}">
+                                    <svg class="mr-2.5 h-4 w-4 flex-shrink-0 {{ $active ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="{{ $item['icon'] }}"/>
                                     </svg>
                                     {{ $item['label'] }}
@@ -512,7 +549,7 @@
 
             <div class="border-t border-gray-200 px-3 py-3 dark:border-gray-800">
                 <div class="flex items-center space-x-2.5 rounded-xl bg-gray-50 p-2.5 dark:bg-gray-950/60">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-500 to-green-600 text-xs font-bold text-white shadow-sm">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-green-700 text-xs font-bold text-white shadow-sm">
                         A
                     </div>
                     <div class="min-w-0 flex-1">
@@ -540,8 +577,8 @@
          class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-white dark:bg-[#0a0a0a] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 p-4 hidden">
         <div class="flex items-start space-x-3">
             <div class="flex-shrink-0">
-                <div class="w-8 h-8 rounded-full bg-green-100 dark:bg-green-950/30 flex items-center justify-center">
-                    <svg class="w-4 h-4 text-green-600 dark:text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/30 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-emerald-700 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
@@ -642,8 +679,6 @@
                 .catch(() => null);
         }, 30000);
 
-        // Admin navigation remains browser-native so we avoid re-triggering
-        // nested Alpine state updates in dropdowns such as notifications and account menus.
     </script>
 
     @stack('scripts')

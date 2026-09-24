@@ -44,7 +44,7 @@
                         <td class="py-4 px-4 whitespace-nowrap">{{ $item->nta }}</td>
                         <td class="py-4 px-4 whitespace-nowrap">{{ $item->kelas }}</td>
                         <td class="py-4 px-4">
-                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $item->whatsapp) }}" target="_blank" class="text-indigo-600 hover:underline dark:text-indigo-400">
+                            <a href="https://wa.me/{{ preg_replace('/[^0-9]/', '', $item->whatsapp) }}" target="_blank" class="text-emerald-600 hover:underline dark:text-emerald-400">
                                 {{ $item->whatsapp }}
                             </a>
                         </td>
@@ -58,7 +58,7 @@
                                 }
                             @endphp
                             @if($hasSurat)
-                                <a href="{{ route('admin.pendaftaran-laksana.download', $item->id) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-indigo-700 bg-indigo-100 rounded hover:bg-indigo-200 whitespace-nowrap min-w-24 dark:text-indigo-300 dark:bg-indigo-900/30 dark:hover:bg-indigo-900/50">
+                                <a href="{{ route('admin.pendaftaran-laksana.download', $item->id) }}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center justify-center px-3 py-1.5 text-xs font-medium text-emerald-700 bg-emerald-100 rounded hover:bg-emerald-200 whitespace-nowrap min-w-24 dark:text-emerald-300 dark:bg-emerald-900/30 dark:hover:bg-emerald-900/50">
                                     Download Berkas
                                 </a>
                             @else
@@ -78,7 +78,7 @@
                             <form action="{{ route('admin.pendaftaran-laksana.updateStatus', $item->id) }}" method="POST" class="inline-flex items-center space-x-1">
                                 @csrf
                                 @method('PATCH')
-                                <select name="status" onchange="this.form.submit()" class="text-xs rounded border-slate-300 bg-white text-slate-900 focus:border-indigo-500 focus:ring-indigo-500 py-1 px-2 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-600 dark:focus:border-indigo-400">
+                                <select name="status" onchange="this.form.submit()" class="text-xs rounded border-slate-300 bg-white text-slate-900 focus:border-emerald-500 focus:ring-emerald-500 py-1 px-2 dark:bg-slate-800 dark:text-slate-100 dark:border-slate-600 dark:focus:border-emerald-400">
                                     <option value="pending" {{ $currentStatus === 'pending' ? 'selected' : '' }}>Pending</option>
                                     <option value="approved" {{ $currentStatus === 'approved' ? 'selected' : '' }}>Setujui</option>
                                     <option value="rejected" {{ $currentStatus === 'rejected' ? 'selected' : '' }}>Tolak</option>

@@ -180,6 +180,47 @@ test('admin absensi summary excludes petugas removed from the admin petugas list
         });
 });
 
+test('attendance export pdf uses the formal pramuka document title', function () {
+    $user = \App\Models\User::factory()->create([
+        'email' => 'admin-export-pramuka@example.com',
+        'is_admin' => true,
+    ]);
+
+    \App\Models\AttendanceRecord::query()->create([
+        'participant_name' => 'Siswa Export',
+        'participant_kelas' => 'X PPLG 1',
+        'participant_ambalan' => 'PA',
+        'participant_sangga' => 'Perintis 1',
+        'status' => 'Hadir',
+        'iuran' => 'Lunas',
+        'iuran_amount' => 2000,
+        'record_date' => '2026-09-10',
+        'petugas_name' => 'Petugas Valid',
+        'petugas_kelas' => 'XI RPL',
+        'petugas_nta' => 'NTA-VALID-1',
+        'bulan' => 'September',
+        'tanggal' => '10',
+        'tahun' => '2026',
+        'week_label' => 'Minggu 37 September 2026',
+        'month_key' => '09-2026',
+        'year_key' => '2026',
+    ]);
+
+    $params = [
+        'record_date' => '2026-09-10',
+        'participant_kelas' => 'X PPLG 1',
+        'participant_ambalan' => 'PA',
+        'petugas_name' => 'Petugas Valid',
+    ];
+
+    $response = $this->actingAs($user)
+        ->get(route('admin.absensi.export.pdf', $params));
+
+    $response->assertOk();
+    expect(str_contains((string) $response->getContent(), 'ABSENSI EXTRAKULIKULER PRAMUKA'))->toBeTrue();
+    expect(str_contains((string) $response->getContent(), 'SMK NEGERI 1 BANGSRI'))->toBeTrue();
+});
+
 test('admin absorption detail exports produce non-empty excel and pdf files', function () {
     $user = \App\Models\User::factory()->create([
         'email' => 'admin-export@example.com',

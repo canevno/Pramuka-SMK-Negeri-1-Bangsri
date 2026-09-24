@@ -453,6 +453,8 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::get('/admin/pendaftaran/{id}/surat', [\App\Http\Controllers\Admin\PendaftaranAdminController::class, 'showSurat'])->name('admin.pendaftaran.surat');
     Route::get('/admin/pendaftaran/{id}/download', [\App\Http\Controllers\Admin\PendaftaranAdminController::class, 'downloadSurat'])->name('admin.pendaftaran.download');
 
+    Route::get('/admin/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'edit'])->name('admin.profile.edit');
+    Route::put('/admin/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'update'])->name('admin.profile.update');
     Route::get('/admin/settings', [\App\Http\Controllers\Admin\SiteSettingsController::class, 'index'])->name('admin.settings');
     Route::post('/admin/settings', [\App\Http\Controllers\Admin\SiteSettingsController::class, 'store'])->name('admin.settings.store');
 });

@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 
 uses(RefreshDatabase::class);
 
@@ -18,6 +19,40 @@ test('authenticated admin users can visit the dashboard', function () {
 
     $response = $this->get(route('dashboard'));
     $response->assertOk();
+});
+
+test('dashboard visitor statistics use real session data from the website', function () {
+    $user = User::factory()->create([
+        'is_admin' => true,
+    ]);
+
+    DB::table('sessions')->insert([
+        [
+            'id' => 'visit-session-1',
+            'user_id' => null,
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'Mozilla/5.0',
+            'payload' => json_encode(['page' => '/']),
+            'last_activity' => now()->subDays(2)->timestamp,
+        ],
+        [
+            'id' => 'visit-session-2',
+            'user_id' => null,
+            'ip_address' => '127.0.0.2',
+            'user_agent' => 'Mozilla/5.0',
+            'payload' => json_encode(['page' => '/news']),
+            'last_activity' => now()->subDays(1)->timestamp,
+        ],
+    ]);
+
+    $response = $this->actingAs($user)->get(route('dashboard'));
+
+    $response->assertOk()
+        ->assertViewHas('visitorStats', function ($stats) {
+            return is_array($stats)
+                && count($stats) === 7
+                && collect($stats)->sum('count') >= 2;
+        });
 });
 
 test('dashboard petugas teraktif is based on registered absensi petugas', function () {
@@ -100,6 +135,86 @@ test('dashboard shows an absensi card under the latest registrations', function 
         ->assertSee('Sangga Perintis')
         ->assertSee('Putra')
         ->assertSee('September');
+});
+
+test('dashboard shows the real latest registrations from bantara and laksana', function () {
+    $user = User::factory()->create([
+        'is_admin' => true,
+    ]);
+
+    \App\Models\BantaraRegistration::query()->create([
+        'nama' => 'Budi Santoso',
+        'kelas' => 'XI RPL 1',
+        'jenis_kelamin' => 'L',
+        'rt' => '01',
+        'rw' => '02',
+        'kecamatan' => 'Bangsri',
+        'kabupaten' => 'Jepara',
+        'tempat_tanggal_lahir' => 'Jepara, 12-09-2009',
+        'motivasi' => 'Ingin belajar lebih banyak',
+        'whatsapp' => '081234567890',
+        'nomor_orang_tua' => '081234567891',
+        'surat_izin_path' => 'pendaftaran-bantara/test.pdf',
+        'status_verifikasi' => 'disetujui',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    \App\Models\LaksanaRegistration::query()->create([
+        'nama' => 'Dina Pratiwi',
+        'nta' => 'NTA-001',
+        'kelas' => 'XII RPL 2',
+        'jenis_kelamin' => 'P',
+        'rt' => '03',
+        'rw' => '04',
+        'kecamatan' => 'Bangsri',
+        'kabupaten' => 'Jepara',
+        'tempat_tanggal_lahir' => 'Jepara, 05-07-2008',
+        'motivasi' => 'Ingin mengembangkan skill',
+        'whatsapp' => '081234567892',
+        'nomor_orang_tua' => '081234567893',
+        'surat_izin_path' => 'pendaftaran-laksana/test.pdf',
+        'status_verifikasi' => 'pending',
+        'created_at' => now()->subMinute(),
+        'updated_at' => now()->subMinute(),
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertSee('Budi Santoso')
+        ->assertSee('Dina Pratiwi')
+        ->assertSee('Bantara')
+        ->assertSee('Laksana')
+        ->assertSee('Disetujui')
+        ->assertSee('Pending')
+        ->assertDontSee('Siti Aisyah');
+});
+
+test('dashboard shows the latest real posts from admin news', function () {
+    $user = User::factory()->create([
+        'is_admin' => true,
+    ]);
+
+    \App\Models\Post::query()->create([
+        'user_id' => $user->id,
+        'title' => 'Latihan Pionering di Hutan Kareta',
+        'slug' => 'latihan-pionering-di-hutan-kareta',
+        'type' => 'Berita',
+        'image_path' => 'images/hero/imagehero1.png',
+        'excerpt' => 'Latihan pionering untuk membangun kekompakan dan kreativitas anggota.',
+        'content' => 'Isi berita utama yang sebenarnya di admin.',
+        'published_at' => now(),
+        'is_published' => true,
+        'sort_order' => 1,
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertSee('Berita Terbaru')
+        ->assertSee('Latihan Pionering di Hutan Kareta')
+        ->assertDontSee('Perkemahan Sabtu-Minggu Gugus Depan');
 });
 
 test('home achievement cards display the stored description text', function () {

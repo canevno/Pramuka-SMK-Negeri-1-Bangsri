@@ -62,21 +62,21 @@
                     <label class="block {{ $field['full'] ?? false ? 'md:col-span-2' : '' }}">
                         <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">{{ $field['label'] }}</span>
                         @if(($field['type'] ?? 'text') === 'textarea')
-                            <textarea rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" placeholder="{{ $field['placeholder'] ?? '' }}"></textarea>
+                            <textarea rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" placeholder="{{ $field['placeholder'] ?? '' }}"></textarea>
                         @elseif(($field['type'] ?? 'text') === 'select')
-                            <select class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
+                            <select class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100">
                                 @foreach($field['options'] ?? [] as $option)
                                     <option>{{ $option }}</option>
                                 @endforeach
                             </select>
                         @else
-                            <input type="{{ $field['type'] ?? 'text' }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" placeholder="{{ $field['placeholder'] ?? '' }}" />
+                            <input type="{{ $field['type'] ?? 'text' }}" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none ring-0 transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100" placeholder="{{ $field['placeholder'] ?? '' }}" />
                         @endif
                     </label>
                 @endforeach
 
                 <div class="md:col-span-2 flex justify-end">
-                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500">
+                    <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500">
                         Simpan {{ $title }}
                     </button>
                 </div>

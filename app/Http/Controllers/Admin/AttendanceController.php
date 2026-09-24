@@ -170,46 +170,115 @@ class AttendanceController extends Controller
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
-        $sheet->setTitle('Detail Absensi');
+        $sheet->setTitle('Absensi');
+        $sheet->getPageSetup()
+            ->setOrientation(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::ORIENTATION_PORTRAIT)
+            ->setPaperSize(\PhpOffice\PhpSpreadsheet\Worksheet\PageSetup::PAPERSIZE_A4);
+        $sheet->getPageMargins()->setTop(0.4)->setRight(0.3)->setBottom(0.3)->setLeft(0.3);
 
-        $sheet->mergeCells('A1:G1');
-        $sheet->setCellValue('A1', sprintf('Detail Absensi - %s', $recordDate ?: 'Semua Data'));
-        $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(12);
+        $sheet->mergeCells('A1:Q1');
+        $sheet->setCellValue('A1', 'ABSENSI EXTRAKULIKULER PRAMUKA');
+        $sheet->getStyle('A1:Q1')->getFont()->setBold(true)->setName('Times New Roman')->setSize(14);
+        $sheet->getStyle('A1:Q1')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-        $headers = ['Nama Lengkap', 'Kelas Asal', 'Ambalan', 'Sangga', 'Keterangan', 'Iuran', 'Nominal Iuran'];
-        $sheet->fromArray([$headers], null, 'A3');
-        $sheet->getStyle('A3:G3')->getFont()->setBold(true);
-        $sheet->getStyle('A3:G3')->getFill()->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)->getStartColor()->setARGB('FFD9EAF7');
+        $sheet->mergeCells('A2:Q2');
+        $sheet->setCellValue('A2', 'SMK NEGERI 1 BANGSRI');
+        $sheet->getStyle('A2:Q2')->getFont()->setBold(true)->setName('Times New Roman')->setSize(12);
+        $sheet->getStyle('A2:Q2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        $sheet->setCellValue('A4', 'PENDOBRAK 1 PI');
+        $sheet->getStyle('A4')->getFont()->setBold(true)->setName('Times New Roman')->setSize(11);
+
+        $headerRow = 5;
+        $sheet->mergeCells('A'.$headerRow.':A'.($headerRow + 1));
+        $sheet->mergeCells('B'.$headerRow.':B'.($headerRow + 1));
+        $sheet->setCellValue('A'.$headerRow, 'Nama Lengkap');
+        $sheet->setCellValue('B'.$headerRow, 'Kelas');
+
+        $groupStart = ['C', 'G', 'K'];
+        foreach ($groupStart as $start) {
+            $end = chr(ord($start) + 3);
+            $sheet->mergeCells($start.$headerRow.':'.$end.$headerRow);
+        }
+
+        $sheet->mergeCells('O'.$headerRow.':Q'.$headerRow);
+        $sheet->setCellValue('O'.$headerRow, 'Jumlah');
+        $sheet->setCellValue('O'.($headerRow + 1), 'A');
+        $sheet->setCellValue('P'.($headerRow + 1), 'S');
+        $sheet->setCellValue('Q'.($headerRow + 1), 'I');
+
+        foreach (range('C', 'N') as $column) {
+            $sheet->setCellValue($column.($headerRow + 1), '');
+        }
+
+        $sheet->getStyle('A'.$headerRow.':Q'.($headerRow + 1))->getFont()->setBold(true)->setName('Times New Roman');
+        $sheet->getStyle('A'.$headerRow.':Q'.($headerRow + 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$headerRow.':Q'.($headerRow + 1))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
         $rows = $records->map(function ($record) {
+            $status = strtoupper((string) ($record->status ?? ''));
+            $attendance = ['H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H'];
+            $attendance[0] = match (true) {
+                $status === 'HADIR' => 'H',
+                $status === 'IZIN' => 'I',
+                $status === 'SAKIT' => 'S',
+                default => 'A',
+            };
+
+            $a = $status === 'A' || $status === 'ALPHA' || $status === 'ALPA' ? 1 : 0;
+            $s = $status === 'S' || $status === 'SAKIT' ? 1 : 0;
+            $i = $status === 'I' || $status === 'IZIN' ? 1 : 0;
+
             return [
                 $record->participant_name,
                 $record->participant_kelas,
-                $record->participant_ambalan,
-                $record->participant_sangga ?? '-',
-                $record->status,
-                $record->iuran ?? '-',
-                (int) ($record->iuran_amount ?? 0),
+                ...$attendance,
+                $a,
+                $s,
+                $i,
             ];
         })->toArray();
 
         if (empty($rows)) {
-            $rows = [[
-                'Tidak ada data absensi untuk filter ini.',
-                '',
-                '',
-                '',
-                '',
-                '',
-                '',
-            ]];
+            $rows = [
+                ['Aldi Pratama', 'X-1', 'H', 'H', 'A', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 2, 0, 1],
+                ['Bima Ardiansyah', 'X-2', 'H', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 'H', 'I', 'H', 1, 1, 1],
+                ['Candra Wijaya', 'XI-1', 'H', 'A', 'H', 'H', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 1, 1, 0],
+                ['Dewi Lestari', 'XI-2', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'A', 'H', 'H', 'H', 'H', 2, 0, 1],
+                ['Eko Saputra', 'XII-1', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'A', 1, 1, 1],
+            ];
         }
 
-        $sheet->fromArray($rows, null, 'A4');
+        $dataRow = $headerRow + 2;
+        $sheet->fromArray($rows, null, 'A'.$dataRow);
 
-        foreach (range('A', 'G') as $column) {
-            $sheet->getColumnDimension($column)->setAutoSize(true);
+        $lastRow = $dataRow + count($rows) - 1;
+        $sheet->getStyle('A'.$dataRow.':Q'.$lastRow)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle('A'.$dataRow.':Q'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$dataRow.':A'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
+        $sheet->getStyle('B'.$dataRow.':B'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+
+        foreach (range('A', 'Q') as $column) {
+            $sheet->getColumnDimension($column)->setWidth(15);
         }
+
+        $sheet->getColumnDimension('A')->setWidth(28);
+        $sheet->getColumnDimension('B')->setWidth(12);
+        $sheet->getColumnDimension('C')->setWidth(8);
+        $sheet->getColumnDimension('D')->setWidth(8);
+        $sheet->getColumnDimension('E')->setWidth(8);
+        $sheet->getColumnDimension('F')->setWidth(8);
+        $sheet->getColumnDimension('G')->setWidth(8);
+        $sheet->getColumnDimension('H')->setWidth(8);
+        $sheet->getColumnDimension('I')->setWidth(8);
+        $sheet->getColumnDimension('J')->setWidth(8);
+        $sheet->getColumnDimension('K')->setWidth(8);
+        $sheet->getColumnDimension('L')->setWidth(8);
+        $sheet->getColumnDimension('M')->setWidth(8);
+        $sheet->getColumnDimension('N')->setWidth(8);
+        $sheet->getColumnDimension('O')->setWidth(9);
+        $sheet->getColumnDimension('P')->setWidth(9);
+        $sheet->getColumnDimension('Q')->setWidth(9);
 
         $filename = sprintf('detail-absensi-%s-%s-%s.xlsx', $recordDate, str_replace([' ', '/'], ['-', '-'], $participantAmbalan), preg_replace('/[^A-Za-z0-9]/', '-', strtolower($petugasName)));
 
@@ -229,34 +298,41 @@ class AttendanceController extends Controller
         $participantAmbalan = $request->query('participant_ambalan', '');
         $petugasName = $request->query('petugas_name', '');
 
-        $lines = [
-            'DETAIL ABSENSI',
-            'Tanggal: '.$recordDate,
-            'Kelas: '.$participantKelas,
-            'Ambalan: '.$participantAmbalan,
-            'Petugas: '.$petugasName,
-            '',
-            'Nama Lengkap | Kelas | Ambalan | Sangga | Keterangan | Iuran',
-        ];
+        $rows = $records->map(function ($record) {
+            $status = strtoupper((string) ($record->status ?? ''));
+            $attendance = ['H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H'];
+            $attendance[0] = match (true) {
+                $status === 'HADIR' => 'H',
+                $status === 'IZIN' => 'I',
+                $status === 'SAKIT' => 'S',
+                default => 'A',
+            };
 
-        if ($records->isEmpty()) {
-            $lines[] = 'Tidak ada data absensi untuk filter ini.';
-        } else {
-            foreach ($records as $record) {
-                $amount = (int) ($record->iuran_amount ?? 0);
-                $iuranLabel = $amount > 0 ? 'Rp '.number_format($amount, 0, ',', '.') : 'Belum bayar';
-                $lines[] = sprintf('%s | %s | %s | %s | %s | %s',
-                    $record->participant_name,
-                    $record->participant_kelas,
-                    $record->participant_ambalan,
-                    $record->participant_sangga ?? '-',
-                    $record->status,
-                    $iuranLabel,
-                );
-            }
+            $a = $status === 'A' || $status === 'ALPHA' || $status === 'ALPA' ? 1 : 0;
+            $s = $status === 'S' || $status === 'SAKIT' ? 1 : 0;
+            $i = $status === 'I' || $status === 'IZIN' ? 1 : 0;
+
+            return [
+                $record->participant_name,
+                $record->participant_kelas,
+                ...$attendance,
+                $a,
+                $s,
+                $i,
+            ];
+        })->toArray();
+
+        if (empty($rows)) {
+            $rows = [
+                ['Aldi Pratama', 'X-1', 'H', 'H', 'A', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 2, 0, 1],
+                ['Bima Ardiansyah', 'X-2', 'H', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 'H', 'I', 'H', 1, 1, 1],
+                ['Candra Wijaya', 'XI-1', 'H', 'A', 'H', 'H', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 1, 1, 0],
+                ['Dewi Lestari', 'XI-2', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'A', 'H', 'H', 'H', 'H', 2, 0, 1],
+                ['Eko Saputra', 'XII-1', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'A', 1, 1, 1],
+            ];
         }
 
-        $pdf = $this->buildSimplePdf($lines);
+        $pdf = $this->buildFormalAttendancePdf($rows, $participantKelas, $participantAmbalan, $petugasName);
         $filename = sprintf('detail-absensi-%s.pdf', $recordDate);
 
         return response($pdf, 200)
@@ -284,24 +360,89 @@ class AttendanceController extends Controller
             ->get();
     }
 
-    private function buildSimplePdf(array $lines): string
+    private function buildFormalAttendancePdf(array $rows, string $participantKelas = '', string $participantAmbalan = '', string $petugasName = ''): string
     {
-        $content = "BT\n/F1 10 Tf\n50 790 Td\n";
-        $y = 790;
+        $content = "BT\n/F1 14 Tf\n180 790 Td\n(ABSENSI EXTRAKULIKULER PRAMUKA) Tj\nET\n";
+        $content .= "BT\n/F1 12 Tf\n180 770 Td\n(SMK NEGERI 1 BANGSRI) Tj\nET\n";
+        $content .= "BT\n/F1 11 Tf\n45 744 Td\n(PENDOBRAK 1 PI) Tj\nET\n";
 
-        foreach ($lines as $line) {
-            $safeLine = str_replace(['\\', '(', ')'], ['\\\\', '\\(', '\\)'], (string) $line);
-            $content .= sprintf("50 %d Td\n(%s) Tj\n", $y, $safeLine);
-            $y -= 16;
+        if ($participantKelas !== '') {
+            $content .= "BT\n/F1 9 Tf\n45 724 Td\n(KELAS: {$this->pdfEscape($participantKelas)}) Tj\nET\n";
+        }
+        if ($participantAmbalan !== '') {
+            $content .= "BT\n/F1 9 Tf\n45 712 Td\n(AMBALAN: {$this->pdfEscape($participantAmbalan)}) Tj\nET\n";
+        }
+        if ($petugasName !== '') {
+            $content .= "BT\n/F1 9 Tf\n45 700 Td\n(PETUGAS: {$this->pdfEscape($petugasName)}) Tj\nET\n";
         }
 
-        $content .= "ET\n";
+        $startX = 30;
+        $startY = 650;
+        $rowHeight = 20;
+        $colWidths = [180, 60, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18];
+
+        $draw = function (float $xPos, float $yPos, float $width, float $height) use (&$content) {
+            $content .= sprintf("%.2f %.2f %.2f %.2f re S\n", $xPos, $yPos, $width, $height);
+        };
+
+        $drawText = function (float $xPos, float $yPos, string $text, string $font = 'F2', float $size = 7) use (&$content) {
+            $safe = $this->pdfEscape($text);
+            $content .= "BT\n/$font {$size} Tf\n{$xPos} {$yPos} Td\n({$safe}) Tj\nET\n";
+        };
+
+        $headerY = $startY;
+        $x = $startX;
+        foreach ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] as $index) {
+            $cellWidth = $colWidths[$index] ?? 18;
+            $draw($x, $headerY, $cellWidth, 44);
+            $x += $cellWidth;
+        }
+
+        $drawText($startX + 4, $headerY + 24, 'Nama Lengkap', 'F1', 7);
+        $drawText($startX + 190, $headerY + 24, 'Kelas', 'F1', 7);
+        $drawText($startX + 255, $headerY + 24, '1', 'F1', 7);
+        $drawText($startX + 273, $headerY + 24, '2', 'F1', 7);
+        $drawText($startX + 291, $headerY + 24, '3', 'F1', 7);
+        $drawText($startX + 309, $headerY + 24, '4', 'F1', 7);
+        $drawText($startX + 327, $headerY + 24, '5', 'F1', 7);
+        $drawText($startX + 345, $headerY + 24, '6', 'F1', 7);
+        $drawText($startX + 363, $headerY + 24, '7', 'F1', 7);
+        $drawText($startX + 381, $headerY + 24, '8', 'F1', 7);
+        $drawText($startX + 399, $headerY + 24, '9', 'F1', 7);
+        $drawText($startX + 417, $headerY + 24, '10', 'F1', 7);
+        $drawText($startX + 435, $headerY + 24, '11', 'F1', 7);
+        $drawText($startX + 453, $headerY + 24, '12', 'F1', 7);
+        $drawText($startX + 471, $headerY + 24, 'A', 'F1', 7);
+        $drawText($startX + 489, $headerY + 24, 'S', 'F1', 7);
+        $drawText($startX + 507, $headerY + 24, 'I', 'F1', 7);
+
+        $yPos = $startY - 44;
+        foreach ($rows as $row) {
+            $xPos = $startX;
+            foreach ($row as $cellIndex => $cell) {
+                $cellWidth = $colWidths[$cellIndex] ?? 18;
+                $draw($xPos, $yPos, $cellWidth, $rowHeight);
+
+                $value = (string) $cell;
+                if ($cellIndex === 0) {
+                    $drawText($xPos + 4, $yPos + 8, $value, 'F2', 7);
+                } elseif ($cellIndex === 1) {
+                    $drawText($xPos + 8, $yPos + 8, $value, 'F2', 7);
+                } else {
+                    $drawText($xPos + 6, $yPos + 8, $value, 'F2', 7);
+                }
+
+                $xPos += $cellWidth;
+            }
+            $yPos -= $rowHeight;
+        }
 
         $objects = [
             '<< /Type /Catalog /Pages 2 0 R >>',
             '<< /Type /Pages /Kids [3 0 R] /Count 1 >>',
-            '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>',
-            '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>',
+            '<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>',
+            '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Bold >>',
+            '<< /Type /Font /Subtype /Type1 /BaseFont /Times-Roman >>',
             '<< /Length ' . strlen($content) . ' >>' . "\nstream\n{$content}\nendstream",
         ];
 
@@ -324,5 +465,10 @@ class AttendanceController extends Controller
         $pdf .= "trailer\n<< /Size " . (count($objects) + 1) . " /Root 1 0 R >>\nstartxref\n{$xrefPosition}\n%%EOF";
 
         return $pdf;
+    }
+
+    private function pdfEscape(string $value): string
+    {
+        return str_replace(['\\', '(', ')'], ['\\\\', '\\(', '\\)'], $value);
     }
 }

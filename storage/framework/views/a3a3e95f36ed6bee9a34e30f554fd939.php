@@ -42,26 +42,26 @@
         </div>
     </div>
 
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Total Alumni</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white"><?php echo e($stats['total'] ?? 0); ?></p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Semua data</p>
+    <div class="grid grid-cols-2 gap-2 sm:gap-4 md:grid-cols-2 xl:grid-cols-4">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/80 sm:p-4">
+            <p class="text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Total Alumni</p>
+            <p class="mt-2 text-lg font-bold text-slate-900 dark:text-white sm:text-2xl"><?php echo e($stats['total'] ?? 0); ?></p>
+            <p class="mt-1 text-[9px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Semua data</p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Aktif</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white"><?php echo e($stats['aktif'] ?? 0); ?></p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Saat ini</p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/80 sm:p-4">
+            <p class="text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Aktif</p>
+            <p class="mt-2 text-lg font-bold text-slate-900 dark:text-white sm:text-2xl"><?php echo e($stats['aktif'] ?? 0); ?></p>
+            <p class="mt-1 text-[9px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Saat ini</p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Non-Aktif</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white"><?php echo e($stats['nonaktif'] ?? 0); ?></p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Dihentikan</p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/80 sm:p-4">
+            <p class="text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Non-Aktif</p>
+            <p class="mt-2 text-lg font-bold text-slate-900 dark:text-white sm:text-2xl"><?php echo e($stats['nonaktif'] ?? 0); ?></p>
+            <p class="mt-1 text-[9px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Dihentikan</p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Jabatan</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white"><?php echo e($stats['jabatan'] ?? 0); ?></p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Terisi</p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-2 dark:border-slate-700 dark:bg-slate-800/80 sm:p-4">
+            <p class="text-[8px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Jabatan</p>
+            <p class="mt-2 text-lg font-bold text-slate-900 dark:text-white sm:text-2xl"><?php echo e($stats['jabatan'] ?? 0); ?></p>
+            <p class="mt-1 text-[9px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Terisi</p>
         </div>
     </div>
 

@@ -11,7 +11,7 @@
 
         $image = $post->image_path;
         if (empty($image)) {
-            $image = 'images/hero/imagehero1.png';
+            $image = 'images/logokegiatan1.png';
         } elseif (! filter_var($image, FILTER_VALIDATE_URL)) {
             $image = str_starts_with($image, 'storage/') ? asset($image) : asset('storage/' . ltrim($image, '/'));
         }

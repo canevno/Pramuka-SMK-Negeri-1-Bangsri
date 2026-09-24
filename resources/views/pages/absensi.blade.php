@@ -5,10 +5,10 @@
     <h1 class="text-2xl font-bold mb-4 text-center">ABSENSI ANGGOTA</h1>
 
     @if(session('absensi_success'))
-        <div id="absensi-toast" class="fixed top-4 right-4 z-50 max-w-sm w-full rounded-3xl border border-slate-200 bg-white px-5 py-4 shadow-lg text-slate-900 transition-all duration-300 ease-out">
+        <div id="absensi-toast" role="status" aria-live="polite" class="fixed bottom-4 left-4 right-4 z-[70] w-auto max-w-md rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-xl text-slate-900 transition-all duration-300 ease-out pointer-events-auto sm:top-4 sm:right-4 sm:bottom-auto sm:left-auto sm:w-full sm:max-w-sm sm:px-5 sm:py-4 sm:rounded-3xl">
             <div class="flex items-center justify-between gap-3">
-                <p class="text-sm font-semibold text-slate-900">{{ session('absensi_success') }}</p>
-                <button type="button" id="absensi-toast-close" class="inline-flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none">×</button>
+                <p class="text-sm font-semibold text-slate-900 leading-5">{{ session('absensi_success') }}</p>
+                <button type="button" id="absensi-toast-close" class="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-slate-200 text-slate-500 transition hover:bg-slate-100 hover:text-slate-900 focus:outline-none">×</button>
             </div>
         </div>
     @endif

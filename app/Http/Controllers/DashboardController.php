@@ -3,10 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Models\AttendanceRecord;
+use App\Models\BantaraRegistration;
+use App\Models\GalleryItem;
+use App\Models\LaksanaRegistration;
 use App\Models\PetugasAbsensi;
+use App\Models\Post;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
@@ -117,19 +123,99 @@ class DashboardController extends Controller
             ->values()
             ->all();
 
+        $bantaraRegistrations = BantaraRegistration::query()
+            ->latest()
+            ->limit(4)
+            ->get()
+            ->map(function ($row) {
+                return [
+                    'name' => $row->nama,
+                    'kelas' => $row->kelas,
+                    'date' => $row->created_at?->translatedFormat('d M Y') ?? '-',
+                    'status' => ucfirst(str_replace('_', ' ', $row->status_verifikasi ?? 'pending')),
+                    'type' => 'Bantara',
+                ];
+            })
+            ->all();
+
+        $laksanaRegistrations = LaksanaRegistration::query()
+            ->latest()
+            ->limit(4)
+            ->get()
+            ->map(function ($row) {
+                return [
+                    'name' => $row->nama,
+                    'kelas' => $row->kelas,
+                    'date' => $row->created_at?->translatedFormat('d M Y') ?? '-',
+                    'status' => ucfirst(str_replace('_', ' ', $row->status_verifikasi ?? 'pending')),
+                    'type' => 'Laksana',
+                ];
+            })
+            ->all();
+
+        $latestRegistrations = array_merge($bantaraRegistrations, $laksanaRegistrations);
+        usort($latestRegistrations, function ($a, $b) {
+            return strtotime($b['date']) <=> strtotime($a['date']);
+        });
+        $latestRegistrations = array_slice($latestRegistrations, 0, 6);
+
+        $visitorStats = collect(range(6, 0))->map(function ($offset) {
+            $date = now()->subDays($offset)->startOfDay();
+            $start = $date->copy()->startOfDay()->timestamp;
+            $end = $date->copy()->endOfDay()->timestamp;
+
+            $count = 0;
+
+            if (Schema::hasTable('sessions')) {
+                $count = (int) DB::table('sessions')
+                    ->where('last_activity', '>=', $start)
+                    ->where('last_activity', '<=', $end)
+                    ->count();
+            }
+
+            return [
+                'label' => $date->translatedFormat('D'),
+                'day' => $date->translatedFormat('d'),
+                'count' => $count,
+            ];
+        })->values()->all();
+
+        $visitorTotalThisWeek = array_sum(array_column($visitorStats, 'count'));
+        $registrationCount = BantaraRegistration::count() + LaksanaRegistration::count();
+        $latestNews = Post::query()
+            ->where('is_published', true)
+            ->orderByDesc('published_at')
+            ->orderByDesc('id')
+            ->limit(3)
+            ->get()
+            ->map(function ($post) {
+                return [
+                    'title' => $post->title,
+                    'date' => $post->published_at?->translatedFormat('d M Y') ?? 'Tanggal belum diatur',
+                    'type' => $post->type ?: 'Berita',
+                    'image' => $post->image_path ? asset($post->image_path) : null,
+                    'excerpt' => $post->excerpt ?: str($post->content ?? '')->stripTags()->limit(90)->toString(),
+                ];
+            })
+            ->all();
+
         return view('dashboard', [
             'usersCount' => $usersCount,
             'adminsCount' => $adminsCount,
             'activeThisWeek' => $activeThisWeek,
             'pendingInvites' => $pendingInvites,
             'teamMembers' => $teamMembers,
-            'newsCount' => 45,
-            'galleryCount' => 214,
-            'registrationCount' => 28,
+            'newsCount' => Post::count(),
+            'galleryCount' => GalleryItem::count(),
+            'registrationCount' => $registrationCount,
             'attendanceCount' => $attendanceCount,
             'latestAttendanceRecords' => $latestAttendanceRecords,
             'petugasTeraktif' => $petugasTeraktif,
             'subSanggaTeraktif' => $subSanggaTeraktif,
+            'latestRegistrations' => $latestRegistrations,
+            'latestNews' => $latestNews,
+            'visitorStats' => $visitorStats,
+            'visitorTotalThisWeek' => $visitorTotalThisWeek,
         ]);
     }
 }

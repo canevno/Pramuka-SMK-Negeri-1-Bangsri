@@ -23,7 +23,7 @@
                 <option value="P">Perempuan (Ambalan PI)</option>
             </select>
 
-            <button type="submit" class="bg-blue-600 text-white rounded font-bold hover:bg-blue-700 py-2">Tambah Petugas</button>
+            <button type="submit" class="bg-emerald-600 text-white rounded font-bold hover:bg-emerald-700 py-2">Tambah Petugas</button>
         </form>
 
         <!-- Tabel Daftar Petugas -->
@@ -48,7 +48,7 @@
                         
                         <!-- Tambahan Kolom Tampilan Jenis Kelamin/Ambalan -->
                         <td class="p-3 text-sm">
-                            <span class="px-2 py-1 text-xs rounded font-bold {{ $p->jenis_kelamin == 'L' ? 'bg-blue-100 text-blue-700' : ($p->jenis_kelamin == 'P' ? 'bg-pink-100 text-pink-700' : 'bg-gray-100 text-gray-600') }}">
+                            <span class="px-2 py-1 text-xs rounded font-bold {{ $p->jenis_kelamin == 'L' ? 'bg-emerald-100 text-emerald-700' : ($p->jenis_kelamin == 'P' ? 'bg-pink-100 text-pink-700' : 'bg-gray-100 text-gray-600') }}">
                                 {{ $p->jenis_kelamin == 'L' ? 'Laki-laki (PA)' : ($p->jenis_kelamin == 'P' ? 'Perempuan (PI)' : 'Belum diatur') }}
                             </span>
                         </td>

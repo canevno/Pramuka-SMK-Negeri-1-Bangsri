@@ -78,7 +78,7 @@
                 type="text"
                 id="searchInput"
                 placeholder="Cari judul, alt text, atau kategori..."
-                class="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-4 text-xs text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                class="w-full rounded-lg border border-gray-200 bg-gray-50 py-2 pl-9 pr-4 text-xs text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
             >
             <svg class="absolute left-3 top-2.5 h-4 w-4 text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z"/>
@@ -88,7 +88,7 @@
         <button
             type="button"
             onclick="openFormModal()"
-            class="inline-flex items-center justify-center rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+            class="inline-flex items-center justify-center rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white shadow-sm transition hover:bg-emerald-700"
         >
             + Tambah Album
         </button>
@@ -140,7 +140,7 @@
                             </td>
 
                             <td class="p-4">
-                                <span class="rounded-md border border-blue-200 bg-blue-50 px-2.5 py-1 font-medium text-blue-600 dark:border-blue-900 dark:bg-blue-950/40 dark:text-blue-400">
+                                <span class="rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 font-medium text-emerald-600 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">
                                     {{ ucfirst($item->category) }}
                                 </span>
                             </td>
@@ -159,7 +159,7 @@
 
                             <td class="p-4 text-center">
                                 @if($item->is_featured)
-                                    <span class="rounded-md border border-indigo-200 bg-indigo-50 px-2.5 py-1 text-[10px] font-semibold text-indigo-600 dark:border-indigo-900 dark:bg-indigo-950/40 dark:text-indigo-400">
+                                    <span class="rounded-md border border-emerald-200 bg-emerald-50 px-2.5 py-1 text-[10px] font-semibold text-emerald-600 dark:border-emerald-900 dark:bg-emerald-950/40 dark:text-emerald-400">
                                         Beranda
                                     </span>
                                 @else
@@ -176,7 +176,7 @@
                                     <button
                                         type="button"
                                         data-copy-link="{{ e($resolveImage($item->image)) }}"
-                                        class="rounded-lg p-2 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400"
+                                        class="rounded-lg p-2 text-gray-500 transition hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-400"
                                         title="Salin URL gambar"
                                         aria-label="Salin URL gambar"
                                     >
@@ -200,7 +200,7 @@
                                             'is_featured' => (bool) $item->is_featured,
                                             'edit_url' => route('admin.gallery.update', $item->id),
                                         ]) }}"
-                                        class="rounded-lg p-2 text-gray-500 transition hover:bg-indigo-50 hover:text-indigo-600 dark:hover:bg-indigo-950/40 dark:hover:text-indigo-400"
+                                        class="rounded-lg p-2 text-gray-500 transition hover:bg-emerald-50 hover:text-emerald-600 dark:hover:bg-emerald-950/40 dark:hover:text-emerald-400"
                                         title="Edit album"
                                         aria-label="Edit album"
                                     >
@@ -261,7 +261,7 @@
                                 <button
                                     type="button"
                                     onclick="openFormModal()"
-                                    class="mt-4 rounded-lg bg-indigo-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-indigo-700"
+                                    class="mt-4 rounded-lg bg-emerald-600 px-4 py-2 text-xs font-semibold text-white transition hover:bg-emerald-700"
                                 >
                                     Tambah Album
                                 </button>
@@ -338,7 +338,7 @@
                         value="{{ old('title') }}"
                         placeholder="Masukkan judul album"
                         required
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                     >
                     @error('title')
                         <p class="mt-1 text-red-500">{{ $message }}</p>
@@ -353,7 +353,7 @@
                         id="category"
                         name="category"
                         required
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                     >
                         <option value="kegiatan" {{ old('category', 'kegiatan') == 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
                         <option value="pelatihan" {{ old('category') == 'pelatihan' ? 'selected' : '' }}>Pelatihan</option>
@@ -372,7 +372,7 @@
                         name="location"
                         value="{{ old('location') }}"
                         placeholder="Contoh: Lapangan SMK Negeri 1 Bangsri"
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                     >
                     @error('location')
                         <p class="mt-1 text-red-500">{{ $message }}</p>
@@ -386,7 +386,7 @@
                         id="published_at"
                         name="published_at"
                         value="{{ old('published_at') }}"
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                     >
                     @error('published_at')
                         <p class="mt-1 text-red-500">{{ $message }}</p>
@@ -401,7 +401,7 @@
                         name="alt_text"
                         value="{{ old('alt_text') }}"
                         placeholder="Deskripsi ringkas gambar untuk aksesibilitas dan SEO"
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                     >
                     @error('alt_text')
                         <p class="mt-1 text-red-500">{{ $message }}</p>
@@ -413,7 +413,7 @@
                     <select
                         id="is_published"
                         name="is_published"
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                     >
                         <option value="1" {{ old('is_published', '1') == '1' ? 'selected' : '' }}>Publik</option>
                         <option value="0" {{ old('is_published', '1') == '0' ? 'selected' : '' }}>Draft</option>
@@ -429,7 +429,7 @@
                         name="is_featured"
                         value="1"
                         {{ old('is_featured') ? 'checked' : '' }}
-                        class="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 dark:border-gray-600"
+                        class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 dark:border-gray-600"
                     >
                     <span class="font-medium text-gray-700 dark:text-gray-300">Tampilkan di Beranda</span>
                 </label>
@@ -443,7 +443,7 @@
                         tabindex="0"
                         role="button"
                         aria-label="Unggah gambar album"
-                        class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-5 text-center transition hover:border-indigo-500 hover:bg-indigo-50/40 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-indigo-500 dark:hover:bg-indigo-950/20"
+                        class="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-gray-300 bg-gray-50 p-5 text-center transition hover:border-emerald-500 hover:bg-emerald-50/40 dark:border-gray-700 dark:bg-gray-800 dark:hover:border-emerald-500 dark:hover:bg-emerald-950/20"
                     >
                         <input
                             type="file"
@@ -454,7 +454,7 @@
 
                         {{-- Placeholder --}}
                         <div id="dropzonePlaceholder" class="flex flex-col items-center gap-2">
-                            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-indigo-50 text-indigo-600 dark:bg-indigo-950/50 dark:text-indigo-400">
+                            <div class="flex h-11 w-11 items-center justify-center rounded-full bg-emerald-50 text-emerald-600 dark:bg-emerald-950/50 dark:text-emerald-400">
                                 <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 16.5V9.75m0 0l3 3m-3-3l-3 3M6.75 19.5a4.5 4.5 0 01-1.41-8.775 5.25 5.25 0 0110.233-2.33 3 3 0 013.758 3.848A3.752 3.752 0 0118 19.5H6.75z"/>
                                 </svg>
@@ -496,7 +496,7 @@
                         name="description"
                         rows="4"
                         placeholder="Tuliskan deskripsi album..."
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-indigo-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
+                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
                     >{{ old('description') }}</textarea>
                     @error('description')
                         <p class="mt-1 text-red-500">{{ $message }}</p>
@@ -514,7 +514,7 @@
                     <button
                         id="gallerySubmitButton"
                         type="submit"
-                        class="rounded-lg bg-indigo-600 px-5 py-2 font-semibold text-white shadow-sm transition hover:bg-indigo-700"
+                        class="rounded-lg bg-emerald-600 px-5 py-2 font-semibold text-white shadow-sm transition hover:bg-emerald-700"
                     >
                         Simpan
                     </button>
@@ -835,7 +835,7 @@
             imageDropzone.addEventListener(eventName, function(event) {
                 event.preventDefault();
                 event.stopPropagation();
-                imageDropzone.classList.add('border-indigo-500', 'bg-indigo-50/70', 'dark:bg-indigo-950/20');
+                imageDropzone.classList.add('border-emerald-500', 'bg-emerald-50/70', 'dark:bg-emerald-950/20');
             });
         });
 
@@ -843,7 +843,7 @@
             imageDropzone.addEventListener(eventName, function(event) {
                 event.preventDefault();
                 event.stopPropagation();
-                imageDropzone.classList.remove('border-indigo-500', 'bg-indigo-50/70', 'dark:bg-indigo-950/20');
+                imageDropzone.classList.remove('border-emerald-500', 'bg-emerald-50/70', 'dark:bg-emerald-950/20');
             });
         });
 

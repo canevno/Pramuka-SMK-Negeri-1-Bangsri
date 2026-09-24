@@ -45,23 +45,25 @@
                 </div>
             </div>
 
-            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950">
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950 md:col-span-2">
                 <h2 class="mb-4 text-lg font-semibold text-slate-900 dark:text-white">Sambutan</h2>
 
-                <div class="space-y-4">
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Judul Sambutan</label>
-                        <input type="text" name="sambutan_title" value="{{ old('sambutan_title', $settings['sambutan_title'] ?? '') }}" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Sambutan Ketua Gugus Depan">
+                <div class="grid gap-4 lg:grid-cols-2">
+                    <div class="space-y-4 lg:col-span-2">
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Judul Sambutan</label>
+                            <input type="text" name="sambutan_title" value="{{ old('sambutan_title', $settings['sambutan_title'] ?? '') }}" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Sambutan Ketua Gugus Depan">
+                        </div>
+
+                        <div>
+                            <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Subjudul Sambutan</label>
+                            <input type="text" name="sambutan_subtitle" value="{{ old('sambutan_subtitle', $settings['sambutan_subtitle'] ?? '') }}" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Jepara, 17 Juni 2026">
+                        </div>
                     </div>
 
-                    <div>
-                        <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Subjudul Sambutan</label>
-                        <input type="text" name="sambutan_subtitle" value="{{ old('sambutan_subtitle', $settings['sambutan_subtitle'] ?? '') }}" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Jepara, 17 Juni 2026">
-                    </div>
-
-                    <div>
+                    <div class="lg:col-span-2">
                         <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Deskripsi Sambutan</label>
-                        <textarea name="sambutan_description" rows="5" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Tulis isi sambutan secara lengkap">{{ old('sambutan_description', $settings['sambutan_description'] ?? '') }}</textarea>
+                        <textarea name="sambutan_description" rows="6" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Tulis isi sambutan secara lengkap">{{ old('sambutan_description', $settings['sambutan_description'] ?? '') }}</textarea>
                     </div>
 
                     <div>
@@ -74,7 +76,7 @@
                         <input type="url" name="sambutan_facebook" value="{{ old('sambutan_facebook', $settings['sambutan_facebook'] ?? '') }}" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="https://facebook.com/username">
                     </div>
 
-                    <div>
+                    <div class="lg:col-span-2">
                         <label class="mb-1 block text-sm font-medium text-slate-700 dark:text-slate-200">Gambar Sambutan</label>
                         <input type="file" name="sambutan_image" accept="image/*" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                         @if(!empty($settings['sambutan_image']))

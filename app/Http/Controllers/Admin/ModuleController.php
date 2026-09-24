@@ -47,11 +47,11 @@ class ModuleController extends Controller
 
         if (empty($newsItems)) {
             $newsItems = [
-                ['slug' => 'pramuka-peduli-lingkungan-pantai', 'category' => 'Sosial', 'title' => 'Pramuka Peduli Lingkungan Pantai', 'date' => 'Januari 8, 2024', 'description' => 'Aksi membersihkan sampah plastik pantai Bangsri sebagai bentuk pengabdian.', 'image' => 'images/hero/imagehero1.png', 'alt' => 'Pramuka Peduli Lingkungan Pantai'],
-                ['slug' => 'kemping-karakter-di-hutan-kareta', 'category' => 'Camping', 'title' => 'Kemping Karakter di Hutan Kareta', 'date' => 'Januari 8, 2024', 'description' => 'Perkemahan tiga hari memperkuat kemandirian, kerja tim, dan ketahanan fisik.', 'image' => 'images/hero/imagehero.png', 'alt' => 'Kemping Karakter di Hutan Kareta'],
+                ['slug' => 'pramuka-peduli-lingkungan-pantai', 'category' => 'Sosial', 'title' => 'Pramuka Peduli Lingkungan Pantai', 'date' => 'Januari 8, 2024', 'description' => 'Aksi membersihkan sampah plastik pantai Bangsri sebagai bentuk pengabdian.', 'image' => 'images/gerakanpramuka.jpg', 'alt' => 'Pramuka Peduli Lingkungan Pantai'],
+                ['slug' => 'kemping-karakter-di-hutan-kareta', 'category' => 'Camping', 'title' => 'Kemping Karakter di Hutan Kareta', 'date' => 'Januari 8, 2024', 'description' => 'Perkemahan tiga hari memperkuat kemandirian, kerja tim, dan ketahanan fisik.', 'image' => 'images/Tunas Kelapa.jpg', 'alt' => 'Kemping Karakter di Hutan Kareta'],
                 ['slug' => 'gelar-seni-budaya-nusantara', 'category' => 'Budaya', 'title' => 'Gelar Seni Budaya Nusantara', 'date' => 'Januari 8, 2024', 'description' => 'Pertunjukan seni daerah memadukan tradisi dan kreativitas Pramuka.', 'image' => 'images/logokegiatan1.png', 'alt' => 'Gelar Seni Budaya Nusantara'],
-                ['slug' => 'latihan-navigasi-darat-menantang', 'category' => 'Skills', 'title' => 'Latihan Navigasi Darat Menantang', 'date' => 'Januari 8, 2024', 'description' => 'Menguji orientasi lapangan dengan kompas dan peta di medan nyata.', 'image' => 'images/logos/smklogo.png', 'alt' => 'Latihan Navigasi Darat Menantang'],
-                ['slug' => 'pertemuan-alumni-dan-prestasi', 'category' => 'Event', 'title' => 'Pertemuan Alumni dan Prestasi', 'date' => 'Januari 8, 2024', 'description' => 'Forum alumni merayakan capaian anggota dan memperkuat koneksi Pramuka.', 'image' => 'images/hero/imagehero.png', 'alt' => 'Pertemuan Alumni dan Prestasi'],
+                ['slug' => 'latihan-navigasi-darat-menantang', 'category' => 'Skills', 'title' => 'Latihan Navigasi Darat Menantang', 'date' => 'Januari 8, 2024', 'description' => 'Menguji orientasi lapangan dengan kompas dan peta di medan nyata.', 'image' => 'images/kepanduan indonesia.jpg', 'alt' => 'Latihan Navigasi Darat Menantang'],
+                ['slug' => 'pertemuan-alumni-dan-prestasi', 'category' => 'Event', 'title' => 'Pertemuan Alumni dan Prestasi', 'date' => 'Januari 8, 2024', 'description' => 'Forum alumni merayakan capaian anggota dan memperkuat koneksi Pramuka.', 'image' => 'images/logokegiatan2.png', 'alt' => 'Pertemuan Alumni dan Prestasi'],
             ];
         }
 
@@ -327,7 +327,7 @@ class ModuleController extends Controller
     protected function resolvePublicImageUrl(?string $imagePath): string
     {
         if (empty($imagePath)) {
-            return asset('images/hero/imagehero1.png');
+            return asset('images/logokegiatan1.png');
         }
 
         if (filter_var($imagePath, FILTER_VALIDATE_URL)) {

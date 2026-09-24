@@ -5,12 +5,12 @@
 <?php $__env->startSection('page-description', $description ?? 'Kelola jadwal dan kegiatan yang tampil di homepage.'); ?>
 
 <?php $__env->startSection('content'); ?>
-<div class="space-y-6 rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+<div class="space-y-4 rounded-[1.5rem] border border-slate-200 bg-white p-3 shadow-sm sm:space-y-6 sm:rounded-[2rem] sm:p-6 dark:border-slate-800 dark:bg-slate-900">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
         <div>
-            <p class="text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400">Modul Admin</p>
-            <h2 class="mt-2 text-2xl font-bold text-slate-900 dark:text-white"><?php echo e($title ?? 'Kelola Timeline Kegiatan'); ?></h2>
-            <p class="mt-1 text-sm text-slate-500 dark:text-slate-400"><?php echo e($description ?? 'Kelola jadwal dan kegiatan yang tampil di homepage.'); ?></p>
+            <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-500 dark:text-slate-400 sm:text-[11px]">Modul Admin</p>
+            <h2 class="mt-2 text-xl font-bold text-slate-900 sm:text-2xl dark:text-white"><?php echo e($title ?? 'Kelola Timeline Kegiatan'); ?></h2>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm"><?php echo e($description ?? 'Kelola jadwal dan kegiatan yang tampil di homepage.'); ?></p>
         </div>
 
         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(! empty($publicRoute) && ! empty($publicLabel)): ?>
@@ -28,30 +28,82 @@
         </div>
     <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
 
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Total Kegiatan</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white"><?php echo e($stats['total'] ?? 0); ?></p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Semua data</p>
+    <div class="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40 sm:p-4">
+            <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Total Kegiatan</p>
+            <p class="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl"><?php echo e($stats['total'] ?? 0); ?></p>
+            <p class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Semua data</p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Akan Datang</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white"><?php echo e($stats['upcoming'] ?? 0); ?></p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Menunggu tanggal</p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40 sm:p-4">
+            <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Akan Datang</p>
+            <p class="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl"><?php echo e($stats['upcoming'] ?? 0); ?></p>
+            <p class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Menunggu tanggal</p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Sedang Aktif</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white"><?php echo e($stats['active'] ?? 0); ?></p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Dipublikasikan</p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40 sm:p-4">
+            <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Sedang Aktif</p>
+            <p class="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl"><?php echo e($stats['active'] ?? 0); ?></p>
+            <p class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Dipublikasikan</p>
         </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
-            <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">Selesai</p>
-            <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white"><?php echo e($stats['completed'] ?? 0); ?></p>
-            <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Terlewati</p>
+        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40 sm:p-4">
+            <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Selesai</p>
+            <p class="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl"><?php echo e($stats['completed'] ?? 0); ?></p>
+            <p class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Terlewati</p>
         </div>
     </div>
 
-    <div class="overflow-hidden rounded-2xl border border-slate-200 dark:border-slate-800">
+    <div class="space-y-3 md:hidden">
+        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $events ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $event): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
+            <article class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <div class="mb-3 flex items-start justify-between gap-2">
+                    <div class="min-w-0 flex-1">
+                        <h4 class="truncate text-sm font-bold text-slate-900 dark:text-white"><?php echo e($event->title); ?></h4>
+                        <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400"><?php echo e(\Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y')); ?></p>
+                    </div>
+                    <span class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[9px] font-semibold <?php echo e($event->is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200'); ?>">
+                        <?php echo e($event->status); ?>
+
+                    </span>
+                </div>
+
+                <div class="space-y-1 text-[11px] text-slate-600 dark:text-slate-300">
+                    <p><span class="font-semibold text-slate-500 dark:text-slate-400">Lokasi:</span> <?php echo e($event->location); ?></p>
+                    <p><span class="font-semibold text-slate-500 dark:text-slate-400">Waktu:</span> <?php echo e($event->time ?? 'Waktu belum diatur'); ?></p>
+                </div>
+
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                    <form action="<?php echo e(route('admin.timeline.toggle', $event)); ?>" method="POST" class="w-full">
+                        <?php echo csrf_field(); ?>
+                        <button type="submit" class="w-full rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[10px] font-semibold text-amber-700 dark:border-amber-700/50 dark:bg-amber-500/10 dark:text-amber-300">
+                            <?php echo e($event->is_active ? 'Non-aktifkan' : 'Aktifkan'); ?>
+
+                        </button>
+                    </form>
+
+                    <button type="button" onclick="document.getElementById('edit-timeline-<?php echo e($event->id); ?>').classList.toggle('hidden')" class="w-full rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1.5 text-[10px] font-semibold text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300">
+                        Edit
+                    </button>
+
+                    <form action="<?php echo e(route('admin.timeline.delete', $event)); ?>" method="POST" onsubmit="return confirm('Hapus kegiatan ini?');" class="w-full">
+                        <?php echo csrf_field(); ?>
+                        <?php echo method_field('DELETE'); ?>
+                        <button type="submit" class="w-full rounded-lg border border-rose-200 bg-rose-50 px-2 py-1.5 text-[10px] font-semibold text-rose-700 dark:border-rose-500/40 dark:bg-rose-500/10 dark:text-rose-300">
+                            Hapus
+                        </button>
+                    </form>
+
+                    <button type="button" class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-[10px] font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                        Detail
+                    </button>
+                </div>
+            </article>
+        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
+            <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-400">
+                Belum ada data timeline kegiatan.
+            </div>
+        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
+    </div>
+
+    <div class="hidden overflow-hidden rounded-2xl border border-slate-200 md:block dark:border-slate-800">
         <div class="overflow-x-auto">
             <table class="min-w-full text-left text-sm text-slate-600 dark:text-slate-300">
                 <thead class="bg-slate-100 text-xs uppercase tracking-[0.12em] text-slate-600 dark:bg-slate-800 dark:text-slate-300">
@@ -90,7 +142,7 @@
                                         </button>
                                     </form>
 
-                                    <button type="button" onclick="document.getElementById('edit-timeline-<?php echo e($event->id); ?>').classList.toggle('hidden')" class="rounded-lg border border-indigo-200 bg-indigo-50 px-2.5 py-1.5 text-[10px] font-semibold text-indigo-700 hover:bg-indigo-100 dark:border-indigo-500/40 dark:bg-indigo-500/10 dark:text-indigo-300 dark:hover:bg-indigo-500/20">
+                                    <button type="button" onclick="document.getElementById('edit-timeline-<?php echo e($event->id); ?>').classList.toggle('hidden')" class="rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[10px] font-semibold text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20">
                                         Edit
                                     </button>
 
@@ -111,24 +163,24 @@
                                     <?php echo csrf_field(); ?>
                                     <?php echo method_field('PUT'); ?>
 
-                                    <input type="text" name="title" value="<?php echo e(old('title', $event->title)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500" placeholder="Judul kegiatan" required>
-                                    <input type="date" name="date" value="<?php echo e(old('date', $event->date?->format('Y-m-d') ?? $event->date)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white" required>
-                                    <input type="time" name="time" value="<?php echo e(old('time', $event->time)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                                    <input type="text" name="location" value="<?php echo e(old('location', $event->location)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500" placeholder="Lokasi" required>
-                                    <input type="url" name="guide_url" value="<?php echo e(old('guide_url', $event->guide_url)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 md:col-span-2" placeholder="https://...">
-                                    <input type="number" name="sort_order" value="<?php echo e(old('sort_order', $event->sort_order ?? 0)); ?>" min="0" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500">
-                                    <select name="status" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                                    <input type="text" name="title" value="<?php echo e(old('title', $event->title)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500" placeholder="Judul kegiatan" required>
+                                    <input type="date" name="date" value="<?php echo e(old('date', $event->date?->format('Y-m-d') ?? $event->date)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white" required>
+                                    <input type="time" name="time" value="<?php echo e(old('time', $event->time)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                                    <input type="text" name="location" value="<?php echo e(old('location', $event->location)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500" placeholder="Lokasi" required>
+                                    <input type="url" name="guide_url" value="<?php echo e(old('guide_url', $event->guide_url)); ?>" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 md:col-span-2" placeholder="https://...">
+                                    <input type="number" name="sort_order" value="<?php echo e(old('sort_order', $event->sort_order ?? 0)); ?>" min="0" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500">
+                                    <select name="status" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                                         <option value="upcoming" <?php echo e(old('status', $event->status) === 'upcoming' ? 'selected' : ''); ?>>Akan datang</option>
                                         <option value="ongoing" <?php echo e(old('status', $event->status) === 'ongoing' ? 'selected' : ''); ?>>Sedang berlangsung</option>
                                         <option value="completed" <?php echo e(old('status', $event->status) === 'completed' ? 'selected' : ''); ?>>Selesai</option>
                                     </select>
-                                    <textarea name="description" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 md:col-span-2" placeholder="Deskripsi singkat kegiatan (maks 500 karakter)"><?php echo e(old('description', $event->description)); ?></textarea>
-                                    <textarea name="theme" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-indigo-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 md:col-span-2" placeholder="Tema kegiatan"><?php echo e(old('theme', $event->theme)); ?></textarea>
+                                    <textarea name="description" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 md:col-span-2" placeholder="Deskripsi singkat kegiatan (maks 500 karakter)"><?php echo e(old('description', $event->description)); ?></textarea>
+                                    <textarea name="theme" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 md:col-span-2" placeholder="Tema kegiatan"><?php echo e(old('theme', $event->theme)); ?></textarea>
 
                                     <div class="md:col-span-2">
                                         <label class="block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Logo kegiatan</label>
                                         <div class="mt-2 flex items-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-white p-3 file-drop-zone dark:border-slate-700 dark:bg-slate-900">
-                                            <input type="file" name="logo" accept="image/*" class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-indigo-600 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white dark:text-slate-300">
+                                            <input type="file" name="logo" accept="image/*" class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-600 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white dark:text-slate-300">
                                             <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(! empty($event->logo_path)): ?>
                                                 <img src="<?php echo e(asset('storage/' . $event->logo_path)); ?>" alt="Logo kegiatan" class="h-12 w-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700">
                                             <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
@@ -140,7 +192,7 @@
                                         Tampilkan di homepage
                                     </label>
                                     <div class="flex justify-end gap-2 md:col-span-2">
-                                        <button type="submit" class="rounded-xl bg-indigo-600 px-4 py-2 text-xs font-semibold text-white hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400">
+                                        <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400">
                                             Simpan Perubahan
                                         </button>
                                     </div>
@@ -168,32 +220,32 @@
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Judul kegiatan</span>
-                <input type="text" name="title" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Masukkan judul acara" required>
+                <input type="text" name="title" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Masukkan judul acara" required>
             </label>
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Tanggal</span>
-                <input type="date" name="date" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" required>
+                <input type="date" name="date" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" required>
             </label>
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Waktu</span>
-                <input type="time" name="time" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                <input type="time" name="time" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             </label>
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Urutan</span>
-                <input type="number" name="sort_order" value="0" min="0" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                <input type="number" name="sort_order" value="0" min="0" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
             </label>
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Lokasi</span>
-                <input type="text" name="location" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Masukkan lokasi kegiatan" required>
+                <input type="text" name="location" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Masukkan lokasi kegiatan" required>
             </label>
 
             <label class="block">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Status</span>
-                <select name="status" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                <select name="status" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                     <option value="upcoming">Akan datang</option>
                     <option value="ongoing">Sedang berlangsung</option>
                     <option value="completed">Selesai</option>
@@ -202,22 +254,22 @@
 
             <label class="block md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Deskripsi singkat</span>
-                <textarea name="description" rows="3" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Deskripsi singkat kegiatan (maks 500 karakter)"></textarea>
+                <textarea name="description" rows="3" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Deskripsi singkat kegiatan (maks 500 karakter)"></textarea>
             </label>
 
             <label class="block md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Tema kegiatan</span>
-                <textarea name="theme" rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Tuliskan tema atau motto kegiatan"></textarea>
+                <textarea name="theme" rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Tuliskan tema atau motto kegiatan"></textarea>
             </label>
 
             <label class="block md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Panduan kegiatan (opsional)</span>
-                <input type="url" name="guide_url" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="https://example.com/panduan">
+                <input type="url" name="guide_url" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="https://example.com/panduan">
             </label>
 
             <label class="block md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Tampilkan di homepage</span>
-                <select name="is_active" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-indigo-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
+                <select name="is_active" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
                     <option value="1">Ya, tampilkan di homepage</option>
                     <option value="0">Tidak tampilkan</option>
                 </select>
@@ -225,9 +277,9 @@
 
             <div class="md:col-span-2">
                 <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Logo kegiatan</span>
-                <div class="mt-2 rounded-2xl border-2 border-dashed border-slate-300 bg-white p-4 transition hover:border-indigo-400 dark:border-slate-700 dark:bg-slate-900">
+                <div class="mt-2 rounded-2xl border-2 border-dashed border-slate-300 bg-white p-4 transition hover:border-emerald-400 dark:border-slate-700 dark:bg-slate-900">
                     <label class="file-drop-zone flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-8 text-center dark:border-slate-700 dark:bg-slate-800">
-                        <svg class="h-10 w-10 text-indigo-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                        <svg class="h-10 w-10 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                             <path d="M12 16V4m0 0l-4 4m4-4l4 4M5 18.5A2.5 2.5 0 007.5 21h9A2.5 2.5 0 0019 18.5" stroke-linecap="round" stroke-linejoin="round"/>
                         </svg>
                         <div>
@@ -240,7 +292,7 @@
             </div>
 
             <div class="md:col-span-2 flex justify-end">
-                <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-indigo-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-indigo-500 dark:bg-indigo-500 dark:hover:bg-indigo-400">
+                <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400">
                     Simpan Timeline
                 </button>
             </div>
