@@ -1,73 +1,39 @@
-﻿@extends('layouts.frontend')
+﻿
 
-@php
-    $adArtPdfSetting = \App\Models\Setting::getValue('history_ad_art_munas_2023_file');
-    $adArtPdfUrl = $adArtPdfSetting
-        ? \Illuminate\Support\Facades\Storage::disk('public')->url($adArtPdfSetting)
-        : 'https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC';
-
-    $formatHistoryContent = function ($content) {
-        if (empty(trim((string) $content))) {
-            return '';
-        }
-
-        if (preg_match('/<\s*[^>]+>/', (string) $content)) {
-            return (string) $content;
-        }
-
-        $normalized = preg_replace('/\r\n|\r/', "\n", (string) $content);
-        $normalized = preg_replace('/\n{3,}/', "\n\n", trim($normalized));
-        $paragraphs = preg_split('/\n\s*\n/', $normalized);
-
-        $rendered = [];
-        foreach ($paragraphs as $paragraph) {
-            $text = trim((string) $paragraph);
-            if ($text === '') {
-                continue;
-            }
-
-            $rendered[] = '<p class="mb-4 leading-relaxed text-slate-700">' . nl2br(e($text), false) . '</p>';
-        }
-
-        return implode('', $rendered) ?: '<p class="leading-relaxed text-slate-700">' . nl2br(e($normalized), false) . '</p>';
-    };
-
+<?php
     $historySections = [
         'kepanduan-dunia' => [
             'title' => \App\Models\Setting::getValue('history_kepanduan_dunia_title') ?: 'Kepanduan Dunia',
-            'content' => $formatHistoryContent(\App\Models\Setting::getValue('history_kepanduan_dunia_content') ?: 'Kepanduan dunia berawal dari pemikiran seorang pemuda Inggris, Lord Baden-Powell, yang mengembangkan metode pendidikan di alam terbuka melalui perkemahan di Pulau Brownsea pada 1907.\n\nSemangatnya kemudian berkembang menjadi gerakan kepanduan internasional yang menanamkan kedisiplinan, kepemimpinan, dan kepedulian sosial bagi generasi muda di seluruh dunia.'),
-            'image' => \App\Models\Setting::getValue('history_kepanduan_dunia_image') ? \Illuminate\Support\Facades\Storage::disk('public')->url(\App\Models\Setting::getValue('history_kepanduan_dunia_image')) : asset('images/download.jpg'),
+            'content' => \App\Models\Setting::getValue('history_kepanduan_dunia_content') ?: '<p>Kepanduan dunia berawal dari pemikiran seorang pemuda Inggris, Lord Baden-Powell, yang mengembangkan metode pendidikan di alam terbuka melalui perkemahan di Pulau Brownsea pada 1907.</p><p>Semangatnya kemudian berkembang menjadi gerakan kepanduan internasional yang menanamkan kedisiplinan, kepemimpinan, dan kepedulian sosial bagi generasi muda di seluruh dunia.</p>',
         ],
         'kepanduan-indonesia' => [
             'title' => \App\Models\Setting::getValue('history_kepanduan_indonesia_title') ?: 'Kepanduan Indonesia',
-            'content' => $formatHistoryContent(\App\Models\Setting::getValue('history_kepanduan_indonesia_content') ?: 'Gerakan kepanduan di Indonesia dimulai sejak masa penjajahan Belanda dan kemudian berkembang menjadi lembaga yang membentuk semangat nasionalisme dan persatuan bangsa.\n\nBerbagai organisasi kepanduan di tanah air kemudian menyatu dalam satu wadah yang memperkuat semangat patriotisme dan karakter kaum muda Indonesia.'),
-            'image' => \App\Models\Setting::getValue('history_kepanduan_indonesia_image') ? \Illuminate\Support\Facades\Storage::disk('public')->url(\App\Models\Setting::getValue('history_kepanduan_indonesia_image')) : asset('images/kepanduan indonesia.jpg'),
+            'content' => \App\Models\Setting::getValue('history_kepanduan_indonesia_content') ?: '<p>Gerakan kepanduan di Indonesia dimulai sejak masa penjajahan Belanda dan kemudian berkembang menjadi lembaga yang membentuk semangat nasionalisme dan persatuan bangsa.</p><p>Berbagai organisasi kepanduan di tanah air kemudian menyatu dalam satu wadah yang memperkuat semangat patriotisme dan karakter kaum muda Indonesia.</p>',
         ],
         'gerakan-pramuka' => [
             'title' => \App\Models\Setting::getValue('history_gerakan_pramuka_title') ?: 'Gerakan Pramuka',
-            'content' => $formatHistoryContent(\App\Models\Setting::getValue('history_gerakan_pramuka_content') ?: 'Gerakan Pramuka lahir sebagai wadah pendidikan nonformal yang membangun karakter, kedisiplinan, dan kepedulian sosial bagi pemuda Indonesia.\n\nPramuka mengedepankan nilai Pancasila, prinsip dasar kepramukaan, dan semangat persatuan untuk membentuk generasi yang beriman, bertakwa, dan siap berkontribusi bagi bangsa.'),
-            'image' => \App\Models\Setting::getValue('history_gerakan_pramuka_image') ? \Illuminate\Support\Facades\Storage::disk('public')->url(\App\Models\Setting::getValue('history_gerakan_pramuka_image')) : asset('images/gerakanpramuka.jpg'),
+            'content' => \App\Models\Setting::getValue('history_gerakan_pramuka_content') ?: '<p>Gerakan Pramuka lahir sebagai wadah pendidikan nonformal yang membangun karakter, kedisiplinan, dan kepedulian sosial bagi pemuda Indonesia.</p><p>Pramuka mengedepankan nilai Pancasila, prinsip dasar kepramukaan, dan semangat persatuan untuk membentuk generasi yang beriman, bertakwa, dan siap berkontribusi bagi bangsa.</p>',
         ],
         'ad-art-munas-2023' => [
             'title' => \App\Models\Setting::getValue('history_ad_art_munas_2023_title') ?: 'AD - ART Munas 2023',
-            'content' => $formatHistoryContent(\App\Models\Setting::getValue('history_ad_art_munas_2023_content') ?: 'AD-ART Munas 2023 menjadi pedoman utama penyelenggaraan Gerakan Pramuka dalam menjaga tata kelola organisasi, kepemimpinan, dan arah kebijakan strategis.\n\nDokumen ini menegaskan komitmen Pramuka untuk menjaga nilai organisasi, memperkuat kebersamaan, serta memastikan setiap program mendukung kesejahteraan masyarakat dan pembangunan bangsa.'),
-            'pdf_url' => $adArtPdfUrl,
+            'content' => \App\Models\Setting::getValue('history_ad_art_munas_2023_content') ?: '<p>AD-ART Munas 2023 menjadi pedoman utama penyelenggaraan Gerakan Pramuka dalam menjaga tata kelola organisasi, kepemimpinan, dan arah kebijakan strategis.</p><p>Dokumen ini menegaskan komitmen Pramuka untuk menjaga nilai organisasi, memperkuat kebersamaan, serta memastikan setiap program mendukung kesejahteraan masyarakat dan pembangunan bangsa.</p>',
         ],
     ];
-@endphp
+?>
 
-@section('content')
+<?php $__env->startSection('content'); ?>
 <div x-data="{ 
-    activeTab: '{{ request()->query('tab', 'kepanduan-dunia') }}',
+    activeTab: '<?php echo e(request()->query('tab', 'kepanduan-dunia')); ?>',
     syncTabFromUrl() {
         const params = new URLSearchParams(window.location.search);
         const hash = window.location.hash.replace('#', '');
         const key = params.get('tab') || hash || 'kepanduan-dunia';
         const validTabs = {
             'kepanduan-dunia': 'kepanduan-dunia',
-            'Dewan Ambalan': 'Dewan Ambalan',
+            'kepanduan-indonesia': 'kepanduan-indonesia',
             'gerakan-pramuka': 'gerakan-pramuka',
             'ad-art-munas-2023': 'ad-art-munas-2023',
+            'Dewan Ambalan': 'Dewan Ambalan',
             'lambang': 'lambang',
             'hymne-mars': 'hymne-mars',
             'uu-pramuka': 'uu-pramuka'
@@ -148,19 +114,21 @@
                 <!-- 1. Kepanduan Dunia -->
                 <section id="kepanduan-dunia" x-show="activeTab === 'kepanduan-dunia'" class="pb-2 sm:pb-12 space-y-6">
                     <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
-                        {{ $historySections['kepanduan-dunia']['title'] }}
+                        <?php echo e($historySections['kepanduan-dunia']['title']); ?>
+
                     </h2>
 
                     <div class="mx-auto w-full max-w-[820px] overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 shadow-sm">
                         <div class="h-[180px] overflow-hidden bg-slate-100 sm:h-[240px] lg:h-[300px]">
-                            <img src="{{ $historySections['kepanduan-dunia']['image'] }}"
+                            <img src="<?php echo e(asset('images/download.jpg')); ?>"
                                  alt="Kepanduan Dunia - Baden Powell"
                                  class="h-full w-full object-cover object-center">
                         </div>
                     </div>
 
-                    <div class="border-0 bg-transparent p-0 px-1 shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:p-5 sm:shadow-sm sm:p-8 space-y-5 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
-                        {!! $historySections['kepanduan-dunia']['content'] !!}
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 space-y-4 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                        <?php echo $historySections['kepanduan-dunia']['content']; ?>
+
                     </div>
                 </section>
 
@@ -168,17 +136,19 @@
                 <!-- 2. Kepanduan Indonesia -->
                 <section x-show="activeTab === 'kepanduan-indonesia'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
-                        {{ $historySections['kepanduan-indonesia']['title'] }}
+                        <?php echo e($historySections['kepanduan-indonesia']['title']); ?>
+
                     </h2>
 
                     <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-                        <img src="{{ $historySections['kepanduan-indonesia']['image'] }}"
+                        <img src="<?php echo e(asset('images/kepanduan indonesia.jpg')); ?>"
                              alt="Kepanduan Indonesia"
                              class="mx-auto h-auto w-auto max-h-[280px] object-cover sm:max-h-[320px]">
                     </div>
 
-                    <div class="border-0 bg-transparent p-0 px-1 shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:p-5 sm:shadow-sm sm:p-8 space-y-5 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
-                        {!! $historySections['kepanduan-indonesia']['content'] !!}
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 space-y-4 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                        <?php echo $historySections['kepanduan-indonesia']['content']; ?>
+
                     </div>
                 </section>
 
@@ -186,17 +156,19 @@
                 <!-- 3. Gerakan Pramuka -->
                 <section id="gerakan-pramuka" x-show="activeTab === 'gerakan-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
-                        {{ $historySections['gerakan-pramuka']['title'] }}
+                        <?php echo e($historySections['gerakan-pramuka']['title']); ?>
+
                     </h2>
 
                     <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-                        <img src="{{ $historySections['gerakan-pramuka']['image'] }}"
+                        <img src="<?php echo e(asset('images/gerakanpramuka.jpg')); ?>"
                              alt="Gerakan Pramuka"
                              class="mx-auto h-auto w-auto max-h-[240px] object-contain sm:max-h-[280px]">
                     </div>
 
-                    <div class="border-0 bg-transparent p-0 px-1 shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:p-5 sm:shadow-sm sm:p-8 space-y-5 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
-                        {!! $historySections['gerakan-pramuka']['content'] !!}
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8 space-y-4 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                        <?php echo $historySections['gerakan-pramuka']['content']; ?>
+
                     </div>
                 </section>
 
@@ -205,7 +177,8 @@
                 <section id="ad-art-munas-2023" x-show="activeTab === 'ad-art-munas-2023'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                         <h2 class="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
-                            {{ $historySections['ad-art-munas-2023']['title'] }}
+                            <?php echo e($historySections['ad-art-munas-2023']['title']); ?>
+
                         </h2>
                         <a href="https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC"
                            target="_blank"
@@ -217,21 +190,22 @@
 
                     <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
                         <div class="space-y-4 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
-                            {!! $historySections['ad-art-munas-2023']['content'] !!}
+                            <?php echo $historySections['ad-art-munas-2023']['content']; ?>
+
                         </div>
                     </div>
 
                     <div class="w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 shadow-sm">
                         <div class="h-[420px] sm:h-[620px]">
                             <iframe
-                                src="{{ $historySections['ad-art-munas-2023']['pdf_url'] ? 'https://docs.google.com/gview?embedded=true&url=' . urlencode($historySections['ad-art-munas-2023']['pdf_url']) : 'https://drive.google.com/file/d/1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC/preview' }}"
+                                src="https://drive.google.com/file/d/1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC/preview"
                                 class="h-full w-full border-0"
                                 allow="autoplay">
                             </iframe>
                         </div>
                     </div>
 
-                    <a href="{{ $historySections['ad-art-munas-2023']['pdf_url'] ?? 'https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC' }}"
+                    <a href="https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC"
                        target="_blank"
                        rel="noopener noreferrer"
                        class="flex w-full items-center justify-center rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 sm:hidden">
@@ -250,7 +224,7 @@
                         <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm">
                             <div class="flex justify-center mb-6">
                                 <img
-                                    src="{{ asset('images/Tunas Kelapa.jpg') }}"
+                                    src="<?php echo e(asset('images/Tunas Kelapa.jpg')); ?>"
                                     alt="Lambang Tunas Kelapa Pramuka"
                                     class="h-auto max-h-[180px] w-auto object-contain drop-shadow-md sm:max-h-[220px]"
                                 >
@@ -338,7 +312,7 @@
 
                             <!-- Audio Player Hymne -->
                             <audio controls class="w-full rounded-lg pt-2">
-                                <source src="{{ asset('Hymne-Satya-Darma-Pramuka.mp3') }}" type="audio/mpeg">
+                                <source src="<?php echo e(asset('Hymne-Satya-Darma-Pramuka.mp3')); ?>" type="audio/mpeg">
                                 Browser Anda tidak mendukung pemutar audio.
                             </audio>
                         </div>
@@ -367,7 +341,7 @@
 
                             <!-- Audio Player Mars (Di Bawah Teks Lagu) -->
                             <audio controls class="w-full rounded-lg pt-2">
-                                <source src="{{ asset('Mars-Jayalah-Pramuka.mp3') }}" type="audio/mpeg">
+                                <source src="<?php echo e(asset('Mars-Jayalah-Pramuka.mp3')); ?>" type="audio/mpeg">
                                 Browser Anda tidak mendukung pemutar audio.
                             </audio>
                         </div>
@@ -529,4 +503,5 @@
         </div>
     </div>
 </div>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('layouts.frontend', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views\pages\about.blade.php ENDPATH**/ ?>

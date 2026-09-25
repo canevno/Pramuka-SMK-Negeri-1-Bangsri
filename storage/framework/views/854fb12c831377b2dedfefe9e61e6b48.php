@@ -2,11 +2,11 @@
 
 <?php $__env->startSection('content'); ?>
 <div x-data="{ 
-    activeTab: '<?php echo e(request()->query('tab', 'kepanduan-dunia')); ?>',
+    activeTab: '<?php echo e(request()->query('tab', 'visi-misi-kwarnas')); ?>',
     syncTabFromUrl() {
         const params = new URLSearchParams(window.location.search);
         const hash = window.location.hash.replace('#', '');
-        const key = params.get('tab') || hash || 'kepanduan-dunia';
+        const key = params.get('tab') || hash || 'visi-misi-kwarnas';
         const validTabs = {
             'kepanduan-dunia': 'kepanduan-dunia',
             'kepanduan-indonesia': 'kepanduan-indonesia',
@@ -18,7 +18,7 @@
             'visi-misi-kwarnas': 'visi-misi-kwarnas',
             'visi-misi-pangkalan': 'visi-misi-pangkalan'
         };
-        this.activeTab = validTabs[key] || 'kepanduan-dunia';
+        this.activeTab = validTabs[key] || 'visi-misi-kwarnas';
     },
     changeTab(tabName) {
         this.activeTab = tabName;
@@ -108,15 +108,15 @@
                 
                 <!-- 1. Kepanduan Dunia -->
                 <section id="kepanduan-dunia" x-show="activeTab === 'kepanduan-dunia'" class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                         Kepanduan Dunia
                     </h2>
                     
-                    <div class="mx-auto w-full max-w-[420px] overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-2 shadow-sm sm:max-w-[460px]">
-                        <div class="h-[180px] overflow-hidden rounded-xl bg-slate-100 sm:h-[210px]">
+                    <div class="mx-auto w-full max-w-[820px] overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 shadow-sm">
+                        <div class="h-[180px] overflow-hidden bg-slate-100 sm:h-[240px] lg:h-[300px]">
                             <img src="<?php echo e(asset('images/download.jpg')); ?>" 
                                  alt="Kepanduan Dunia - Baden Powell" 
-                                 class="h-full w-full object-contain object-center">
+                                 class="h-full w-full object-cover object-center">
                         </div>
                     </div>
 
@@ -182,7 +182,7 @@
 
                 <!-- 2. Kepanduan Indonesia -->
                 <section x-show="activeTab === 'kepanduan-indonesia'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                         Kepanduan Indonesia
                     </h2>
 
@@ -222,7 +222,7 @@
 
                 <!-- 3. Gerakan Pramuka -->
                 <section x-show="activeTab === 'gerakan-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                    <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                         Gerakan Pramuka
                     </h2>
 
@@ -275,7 +275,7 @@
                 <!-- 4. AD - ART Munas 2023 -->
                 <section id="ad-art-munas-2023" x-show="activeTab === 'ad-art-munas-2023'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                             AD - ART Munas 2023
                         </h2>
                         <!-- Tombol Desktop -->
@@ -309,7 +309,7 @@
                 <!-- 5. Lambang -->
                 <section x-show="activeTab === 'lambang'" x-cloak class="pb-2 sm:pb-12">
                     <div class="space-y-6">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                             Lambang Gerakan Pramuka
                         </h2>
 
@@ -376,14 +376,14 @@
 
                 <!-- 6. Hymne dan Mars -->
                 <section x-show="activeTab === 'hymne-mars'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+<h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                         Hymne dan Mars Pramuka
                     </h2>
                     
                     <div class="grid gap-6 sm:grid-cols-2">
                         <!-- Card Hymne Pramuka -->
                         <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3">
+                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
                                 Hymne Pramuka
                             </h3>
                             
@@ -411,7 +411,7 @@
 
                         <!-- Card Mars Pramuka -->
                         <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900 border-b border-slate-200 pb-3">
+                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
                                 Mars Jayalah Pramuka
                             </h3>
 
@@ -444,7 +444,7 @@
                 <!-- 7. UU No 12 Tahun 2010 -->
                 <section x-show="activeTab === 'uu-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <div>
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
                             Sejarah Terbitnya Undang-Undang Nomor 12 Tahun 2010
                         </h2>
                         <p class="mt-1 text-sm text-slate-500 font-semibold">
@@ -526,7 +526,7 @@
                     <!-- PDF Preview & Download UU No 12 Tahun 2010 -->
                     <div class="pt-6 space-y-4">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <h3 class="text-xl font-bold tracking-tight text-slate-950">
+                            <h3 class="text-xl font-semibold tracking-tight text-slate-950">
                                 Dokumen PDF UU No. 12 Tahun 2010
                             </h3>
                             <!-- Tombol Desktop -->
@@ -559,7 +559,7 @@
                     <!-- PDF Preview & Download Penjelasan UU No 12 Tahun 2010 -->
                     <div class="pt-6 space-y-4">
                         <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                            <h3 class="text-xl font-bold tracking-tight text-slate-950">
+                            <h3 class="text-xl font-semibold tracking-tight text-slate-950">
                                 Penjelasan Undang-undang Republik Indonesia Nomor 12 Tahun 2010 tentang Gerakan Pramuka
                             </h3>
                             <!-- Tombol Desktop -->
@@ -598,7 +598,7 @@
                         <img src="<?php echo e(asset('kwarnaslogo.png')); ?>" 
                              alt="Logo Kwarnas" 
                              class="h-28 sm:h-40 w-auto object-contain shrink-0 order-1 sm:order-2">
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
                             Visi, Misi, Dan Tujuan Kwartir Nasional (Kwarnas)
                         </h2>
                     </div>
@@ -607,7 +607,7 @@
                         
                         <!-- VISI -->
                         <div class="space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Visi Pengembangan Gerakan Pramuka
                             </h3>
 
@@ -626,7 +626,7 @@
 
                         <!-- MISI -->
                         <div class="space-y-4 pt-4 border-t border-slate-100">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Misi Perencanaan dan Pengembangan Gerakan Pramuka
                             </h3>
 
@@ -668,7 +668,7 @@
 
                         <!-- TUJUAN -->
                         <div class="space-y-4 pt-4 border-t border-slate-100">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Tujuan Pengembangan Gerakan Pramuka
                             </h3>
 
@@ -715,7 +715,7 @@
                                  class="h-24 sm:h-36 w-auto object-contain">
                         </div>
                         
-                        <h2 class="text-2xl sm:text-3xl font-bold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
+                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 flex-1 order-2 sm:order-1 text-center sm:text-left">
                             Visi, Misi, Dan Tujuan Ambalan Pangkalan
                         </h2>
                     </div>
@@ -724,7 +724,7 @@
                         
                         <!-- VISI -->
                         <div class="space-y-4">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Visi Ambalan
                             </h3>
 
@@ -743,7 +743,7 @@
 
                         <!-- MISI -->
                         <div class="space-y-4 pt-4 border-t border-slate-100">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Misi Ambalan
                             </h3>
 
@@ -770,7 +770,7 @@
 
                         <!-- TUJUAN -->
                         <div class="space-y-4 pt-4 border-t border-slate-100">
-                            <h3 class="text-xl font-bold text-slate-900">
+                            <h3 class="text-xl font-semibold text-slate-900">
                                 Tujuan Ambalan
                             </h3>
 

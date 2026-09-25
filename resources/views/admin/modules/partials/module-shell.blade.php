@@ -16,9 +16,14 @@
     @if(!empty($stats))
         <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
             @foreach($stats as $stat)
-                <div class="rounded-2xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-800 dark:bg-slate-800/40">
+                <div class="overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40">
+                    @if(!empty($stat['image']))
+                        <img src="{{ asset($stat['image']) }}" alt="{{ $stat['label'] }}" class="mb-3 h-24 w-full rounded-xl object-cover shadow-sm">
+                    @endif
                     <p class="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400">{{ $stat['label'] }}</p>
-                    <p class="mt-2 text-2xl font-bold text-slate-900 dark:text-white">{{ $stat['value'] }}</p>
+                    @if(!empty($stat['value']))
+                        <p class="mt-2 text-lg font-bold text-slate-900 dark:text-white">{{ $stat['value'] }}</p>
+                    @endif
                     <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">{{ $stat['caption'] ?? 'Terbaru' }}</p>
                 </div>
             @endforeach

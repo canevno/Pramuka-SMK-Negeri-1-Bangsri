@@ -511,6 +511,120 @@ class ModuleController extends Controller
         ]);
     }
 
+    public function sejarah()
+    {
+        $settings = [];
+
+        if (Schema::hasTable('settings')) {
+            $settings = Setting::query()->pluck('value', 'key')->all();
+        }
+
+        $defaultHistorySections = [
+            'history_kepanduan_dunia' => [
+                'title' => 'Kepanduan Dunia',
+                'content' => '<p>Kepanduan dunia berawal dari pemikiran seorang pemuda Inggris, Lord Baden-Powell, yang mengembangkan metode pendidikan di alam terbuka melalui perkemahan di Pulau Brownsea pada 1907.</p><p>Semangatnya kemudian berkembang menjadi gerakan kepanduan internasional yang menanamkan kedisiplinan, kepemimpinan, dan kepedulian sosial bagi generasi muda di seluruh dunia.</p>',
+            ],
+            'history_kepanduan_indonesia' => [
+                'title' => 'Kepanduan Indonesia',
+                'content' => '<p>Gerakan kepanduan di Indonesia dimulai sejak masa penjajahan Belanda dan kemudian berkembang menjadi lembaga yang membentuk semangat nasionalisme dan persatuan bangsa.</p><p>Berbagai organisasi kepanduan di tanah air kemudian menyatu dalam satu wadah yang memperkuat semangat patriotisme dan karakter kaum muda Indonesia.</p>',
+            ],
+            'history_gerakan_pramuka' => [
+                'title' => 'Gerakan Pramuka',
+                'content' => '<p>Gerakan Pramuka lahir sebagai wadah pendidikan nonformal yang membangun karakter, kedisiplinan, dan kepedulian sosial bagi pemuda Indonesia.</p><p>Pramuka mengedepankan nilai Pancasila, prinsip dasar kepramukaan, dan semangat persatuan untuk membentuk generasi yang beriman, bertakwa, dan siap berkontribusi bagi bangsa.</p>',
+            ],
+            'history_ad_art_munas_2023' => [
+                'title' => 'AD - ART Munas 2023',
+                'content' => '<p>AD-ART Munas 2023 menjadi pedoman utama penyelenggaraan Gerakan Pramuka dalam menjaga tata kelola organisasi, kepemimpinan, dan arah kebijakan strategis.</p><p>Dokumen ini menegaskan komitmen Pramuka untuk menjaga nilai organisasi, memperkuat kebersamaan, serta memastikan setiap program mendukung kesejahteraan masyarakat dan pembangunan bangsa.</p>',
+            ],
+        ];
+
+        return view('admin.modules.sejarah', [
+            'title' => 'Kelola Profil Sejarah',
+            'description' => 'Atur bagian sejarah agar konten tampil rapi dan mudah dikelola di halaman Tentang Kami.',
+            'publicRoute' => route('about'),
+            'publicLabel' => 'Lihat Halaman Tentang Kami',
+            'settings' => $settings,
+            'defaultHistorySections' => $defaultHistorySections,
+            'stats' => [
+                ['label' => 'Kepanduan Dunia', 'image' => 'images/download.jpg', 'value' => 'Preview', 'caption' => 'Halaman depan'],
+                ['label' => 'Kepanduan Indonesia', 'image' => 'images/kepanduan indonesia.jpg', 'value' => 'Preview', 'caption' => 'Halaman depan'],
+                ['label' => 'Gerakan Pramuka', 'image' => 'images/gerakanpramuka.jpg', 'value' => 'Preview', 'caption' => 'Halaman depan'],
+                ['label' => 'AD - ART Munas 2023', 'image' => 'https://drive.google.com/uc?export=view&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC', 'value' => 'Preview PDF', 'caption' => 'Halaman depan'],
+            ],
+        ]);
+    }
+
+    public function storeSejarah(Request $request)
+    {
+        $request->validate([
+            'history_kepanduan_dunia_title' => 'nullable|string|max:255',
+            'history_kepanduan_dunia_content' => 'nullable|string',
+            'history_kepanduan_dunia_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'history_kepanduan_indonesia_title' => 'nullable|string|max:255',
+            'history_kepanduan_indonesia_content' => 'nullable|string',
+            'history_kepanduan_indonesia_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'history_gerakan_pramuka_title' => 'nullable|string|max:255',
+            'history_gerakan_pramuka_content' => 'nullable|string',
+            'history_gerakan_pramuka_image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'history_ad_art_munas_2023_title' => 'nullable|string|max:255',
+            'history_ad_art_munas_2023_content' => 'nullable|string',
+            'history_ad_art_munas_2023_file' => 'nullable|file|mimes:pdf|max:10240',
+        ]);
+
+        $keys = [
+            'history_kepanduan_dunia_title',
+            'history_kepanduan_dunia_content',
+            'history_kepanduan_indonesia_title',
+            'history_kepanduan_indonesia_content',
+            'history_gerakan_pramuka_title',
+            'history_gerakan_pramuka_content',
+            'history_ad_art_munas_2023_title',
+            'history_ad_art_munas_2023_content',
+        ];
+
+        foreach ($keys as $key) {
+            if ($request->exists($key)) {
+                $value = $request->input($key);
+
+                if ($value === null || $value === '') {
+                    Setting::query()->where('key', $key)->delete();
+                    continue;
+                }
+
+                Setting::setValue($key, $value);
+            }
+        }
+
+        $imageKeys = [
+            'history_kepanduan_dunia_image',
+            'history_kepanduan_indonesia_image',
+            'history_gerakan_pramuka_image',
+        ];
+
+        foreach ($imageKeys as $imageKey) {
+            if ($request->hasFile($imageKey)) {
+                $file = $request->file($imageKey);
+                $path = $file->storeAs('settings/history', str_replace('history_', '', $imageKey) . '.' . $file->getClientOriginalExtension(), 'public');
+
+                if ($path) {
+                    Setting::setValue($imageKey, $path);
+                }
+            }
+        }
+
+        $pdfKey = 'history_ad_art_munas_2023_file';
+        if ($request->hasFile($pdfKey)) {
+            $file = $request->file($pdfKey);
+            $path = $file->storeAs('settings/history', 'ad-art-munas-2023.pdf', 'public');
+
+            if ($path) {
+                Setting::setValue($pdfKey, $path);
+            }
+        }
+
+        return redirect()->route('admin.sejarah')->with('success', 'Profil sejarah berhasil diperbarui.');
+    }
+
     public function timeline()
     {
         $events = Schema::hasTable('timeline_events')

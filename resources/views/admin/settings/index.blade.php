@@ -112,6 +112,39 @@
                     @endforeach
                 </div>
             </div>
+
+            <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-800 dark:bg-slate-950 md:col-span-2">
+                <h2 class="mb-4 text-lg font-semibold text-slate-900 dark:text-white">Sejarah</h2>
+
+                <div class="grid gap-4 lg:grid-cols-2">
+                    @php
+                        $historySections = [
+                            ['key' => 'history_kepanduan_dunia', 'label' => 'Kepanduan Dunia'],
+                            ['key' => 'history_kepanduan_indonesia', 'label' => 'Kepanduan Indonesia'],
+                            ['key' => 'history_gerakan_pramuka', 'label' => 'Gerakan Pramuka'],
+                            ['key' => 'history_ad_art_munas_2023', 'label' => 'AD - ART Munas 2023'],
+                        ];
+                    @endphp
+
+                    @foreach ($historySections as $section)
+                        <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 dark:border-slate-700 dark:bg-slate-900/60">
+                            <h3 class="mb-3 text-sm font-semibold uppercase tracking-[0.12em] text-slate-600 dark:text-slate-300">{{ $section['label'] }}</h3>
+
+                            <div class="space-y-3">
+                                <div>
+                                    <label class="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-200">Judul</label>
+                                    <input type="text" name="{{ $section['key'] }}_title" value="{{ old($section['key'] . '_title', $settings[$section['key'] . '_title'] ?? '') }}" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Judul bagian sejarah">
+                                </div>
+
+                                <div>
+                                    <label class="mb-1 block text-xs font-medium text-slate-700 dark:text-slate-200">Konten</label>
+                                    <textarea name="{{ $section['key'] }}_content" rows="6" class="w-full rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none transition focus:border-slate-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Tulis isi sejarah...">{{ old($section['key'] . '_content', $settings[$section['key'] . '_content'] ?? '') }}</textarea>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
         </div>
 
         <div class="flex justify-end">

@@ -49,6 +49,14 @@ class SiteSettingsController extends Controller
             'organization_card_2_image' => 'nullable|image',
             'organization_card_3_image' => 'nullable|image',
             'organization_card_4_image' => 'nullable|image',
+            'history_kepanduan_dunia_title' => 'nullable|string|max:255',
+            'history_kepanduan_dunia_content' => 'nullable|string',
+            'history_kepanduan_indonesia_title' => 'nullable|string|max:255',
+            'history_kepanduan_indonesia_content' => 'nullable|string',
+            'history_gerakan_pramuka_title' => 'nullable|string|max:255',
+            'history_gerakan_pramuka_content' => 'nullable|string',
+            'history_ad_art_munas_2023_title' => 'nullable|string|max:255',
+            'history_ad_art_munas_2023_content' => 'nullable|string',
         ]);
 
         $keys = [
@@ -66,6 +74,14 @@ class SiteSettingsController extends Controller
             'organization_card_2_image',
             'organization_card_3_image',
             'organization_card_4_image',
+            'history_kepanduan_dunia_title',
+            'history_kepanduan_dunia_content',
+            'history_kepanduan_indonesia_title',
+            'history_kepanduan_indonesia_content',
+            'history_gerakan_pramuka_title',
+            'history_gerakan_pramuka_content',
+            'history_ad_art_munas_2023_title',
+            'history_ad_art_munas_2023_content',
         ];
 
         foreach ($keys as $key) {

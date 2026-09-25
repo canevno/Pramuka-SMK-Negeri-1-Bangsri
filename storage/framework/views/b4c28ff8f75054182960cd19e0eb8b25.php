@@ -1,5 +1,61 @@
 ﻿
 
+<?php
+    $adArtPdfSetting = \App\Models\Setting::getValue('history_ad_art_munas_2023_file');
+    $adArtPdfUrl = $adArtPdfSetting
+        ? \Illuminate\Support\Facades\Storage::disk('public')->url($adArtPdfSetting)
+        : 'https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC';
+
+    $formatHistoryContent = function ($content) {
+        if (empty(trim((string) $content))) {
+            return '';
+        }
+
+        if (preg_match('/<\s*[^>]+>/', (string) $content)) {
+            return (string) $content;
+        }
+
+        $normalized = preg_replace('/\r\n|\r/', "\n", (string) $content);
+        $normalized = preg_replace('/\n{3,}/', "\n\n", trim($normalized));
+        $paragraphs = preg_split('/\n\s*\n/', $normalized);
+
+        $rendered = [];
+        foreach ($paragraphs as $paragraph) {
+            $text = trim((string) $paragraph);
+            if ($text === '') {
+                continue;
+            }
+
+            $rendered[] = '<p class="mb-4 leading-relaxed text-slate-700">' . nl2br(e($text), false) . '</p>';
+        }
+
+        return implode('', $rendered) ?: '<p class="leading-relaxed text-slate-700">' . nl2br(e($normalized), false) . '</p>';
+    };
+
+    $historySections = [
+        'kepanduan-dunia' => [
+            'title' => \App\Models\Setting::getValue('history_kepanduan_dunia_title') ?: 'Kepanduan Dunia',
+            'content' => $formatHistoryContent(\App\Models\Setting::getValue('history_kepanduan_dunia_content') ?: 'Kepanduan dunia berawal dari pemikiran seorang pemuda Inggris, Lord Baden-Powell, yang mengembangkan metode pendidikan di alam terbuka melalui perkemahan di Pulau Brownsea pada 1907.\n\nSemangatnya kemudian berkembang menjadi gerakan kepanduan internasional yang menanamkan kedisiplinan, kepemimpinan, dan kepedulian sosial bagi generasi muda di seluruh dunia.'),
+            'image' => \App\Models\Setting::getValue('history_kepanduan_dunia_image') ? \Illuminate\Support\Facades\Storage::disk('public')->url(\App\Models\Setting::getValue('history_kepanduan_dunia_image')) : asset('images/download.jpg'),
+        ],
+        'kepanduan-indonesia' => [
+            'title' => \App\Models\Setting::getValue('history_kepanduan_indonesia_title') ?: 'Kepanduan Indonesia',
+            'content' => $formatHistoryContent(\App\Models\Setting::getValue('history_kepanduan_indonesia_content') ?: 'Gerakan kepanduan di Indonesia dimulai sejak masa penjajahan Belanda dan kemudian berkembang menjadi lembaga yang membentuk semangat nasionalisme dan persatuan bangsa.\n\nBerbagai organisasi kepanduan di tanah air kemudian menyatu dalam satu wadah yang memperkuat semangat patriotisme dan karakter kaum muda Indonesia.'),
+            'image' => \App\Models\Setting::getValue('history_kepanduan_indonesia_image') ? \Illuminate\Support\Facades\Storage::disk('public')->url(\App\Models\Setting::getValue('history_kepanduan_indonesia_image')) : asset('images/kepanduan indonesia.jpg'),
+        ],
+        'gerakan-pramuka' => [
+            'title' => \App\Models\Setting::getValue('history_gerakan_pramuka_title') ?: 'Gerakan Pramuka',
+            'content' => $formatHistoryContent(\App\Models\Setting::getValue('history_gerakan_pramuka_content') ?: 'Gerakan Pramuka lahir sebagai wadah pendidikan nonformal yang membangun karakter, kedisiplinan, dan kepedulian sosial bagi pemuda Indonesia.\n\nPramuka mengedepankan nilai Pancasila, prinsip dasar kepramukaan, dan semangat persatuan untuk membentuk generasi yang beriman, bertakwa, dan siap berkontribusi bagi bangsa.'),
+            'image' => \App\Models\Setting::getValue('history_gerakan_pramuka_image') ? \Illuminate\Support\Facades\Storage::disk('public')->url(\App\Models\Setting::getValue('history_gerakan_pramuka_image')) : asset('images/gerakanpramuka.jpg'),
+        ],
+        'ad-art-munas-2023' => [
+            'title' => \App\Models\Setting::getValue('history_ad_art_munas_2023_title') ?: 'AD - ART Munas 2023',
+            'content' => $formatHistoryContent(\App\Models\Setting::getValue('history_ad_art_munas_2023_content') ?: 'AD-ART Munas 2023 menjadi pedoman utama penyelenggaraan Gerakan Pramuka dalam menjaga tata kelola organisasi, kepemimpinan, dan arah kebijakan strategis.\n\nDokumen ini menegaskan komitmen Pramuka untuk menjaga nilai organisasi, memperkuat kebersamaan, serta memastikan setiap program mendukung kesejahteraan masyarakat dan pembangunan bangsa.'),
+            'pdf_url' => $adArtPdfUrl,
+        ],
+    ];
+?>
+
 <?php $__env->startSection('content'); ?>
 <div x-data="{ 
     activeTab: '<?php echo e(request()->query('tab', 'kepanduan-dunia')); ?>',
@@ -92,73 +148,21 @@
                 <!-- 1. Kepanduan Dunia -->
                 <section id="kepanduan-dunia" x-show="activeTab === 'kepanduan-dunia'" class="pb-2 sm:pb-12 space-y-6">
                     <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
-                        Kepanduan Dunia
+                        <?php echo e($historySections['kepanduan-dunia']['title']); ?>
+
                     </h2>
-                    
+
                     <div class="mx-auto w-full max-w-[820px] overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 shadow-sm">
                         <div class="h-[180px] overflow-hidden bg-slate-100 sm:h-[240px] lg:h-[300px]">
-                            <img src="<?php echo e(asset('images/download.jpg')); ?>" 
-                                 alt="Kepanduan Dunia - Baden Powell" 
+                            <img src="<?php echo e($historySections['kepanduan-dunia']['image']); ?>"
+                                 alt="Kepanduan Dunia - Baden Powell"
                                  class="h-full w-full object-cover object-center">
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-4 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
-                        <p>
-                            Kepanduan dunia berawal dari pemikiran seorang pemuda Inggris yang merangkum atau menulis pengalamannya saat bertugas di Afrika dan India. Pemuda tersebut adalah <strong>Lord Baden-Powell of Gilwell</strong> yang nama lengkapnya adalah <strong>Robert Stephenson Smyth Baden-Powell</strong>, namun lebih dikenal dengan sebutan <strong>BP</strong>.
-                        </p>
+                    <div class="border-0 bg-transparent p-0 px-1 shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:p-5 sm:shadow-sm sm:p-8 space-y-5 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                        <?php echo $historySections['kepanduan-dunia']['content']; ?>
 
-                        <p>
-                            Baden-Powell lahir pada tanggal 22 Februari 1857 di London. Ayahnya adalah seorang Profesor Geometry di Universitas Oxford bernama Baden Powell yang meninggal ketika Stephenson masih kecil. Baden Powell bergabung dengan pasukan Hussars ke-13 di India pada tahun 1876, kemudian dari tahun 1888 – 1895 Baden Powell sukses bertugas di India, Afganistan, Zulu, dan Ashanti.
-                        </p>
-
-                        <p>
-                            Semasa Perang Boer, Baden-Powell bertugas sebagai staf dari pasukan Kerajaan Inggris (1896 – 1897), menjadi kolonel pasukan berkuda di Afrika Selatan (mengalami pengalaman terkepung oleh bangsa Boer di Kota Mafeking, Afrika Selatan selama 127 hari dengan kekurangan makanan), kemudian mengalahkan bangsa Zulu di Afrika dan mengambil kalung manik kayu milik raja Dinizulu.
-                        </p>
-
-                        <p>
-                            Pengalamannya tersebut ia tulis menjadi sebuah buku dengan judul <strong>"AIDS TO SCOUTING"</strong> yang sebenarnya untuk memberi petunjuk kepada tentara Inggris agar dapat melakukan tugas penyelidik dengan baik. Buku tersebut memuat cara menjelajahi hutan dan kecakapan tertentu yang diperoleh dari alam ataupun tokoh masyarakat yang dilalui, seperti mengenali jejak perjalanan yang baru dilewati untuk keluar dari rimbunnya hutan, mengenali buah-buahan yang dapat dimakan, air yang boleh diminum, mengetahui arah mata angin tanpa melihat arah matahari karena rimbunnya hutan, dan sebagainya.
-                        </p>
-
-                        <p>
-                            Untuk menguji kebenaran isi buku itu, 21 orang pemuda yang menamakan kelompok <em>Boys Brigade</em> mengundang Baden-Powell bersama-sama membuktikannya dengan mengadakan perkemahan di Pulau Brownsea (<em>Brownsea Island</em>) pada tanggal 25 Juli 1907 selama 8 hari. Peserta perkemahan melakukan pengembaraan menerapkan isi buku <em>Aids for Scouting</em> bersama Baden-Powell.
-                        </p>
-
-                        <p>
-                            Pengalaman dalam perkemahan tersebut dicatat setiap hari. Pada akhir perkemahan, catatan tersebut dikumpulkan menjadi satu oleh Baden-Powell dan dijadikanlah sebuah buku dengan judul <strong>"SCOUTING FOR BOYS"</strong> yang diterbitkan tahun 1908.
-                        </p>
-
-                        <p>
-                            Kelompok anak muda yang melakukan perkemahan di Brownsea tersebut mengubah nama kelompoknya dari <em>Boys Brigade</em> menjadi <strong>BOY SCOUT</strong> dan menjadikan <em>Scouting For Boys</em> sebagai buku panduannya. Kemudian ajaran Baden-Powell ini berkembang dan berdirilah organisasi kepanduan-kepanduan (yang semula hanya untuk anak laki-laki berusia penggalang) yang disebut Boys Scout.
-                        </p>
-
-                        <p>
-                            Kemudian disusul berdirinya organisasi kepanduan putri yang diberi nama <strong>GIRL GUIDES</strong>, atas bantuan Agnes adik perempuan Baden-Powell dan diteruskan oleh Ny. Baden-Powell dengan buku panduan <em>HANDBOOK GIRL GUIDES</em> (dikerjakan bersama-sama dengan Agnes Baden-Powell tahun 1912) dan <em>GIRL GUIDES</em> (1918).
-                        </p>
-
-                        <p>
-                            Baden-Powell kembali ke Inggris tahun 1908 menjadi Letnan Jenderal dan dianugerahi Ksatria tahun 1909. Pada tahun 1910 Baden-Powell meminta pensiun dari tentara dengan pangkat terakhir Letnan Jenderal. Ia menikah dengan Olave St. Clair Soames pada tahun 1912 dan dianugerahi tiga orang anak (Peter, Heather, Betty). Pada tahun 1912 berdiri pandu usia siaga yang disebut <strong>CUB</strong> (anak serigala) dengan buku <em>Jungle Book</em> berisi cerita tentang Mowgli anak didikan rimba (anak yang dipelihara oleh Serigala) karangan Rudyard Kipling sebagai cerita pembungkus kegiatan Cub ini.
-                        </p>
-
-                        <p>
-                            Kemudian tahun 1918 Baden-Powell membentuk <strong>Rover Scout</strong> (Pramuka usia Penegak) untuk menampung mereka yang sudah lewat usia 17 tahun tetapi masih sering giat di bidang kepanduan, dengan buku panduan <strong>ROVERING TO SUCCESS</strong> (Mengembara Menuju Kebahagiaan) yang telah diterbitkan tahun 1912.
-                        </p>
-
-                        <p>
-                            Pada tahun 1920 para pandu sedunia berkumpul di Olympia, London, Inggris dalam acara Jambore Dunia yang pertama. Ketika hari terakhir kegiatan jambore tanggal 6 Agustus 1920, Baden-Powell diangkat sebagai <strong>Chief Scout of The World</strong> atau Bapak Pandu Sedunia. Sejak tahun 1920 itu dibentuklah Dewan Internasional dengan 9 orang anggota dan Biro Sekretariatnya berada di London, Inggris.
-                        </p>
-
-                        <p>
-                            Pada tahun 1929 Baden-Powell mendapat gelar kehormatan "Lord" hingga namanya menjadi <strong>Lord Baden-Powell of Gilwell</strong> dengan julukan Baron, gelar tersebut diberikan oleh Raja George V. Setelah berkeliling dunia termasuk berkunjung ke Batavia (Sekarang: Jakarta, Indonesia) tanggal 3 Desember 1934 sepulang meninjau Jambore di Australia, Baden-Powell beserta istrinya menghabiskan waktu tinggal di Inggris (sekitar tahun 1935-1938).
-                        </p>
-
-                        <p>
-                            Kemudian ia kembali ke Afrika tanah yang amat dicintainya, dan menghabiskan masa tuanya di Nyeri, Kenya. Beliau wafat tanggal 8 Januari 1941 dan diantar di atas kereta yang ditarik oleh para pandu yang sangat mencintainya ke tempat peristirahatan terakhir.
-                        </p>
-
-                        <p>
-                            Pada tahun 1958 Biro Kepanduan Sedunia (Putra) dipindahkan dari London ke Ottawa, Kanada. Pada tanggal 1 Mei 1968 dipindahkan lagi ke Geneva, Swiss (Jenewa Swiss). Biro Kepanduan Dunia (Putra) hanya mempunyai 40 orang staf yang ada di Geneva dan 5 kantor kawasan yakni: Costa Rica, Mesir, Filipina, Swiss, dan Nigeria. Biro Kepanduan Dunia (Putri) sampai dengan sekarang tetap berada di London dan mempunyai 5 kawasan yakni: Eropa, Asia Pasifik, Arab, Afrika, dan Amerika Latin.
-                        </p>
                     </div>
                 </section>
 
@@ -166,39 +170,19 @@
                 <!-- 2. Kepanduan Indonesia -->
                 <section x-show="activeTab === 'kepanduan-indonesia'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
-                        Kepanduan Indonesia
+                        <?php echo e($historySections['kepanduan-indonesia']['title']); ?>
+
                     </h2>
 
                     <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
-                        <img src="<?php echo e(asset('images/kepanduan indonesia.jpg')); ?>" 
-                             alt="Kepanduan Indonesia" 
+                        <img src="<?php echo e($historySections['kepanduan-indonesia']['image']); ?>"
+                             alt="Kepanduan Indonesia"
                              class="mx-auto h-auto w-auto max-h-[280px] object-cover sm:max-h-[320px]">
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-4 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
-                        <p>
-                            Gerakan pendidikan kepanduan di Tanah Air sudah muncul sejak zaman Hindia-Belanda. Pada 1912, dimulai latihan sekelompok pandu di Batavia (nama Jakarta pada masa penjajahan Belanda), yang kemudian menjadi cabang dari <em>Nederlandsche Padvinders Organisatie</em> (NPO). Dua tahun kemudian cabang tersebut disahkan berdiri sendiri dan dinamakan <em>Nederlands-Indische Padvinders Vereeniging</em> (NIPV) atau Persatuan Pandu-Pandu Hindia Belanda.
-                        </p>
+                    <div class="border-0 bg-transparent p-0 px-1 shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:p-5 sm:shadow-sm sm:p-8 space-y-5 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                        <?php echo $historySections['kepanduan-indonesia']['content']; ?>
 
-                        <p>
-                            Pada saat itu, sebagian besar anggota NIPV adalah pandu-pandu keturunan Belanda. Namun, pada 1916 berdiri suatu organisasi kepanduan yang sepenuhnya merupakan pandu-pandu bumiputera. Adalah Mangkunegara VII, pemimpin Keraton Solo yang membentuk Javaansche Padvinders Organisatie. Setelah itu muncul organisasi kepanduan berbasis agama, kesukuan dan lainnya. Antara lain Padvinder Muhammadiyah (Hizbul Wathan), Nationale Padvinderij, Syarikat Islam Afdeling Pandu, Kepanduan Bangsa Indonesia, Indonesisch Nationale Padvinders Organisatie, Pandu Indonesia, Padvinders Organisatie Pasundan, Pandu Kesultanan, El-Hilaal, Pandu Ansor, Al Wathoni, Tri Darma (Kristen), Kepanduan Asas Katolik Indonesia, dan Kepanduan Masehi Indonesia.
-                        </p>
-
-                        <p>
-                            Kepanduan yang ada di Hindia-Belanda ternyata berkembang cukup baik. Hal itu menarik perhatian pula dari Bapak Pandu Sedunia, Lord Baden-Powell, yang bersama istrinya, Lady Baden-Powell, dan anak-anak mereka, mengunjungi organisasi kepanduan di Batavia, Semarang, dan Surabaya, pada awal Desember 1934. Para pandu di Hindia-Belanda pernah pula mengikuti Jambore Kepanduan Sedunia.
-                        </p>
-
-                        <p>
-                            Bila pada Jambore Sedunia 1933 di Hungaria hanya sebatas pada kunjungan delegasi kecil untuk menyaksikan kegiatan akbar itu, maka pada Jambore Sedunia 1937 di Belanda, ikut pula Kontingen Pandu Hindia-Belanda yang terdiri dari Pandu-pandu keturunan Belanda, bumiputera khususnya dari Batavia dan Bandung, lalu dari Pandu Mangkunegaran, dari Ambon, dan sejumlah Pandu keturunan Tionghoa dan Arab. Sementara di dalam negeri, kegiatan perkemahan dan jamboree kepanduan juga diadakan di sejumlah tempat. Di antaranya pada 19-23 Juli 1941 di Yogyakarta berlangsung All Indonesian Jamboree atau “Perkemahan Kepanduan Indonesia Oemoem.”
-                        </p>
-
-                        <p>
-                            Pada 27-29 Desember 1945 berlangsung Kongres Kesatuan Kepanduan Indonesia di Surakarta. Kongres tersebut menghasilkan Pandu Rakyat Indonesia sebagai satu-satunya organisasi kepramukaan di Indonesia. Namun, ketika Belanda kembali mengadakan agresi militer pada 1948, Pandu Rakyat dilarang berdiri di daerah-daerah yang sudah dikuasai Belanda. Hal tersebut memicu munculnya organisasi lain, seperti Kepanduan Putera Indonesia (KPI), Pandu Puteri Indonesia (PPI), dan Kepanduan Indonesia Muda (KIM).
-                        </p>
-
-                        <p>
-                            Pada perkembangannya, kepanduan Indonesia kemudian terpecah menjadi 100 organisasi yang tergabung dalam Persatuan Kepanduan Indonesia (Perkindo). Namun, jumlah perkumpulan kepramukaan di Indonesia tidak sebanding dengan jumlah anggota perkumpulan. Selain itu masih ada rasa golongan yang tinggi, sehingga membuat Perkindo menjadi lemah. Untuk mencegah hal itu, Presiden Soekarno bersama Sri Sultan Hamengku Buwono IX yang saat itu merupakan Pandu Agung, menggagas peleburuan berbagai organisasi kepanduan dalam satu wadah.
-                        </p>
                     </div>
                 </section>
 
@@ -206,84 +190,59 @@
                 <!-- 3. Gerakan Pramuka -->
                 <section id="gerakan-pramuka" x-show="activeTab === 'gerakan-pramuka'" x-cloak class="pb-2 sm:pb-12 space-y-6">
                     <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950 mb-4">
-                        Gerakan Pramuka
+                        <?php echo e($historySections['gerakan-pramuka']['title']); ?>
+
                     </h2>
 
                     <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
-                        <img src="<?php echo e(asset('images/gerakanpramuka.jpg')); ?>" 
-                             alt="Gerakan Pramuka" 
+                        <img src="<?php echo e($historySections['gerakan-pramuka']['image']); ?>"
+                             alt="Gerakan Pramuka"
                              class="mx-auto h-auto w-auto max-h-[240px] object-contain sm:max-h-[280px]">
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-4 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
-                        <p>
-                            Gerakan Pramuka adalah organisasi pendidikan nonformal yang menyelenggarakan pendidikan kepanduan yang dilaksanakan di Indonesia. Kata Pramuka merupakan singkatan dari <strong>Praja Muda Karana</strong>, yang memiliki arti Orang Muda yang Suka Berkarya. Sebutan "Pramuka" diperuntukkan bagi Anggota Gerakan Pramuka yang terbagi dalam beberapa tingkatan usia: Pramuka Siaga (7-10 tahun), Pramuka Penggalang (11-15 tahun), Pramuka Penegak (16-20 tahun), dan Pramuka Pandega (21-25 tahun), sedangkan kelompok anggota lainnya disebut anggota dewasa.
-                        </p>
+                    <div class="border-0 bg-transparent p-0 px-1 shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:p-5 sm:shadow-sm sm:p-8 space-y-5 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                        <?php echo $historySections['gerakan-pramuka']['content']; ?>
 
-                        <p>
-                            Adapun yang dimaksud dengan "Kepramukaan" adalah proses pendidikan di luar lingkungan sekolah dan keluarga dalam bentuk kegiatan yang menarik, menyenangkan, sehat, teratur, terarah, dan praktis yang dilakukan di alam terbuka dengan menerapkan Prinsip Dasar Kepramukaan dan Metode Kepramukaan. Sasaran akhir dari kepramukaan adalah pembentukan watak, akhlak, dan budi pekerti luhur sebagai sistem pendidikan kepanduan yang disesuaikan dengan keadaan, kepentingan, dan perkembangan masyarakat serta bangsa Indonesia.
-                        </p>
-
-                        <p>
-                            Sejarah awal kepanduan di Indonesia telah dimulai sejak tahun 1923 yang ditandai dengan didirikannya <em>Nationale Padvinderij Organisatie</em> (NPO) di Bandung dan <em>Jong Indonesische Padvinderij Organisatie</em> (JIPO) di Jakarta. Kedua organisasi cikal bakal kepanduan tersebut kemudian meleburkan diri menjadi satu organisasi bernama <em>Indonesische Nationale Padvinderij Organisatie</em> (INPO) di Bandung pada tahun 1926.
-                        </p>
-
-                        <p>
-                            Gagasan peleburan seluruh organisasi kepanduan kemudian diungkapkan Presiden Soekarno ketika mengunjungi Perkemahan Besar Persatuan Kepanduan Putri Indonesia di Desa Semanggi, Ciputat, Tangerang, pada awal Oktober 1959. Presiden mengumpulkan tokoh dan pemimpin gerakan kepanduan di Indonesia untuk melebur seluruh organisasi ke dalam satu wadah bernama Pramuka, dengan menunjuk panitia pembentuk yang terdiri atas Sri Sultan Hamengku Buwono IX, Prijono, Azis Saleh, Achmadi, dan Muljadi Djojo Martono.
-                        </p>
-
-                        <p>
-                            Pembentukan Gerakan Pramuka diawali dengan serangkaian peristiwa bersejarah: diresmikannya nama Pramuka pada 9 Maret 1961 sebagai Hari Tunas Gerakan Pramuka, diterbitkannya Keputusan Presiden Nomor 238 Tahun 1961 pada 20 Mei 1961 sebagai Hari Permulaan Tahun Kerja, serta ikrar peleburan seluruh organisasi kepanduan di Istora Senayan pada 20 Juli 1961 sebagai Hari Ikrar Gerakan Pramuka. Pada 14 Agustus 1961, Gerakan Pramuka diperkenalkan secara resmi kepada masyarakat luas melalui upacara di Istana Negara, ditandai penyerahan Panji Gerakan Pramuka dari Presiden Soekarno kepada Sri Sultan Hamengku Buwono IX, momen yang kini diperingati sebagai Hari Pramuka setiap tahunnya.
-                        </p>
-
-                        <p>
-                            Gerakan Pramuka bertujuan untuk membentuk setiap Pramuka agar memiliki kepribadian yang beriman, bertakwa, berakhlak mulia, berjiwa patriotik, taat hukum, disiplin, menjunjung tinggi nilai-nilai luhur bangsa, dan memiliki kecakapan hidup sebagai kader bangsa dalam menjaga dan membangun Negara Kesatuan Republik Indonesia, mengamalkan Pancasila, serta melestarikan lingkungan.
-                        </p>
-
-                        <p>
-                            Pelaksanaan pendidikan kepramukaan berlandaskan pada Prinsip Dasar Kepramukaan yang meliputi iman dan taqwa kepada Tuhan Yang Maha Esa, peduli terhadap bangsa dan tanah air, sesama hidup dan alam seisinya, peduli terhadap diri pribadi, serta taat kepada Kode Kehormatan Pramuka.
-                        </p>
-
-                        <p>
-                            Prinsip tersebut diterapkan melalui Metode Kepramukaan yang mencakup pengamalan Kode Kehormatan Pramuka, belajar sambil melakukan, kegiatan berkelompok, bekerjasama, dan berkompetisi, kegiatan yang menarik dan menantang di alam terbuka, kehadiran orang dewasa yang memberikan bimbingan, dorongan, dan dukungan, penghargaan berupa tanda kecakapan, serta sistem satuan terpisah antara putra dan putri.
-                        </p>
-
-                        <p>
-                            Berdasarkan resolusi Konferensi Kepanduan Sedunia tahun 1924 di Kopenhagen, Denmark, Kepanduan memiliki tiga sifat utama: <strong>Nasional</strong> (menyesuaikan pendidikannya dengan kebutuhan dan kepentingan negara), <strong>Internasional</strong> (membina persaudaraan tanpa membedakan agama, ras, dan suku), serta <strong>Universal</strong> (dapat dipergunakan di mana saja untuk mendidik anak-anak dari bangsa apa saja).
-                        </p>
                     </div>
                 </section>
 
 
                 <!-- 4. AD - ART Munas 2023 -->
                 <section id="ad-art-munas-2023" x-show="activeTab === 'ad-art-munas-2023'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-                        <h2 class="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-950">
-                            AD - ART Munas 2023
+                    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                        <h2 class="text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">
+                            <?php echo e($historySections['ad-art-munas-2023']['title']); ?>
+
                         </h2>
-                        <!-- Tombol Desktop -->
-                        <a href="https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC" 
-                           target="_blank" 
-                           rel="noopener noreferrer" 
-                           class="hidden sm:inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition shadow-sm">
+                        <a href="https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="hidden sm:inline-flex items-center justify-center rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800">
                             Unduh PDF
                         </a>
                     </div>
 
-                    <!-- Viewer PDF Iframe Responsif -->
-                    <div class="w-full h-[550px] sm:h-[750px] overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 shadow-sm">
-                        <iframe 
-                            src="https://drive.google.com/file/d/1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC/preview" 
-                            class="w-full h-full border-0 rounded-2xl"
-                            allow="autoplay">
-                        </iframe>
+                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+                        <div class="space-y-4 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                            <?php echo $historySections['ad-art-munas-2023']['content']; ?>
+
+                        </div>
                     </div>
 
-                    <!-- Tombol Mobile (Di bawah preview) -->
-                    <a href="https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC" 
-                       target="_blank" 
-                       rel="noopener noreferrer" 
-                       class="sm:hidden flex w-full items-center justify-center px-4 py-2.5 text-sm font-medium text-white bg-slate-900 rounded-lg hover:bg-slate-800 transition shadow-sm">
+                    <div class="w-full overflow-hidden rounded-2xl border border-slate-200 bg-slate-900 shadow-sm">
+                        <div class="h-[420px] sm:h-[620px]">
+                            <iframe
+                                src="<?php echo e($historySections['ad-art-munas-2023']['pdf_url'] ? 'https://docs.google.com/gview?embedded=true&url=' . urlencode($historySections['ad-art-munas-2023']['pdf_url']) : 'https://drive.google.com/file/d/1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC/preview'); ?>"
+                                class="h-full w-full border-0"
+                                allow="autoplay">
+                            </iframe>
+                        </div>
+                    </div>
+
+                    <a href="<?php echo e($historySections['ad-art-munas-2023']['pdf_url'] ?? 'https://drive.google.com/uc?export=download&id=1TsyiuH3zC7vF7Uqkx4F1KrDRhTVj-YVC'); ?>"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="flex w-full items-center justify-center rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-medium text-white shadow-sm transition hover:bg-slate-800 sm:hidden">
                         Unduh PDF
                     </a>
                 </section>

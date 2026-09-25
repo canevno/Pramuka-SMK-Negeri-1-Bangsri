@@ -352,6 +352,9 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::post('/admin/hero/{heroSlide}/toggle', [ModuleController::class, 'toggleHero'])->name('admin.hero.toggle');
     Route::delete('/admin/hero/{heroSlide}', [ModuleController::class, 'deleteHero'])->name('admin.hero.delete');
 
+    Route::get('/admin/sejarah', [ModuleController::class, 'sejarah'])->name('admin.sejarah');
+    Route::post('/admin/sejarah', [ModuleController::class, 'storeSejarah'])->name('admin.sejarah.store');
+
     Route::get('/admin/gallery', [ModuleController::class, 'gallery'])->name('admin.gallery');
     Route::post('/admin/gallery/store', [ModuleController::class, 'storeGallery'])->name('admin.gallery.store');
     Route::put('/admin/gallery/{id}', [ModuleController::class, 'updateGallery'])->name('admin.gallery.update');
