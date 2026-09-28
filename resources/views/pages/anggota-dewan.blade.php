@@ -20,8 +20,6 @@
                             <a href="{{ route('dewan-kehormatan') }}" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 {{ request()->routeIs('dewan-kehormatan') ? 'bg-slate-100 font-bold text-slate-950' : '' }}"><span>Dewan Kehormatan</span></a>
                             <a href="{{ route('dewan-ambalan') }}" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 {{ request()->routeIs('dewan-ambalan') ? 'bg-slate-100 font-bold text-slate-950' : '' }}"><span>Dewan Ambalan</span></a>
                             <a href="{{ route('anggota-dewan') }}" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 {{ request()->routeIs('anggota-dewan') ? 'bg-slate-100 font-bold text-slate-950' : '' }}"><span>Anggota Dewan</span></a>
-                            <a href="{{ route('mitra') }}" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 {{ request()->routeIs('mitra') ? 'bg-slate-100 font-bold text-slate-950' : '' }}"><span>Mitra</span></a>
-                            <a href="{{ route('alumni') }}" class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 {{ request()->routeIs('alumni') ? 'bg-slate-100 font-bold text-slate-950' : '' }}"><span>Alumni</span></a>
                         </div>
                     </div>
                 </nav>

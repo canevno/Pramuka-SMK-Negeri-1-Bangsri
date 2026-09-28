@@ -1,7 +1,7 @@
 <?php
     $mobileNavActiveHome = request()->routeIs('home');
     $mobileNavActiveProfil = request()->routeIs('about', 'visi-misi', 'ambalan');
-    $mobileNavActiveOrganisasi = request()->routeIs('organisasi', 'pembina', 'dewan-kehormatan', 'dewan-ambalan', 'anggota-dewan', 'mitra');
+    $mobileNavActiveOrganisasi = request()->routeIs('organisasi', 'pembina', 'dewan-kehormatan', 'dewan-ambalan', 'anggota-dewan');
     $mobileNavActiveAbsensi = request()->routeIs('absensi.*');
 ?>
 

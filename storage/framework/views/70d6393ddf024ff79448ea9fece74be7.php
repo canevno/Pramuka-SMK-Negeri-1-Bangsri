@@ -29,7 +29,7 @@
                 { value: 'home', paths: ['/'] },
                 { value: 'profil', paths: ['/tentang-kami', '/visi-misi', '/ambalan'] },
                 { value: 'admin', paths: ['/absensi', '/pendaftaran-bantara', '/pendaftaran-laksana'] },
-                { value: 'organisasi', paths: ['/pembina', '/dewan-kehormatan', '/dewan-ambalan', '/anggota-dewan', '/mitra'] },
+                { value: 'organisasi', paths: ['/pembina', '/dewan-kehormatan', '/dewan-ambalan', '/anggota-dewan'] },
                 { value: 'event', paths: ['/event'] },
                 { value: 'berita', paths: ['/berita', '/galeri'] },
             ];
@@ -106,6 +106,41 @@
         nav .border-slate-800,
         nav .border-slate-700 {
             border-color: rgba(15, 23, 42, 0.12) !important;
+        }
+
+        nav [aria-label="Toggle menu"] {
+            display: inline-flex !important;
+            align-items: center !important;
+            justify-content: center !important;
+            width: 1.5rem !important;
+            height: 1.5rem !important;
+            padding: 0 !important;
+            margin: 0 !important;
+            background: transparent !important;
+            border: none !important;
+            border-radius: 0 !important;
+            box-shadow: none !important;
+            appearance: none !important;
+            -webkit-appearance: none !important;
+            -moz-appearance: none !important;
+            cursor: pointer !important;
+            outline: none !important;
+            text-decoration: none !important;
+            user-select: none !important;
+            -webkit-tap-highlight-color: transparent !important;
+        }
+
+        @media (min-width: 1024px) {
+            nav [aria-label="Toggle menu"] {
+                display: none !important;
+            }
+        }
+
+        nav [aria-label="Toggle menu"] svg {
+            width: 1.25rem !important;
+            height: 1.25rem !important;
+            stroke-width: 2.2 !important;
+            display: block !important;
         }
     </style>
 
@@ -257,18 +292,6 @@
                             </svg>
                             Anggota Dewan
                         </a>
-                        <a href="<?php echo e(route('mitra')); ?>" @click="activeNav = 'organisasi'" class="flex items-center gap-2.5 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-slate-50 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white rounded-md transition-colors">
-                            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"></path>
-                            </svg>
-                            Mitra
-                        </a>
-                        <a href="<?php echo e(route('alumni')); ?>" @click="activeNav = 'organisasi'" class="flex items-center gap-2.5 px-3 py-2 text-sm font-semibold text-gray-700 hover:bg-slate-50 hover:text-slate-900 dark:text-gray-200 dark:hover:bg-gray-800 dark:hover:text-white rounded-md transition-colors">
-                            <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                                <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"></path>
-                            </svg>
-                            Alumni
-                        </a>
                     </div>
                 </div>
 
@@ -314,26 +337,26 @@
             </div>
 
             <!-- Mobile toggle -->
-            <button type="button" @click="mobileMenuOpen = !mobileMenuOpen" :aria-expanded="mobileMenuOpen" aria-controls="mobile-menu"
-                class="lg:hidden ml-auto mr-0 flex h-9 w-9 items-center justify-center rounded-lg border-0 bg-transparent p-0 text-gray-700 shadow-none ring-0 outline-none hover:bg-slate-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-white dark:hover:bg-slate-800 dark:hover:text-gray-200 active:scale-95 transition-all duration-200"
+            <span role="button" tabindex="0" @click="mobileMenuOpen = !mobileMenuOpen" @keydown.enter.prevent="mobileMenuOpen = !mobileMenuOpen" @keydown.space.prevent="mobileMenuOpen = !mobileMenuOpen" :aria-expanded="mobileMenuOpen" aria-controls="mobile-menu"
+                class="lg:hidden ml-auto flex h-6 w-6 items-center justify-center p-0 text-slate-700 transition-colors duration-200 hover:text-slate-900 focus:outline-none dark:text-slate-200 dark:hover:text-white"
+                style="background: transparent !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; appearance: none !important; -webkit-appearance: none !important; -moz-appearance: none !important; outline: none !important;"
                 aria-label="Toggle menu">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path :d="mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
+                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
+                    <path :d="mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'" stroke-linecap="round" stroke-linejoin="round" />
                 </svg>
-            </button>
+            </span>
         </div>
     </div>
 
     <!-- Mobile Menu -->
     <div id="mobile-menu" x-cloak x-show="mobileMenuOpen" @keydown.escape.window="mobileMenuOpen = false" class="lg:hidden fixed inset-0 z-[70] overflow-hidden">
         <div class="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity" @click="mobileMenuOpen = false"></div>
-        <div class="mobile-menu-panel relative z-[70] absolute inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-gray-950 shadow-2xl overflow-y-auto border-l border-slate-200 dark:border-slate-800 transition-transform duration-300 pointer-events-auto"
+        <div class="mobile-menu-panel relative z-[70] absolute inset-y-0 right-0 w-full max-w-sm overflow-y-auto bg-transparent shadow-none transition-transform duration-300 pointer-events-auto"
             x-show="mobileMenuOpen"
             x-transition:enter="transition-transform ease-out duration-300" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
             x-transition:leave="transition-transform ease-in duration-200" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
             <div class="px-4 py-4 sm:px-6">
-                <div class="flex items-center justify-between">
-                    <div class="text-base font-bold text-gray-900 dark:text-white">Menu</div>
+                <div class="flex justify-end">
                     <button type="button" @click="mobileMenuOpen = false" class="rounded-lg p-2 text-gray-600 hover:bg-slate-100 dark:text-gray-300 dark:hover:bg-slate-800 transition-colors" aria-label="Close menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -469,18 +492,6 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"></path>
                                 </svg>
                                 Anggota Dewan
-                            </a>
-                            <a href="<?php echo e(route('mitra')); ?>" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 rounded-xl px-4 py-2 text-sm text-gray-700 hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">
-                                <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244"></path>
-                                </svg>
-                                Mitra
-                            </a>
-                            <a href="#" @click="mobileMenuOpen = false" class="flex items-center gap-2.5 rounded-xl px-4 py-2 text-sm text-gray-700 hover:bg-slate-100 dark:text-gray-200 dark:hover:bg-slate-800">
-                                <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
-                                    <path stroke-linecap="round" stroke-linejoin="round" d="M4.26 10.147a60.436 60.436 0 00-.491 6.347A48.627 48.627 0 0112 20.904a48.627 48.627 0 018.232-4.41 60.46 60.46 0 00-.491-6.347m-15.482 0a50.57 50.57 0 00-2.658-.813A59.905 59.905 0 0112 3.493a59.902 59.902 0 0110.399 5.84c-.896.248-1.783.52-2.658.814m-15.482 0A50.697 50.697 0 0112 13.489a50.702 50.702 0 017.74-3.342M6.75 15a.75.75 0 100-1.5.75.75 0 000 1.5zm0 0v-3.675A55.378 55.378 0 0112 8.443m-7.007 11.55A5.981 5.981 0 006.75 15.75v-1.5"></path>
-                                </svg>
-                                Alumni
                             </a>
                         </div>
                     </div>

@@ -26,7 +26,7 @@
 
     {{-- ===== Chart + Aktivitas ===== --}}
     <div class="grid gap-2.5 xl:grid-cols-[1.6fr_1fr]">
-        <section class="rounded-lg border border-zinc-200 bg-white p-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:rounded-xl sm:p-5">
+        <section class="rounded-xl bg-transparent p-2.5 sm:p-5">
             <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 class="text-sm font-semibold text-zinc-900 dark:text-slate-100 sm:text-base">Statistik Pengunjung</h2>
@@ -84,7 +84,7 @@
             </div>
         </section>
 
-        <section class="rounded-lg border border-zinc-200 bg-white p-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:rounded-xl sm:p-3">
+        <section class="rounded-xl bg-transparent p-2.5 sm:p-3">
             <div class="mb-2 flex items-center justify-between gap-2 sm:mb-3">
                 <h2 class="text-sm font-semibold text-zinc-900 dark:text-slate-100 sm:text-base">Petugas Teraktif</h2>
                 <a href="{{ route('admin.absensi') }}" class="inline-flex items-center rounded-[6px] border border-emerald-200 bg-emerald-50 px-2 py-1 text-[9px] font-semibold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300 sm:text-[10px]">
@@ -124,13 +124,13 @@
 
     {{-- ===== Tabel Pendaftaran + Berita ===== --}}
     <div class="grid gap-2.5 xl:grid-cols-[1.3fr_0.95fr]">
-        <section class="rounded-lg border border-zinc-200 bg-white p-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:rounded-xl sm:p-5">
+        <section class="rounded-xl bg-transparent p-2.5 sm:p-5">
             <div class="flex items-center justify-between gap-2 sm:items-center">
                 <h2 class="text-sm font-semibold text-zinc-900 dark:text-slate-100 sm:text-base">Pendaftaran Terbaru</h2>
                 <span class="rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[9px] font-medium text-zinc-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 sm:text-[10px]">Semua</span>
             </div>
 
-            <div class="mt-4 overflow-hidden rounded-xl border border-zinc-200 dark:border-slate-700">
+            <div class="mt-4 overflow-hidden rounded-xl border border-zinc-200/70 bg-transparent dark:border-slate-700">
                 <div class="hidden sm:block">
                     <div class="max-h-[21rem] overflow-y-auto overflow-x-auto overscroll-x-contain scrollbar-thin scrollbar-thumb-zinc-300 scrollbar-track-transparent dark:scrollbar-thumb-slate-600">
                         <table class="min-w-[560px] w-full text-left text-[11px] sm:text-sm">
@@ -189,7 +189,7 @@
                                 default => 'bg-zinc-100 text-zinc-700 dark:bg-slate-700 dark:text-slate-200',
                             };
                         @endphp
-                        <div class="mb-2 rounded-lg border border-zinc-200 bg-zinc-50 p-2.5 last:mb-0 dark:border-slate-700 dark:bg-slate-800/80">
+                        <div class="mb-2 rounded-lg border border-zinc-200/80 bg-transparent p-2.5 last:mb-0 dark:border-slate-700/80">
                             <div class="flex items-start justify-between gap-2">
                                 <div class="min-w-0 flex-1">
                                     <p class="truncate text-[11px] font-semibold text-zinc-900 dark:text-slate-100">{{ $item['name'] }}</p>

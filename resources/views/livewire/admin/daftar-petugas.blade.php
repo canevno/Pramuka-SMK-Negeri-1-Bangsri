@@ -8,7 +8,7 @@
     <!-- 4 CARD STATISTIK ABSENSI -->
     <div class="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-6">
         <!-- 1. TOTAL ABSENSI (Anak / Siswa) -->
-        <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs dark:border-[#262626] dark:bg-[#0A0A0A]">
+        <div class="rounded-none border border-slate-100 bg-white p-5 shadow-none dark:border-[#262626] dark:bg-[#0A0A0A]">
             <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-gray-400">
                 TOTAL ABSENSI
             </span>
@@ -21,7 +21,7 @@
         </div>
 
         <!-- 2. MINGGU INI (Sesi Rekam Kelas) -->
-        <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs dark:border-[#262626] dark:bg-[#0A0A0A]">
+        <div class="rounded-none border border-slate-100 bg-white p-5 shadow-none dark:border-[#262626] dark:bg-[#0A0A0A]">
             <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-gray-400">
                 MINGGU INI
             </span>
@@ -34,7 +34,7 @@
         </div>
 
         <!-- 3. BULAN INI (Sesi Rekam Kelas) -->
-        <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs dark:border-[#262626] dark:bg-[#0A0A0A]">
+        <div class="rounded-none border border-slate-100 bg-white p-5 shadow-none dark:border-[#262626] dark:bg-[#0A0A0A]">
             <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-gray-400">
                 BULAN INI
             </span>
@@ -47,7 +47,7 @@
         </div>
 
         <!-- 4. TAHUN INI (Sesi Rekam Kelas) -->
-        <div class="rounded-2xl border border-slate-100 bg-white p-5 shadow-xs dark:border-[#262626] dark:bg-[#0A0A0A]">
+        <div class="rounded-none border border-slate-100 bg-white p-5 shadow-none dark:border-[#262626] dark:bg-[#0A0A0A]">
             <span class="text-xs font-semibold tracking-wider text-slate-400 uppercase dark:text-gray-400">
                 TAHUN INI
             </span>

@@ -24,12 +24,6 @@
                 <p class="text-gray-500 dark:text-gray-400 text-sm mt-2">Anggota aktif</p>
             </div>
 
-            <!-- Stat Card 4 -->
-            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg dark:shadow-xl p-6 md:p-8 text-center">
-                <div class="text-4xl md:text-5xl font-bold text-orange-600 dark:text-orange-400 mb-2">35</div>
-                <p class="text-gray-700 dark:text-gray-300 font-semibold">Mitra</p>
-                <p class="text-gray-500 text-sm mt-2">Mitra organisasi</p>
-            </div>
         </div>
     </div>
 </section>

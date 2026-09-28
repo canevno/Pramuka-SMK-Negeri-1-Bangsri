@@ -37,15 +37,6 @@
                                 <span>Anggota Dewan</span>
                             </a>
 
-                            <a href="{{ route('mitra') }}"
-                                class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 {{ request()->routeIs('mitra') ? 'bg-slate-100 font-bold text-slate-950' : '' }}">
-                                <span>Mitra</span>
-                            </a>
-
-                            <a href="{{ route('alumni') }}"
-                                class="block w-full rounded-lg px-3 py-1.5 text-left text-sm font-medium text-slate-600 transition hover:bg-slate-50 hover:text-slate-950 {{ request()->routeIs('alumni') ? 'bg-slate-100 font-bold text-slate-950' : '' }}">
-                                <span>Alumni</span>
-                            </a>
                         </div>
                     </div>
                 </nav>
@@ -159,20 +150,6 @@
                         @endif
                     </div>
 
-                    <div x-show="activeTab === 'mitra'" x-cloak>
-                        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Mitra Kerjasama</h1>
-                        <p class="text-slate-700 leading-relaxed mb-6">
-                            Informasi mengenai mitra eksternal, Kwartir Ranting/Cabang, instansi pemerintah, dan organisasi pendukung kegiatan ambalan.
-                        </p>
-                    </div>
-
-                    <!-- Tab Alumni -->
-                    <div x-show="activeTab === 'alumni'" x-cloak>
-                        <h1 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-4">Alumni Ambalan</h1>
-                        <p class="text-slate-700 leading-relaxed mb-6">
-                            Wadah komunikasi dan ikatan alumni Pramuka Penegak yang terus memberikan dukungan serta bimbingan bagi ambalan.
-                        </p>
-                    </div>
 
                 </div>
             </main>

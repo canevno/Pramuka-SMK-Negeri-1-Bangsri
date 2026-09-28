@@ -33,7 +33,6 @@
                         ['title' => 'Pembina', 'desc' => 'Kami adalah pembina putra dan putri di ambalan KH. Acmad Fauzan Dan Dewi sartika. Pangkalan SMK Negeri 1 bangsri'],
                         ['title' => 'Dewan Ambalan', 'desc' => 'Kami adalah pembina putra dan putri di ambalan KH. Acmad Fauzan Dan Dewi sartika. Pangkalan SMK Negeri 1 bangsri'],
                         ['title' => 'Anggota Dewan', 'desc' => 'Kami adalah pembina putra dan putri di ambalan KH. Acmad Fauzan Dan Dewi sartika. Pangkalan SMK Negeri 1 bangsri'],
-                        ['title' => 'Mitra', 'desc' => 'Kami adalah pembina putra dan putri di ambalan KH. Acmad Fauzan Dan Dewi sartika. Pangkalan SMK Negeri 1 bangsri'],
                     ] as $index => $card)
                         <div class="border-2 border-slate-300 dark:border-slate-500 bg-white dark:bg-gray-950 flex flex-col">
                             <div class="p-2">

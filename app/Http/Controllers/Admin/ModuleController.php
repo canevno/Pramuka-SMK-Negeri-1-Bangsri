@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\Alumni;
 use App\Models\DewanAmbalan;
+use App\Models\DewanKehormatan;
 use App\Models\GalleryItem;
 use App\Models\HeroSlide;
-use App\Models\Mitra;
 use App\Models\Setting;
 use App\Models\Pembina;
 use App\Models\Post;
@@ -894,6 +893,127 @@ class ModuleController extends Controller
         return redirect()->route('admin.pembina')->with('success', 'Data pembina berhasil dihapus.');
     }
 
+    public function dewanKehormatan()
+    {
+        $members = Schema::hasTable('dewan_kehormatans')
+            ? DewanKehormatan::query()
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get()
+            : collect();
+
+        return view('admin.modules.dewan-kehormatan', [
+            'title' => 'Kelola Dewan Kehormatan',
+            'description' => 'Kelola data dewan kehormatan yang tampil di halaman depan.',
+            'publicRoute' => route('dewan-kehormatan'),
+            'publicLabel' => 'Lihat Halaman Dewan Kehormatan',
+            'members' => $members,
+            'stats' => [
+                'total' => $members->count(),
+                'aktif' => $members->where('is_active', true)->count(),
+                'nonaktif' => $members->where('is_active', false)->count(),
+                'kontak' => $members->filter(fn ($item) => ! empty($item->phone) || ! empty($item->email))->count(),
+            ],
+        ]);
+    }
+
+    public function storeDewanKehormatan(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'status' => 'nullable|string|max:50',
+            'bio' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
+            'photo_url' => 'nullable|string|max:255',
+            'is_active' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $photoUrl = $validated['photo_url'] ?? null;
+
+        if ($request->hasFile('photo')) {
+            $storedPath = $request->file('photo')->store('dewan-kehormatan', 'public');
+            $photoUrl = 'storage/' . $storedPath;
+        }
+
+        DewanKehormatan::query()->create([
+            'name' => trim($validated['name']),
+            'jabatan' => trim($validated['jabatan']),
+            'phone' => $validated['phone'] ?? null,
+            'email' => $validated['email'] ?? null,
+            'status' => $validated['status'] ?? 'Aktif',
+            'bio' => $validated['bio'] ?? null,
+            'photo_url' => $photoUrl,
+            'is_active' => (bool) ($validated['is_active'] ?? true),
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+        ]);
+
+        return redirect()->route('admin.dewan-kehormatan')->with('success', 'Data dewan kehormatan berhasil ditambahkan.');
+    }
+
+    public function updateDewanKehormatan(Request $request, DewanKehormatan $dewanKehormatan)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'phone' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:255',
+            'status' => 'nullable|string|max:50',
+            'bio' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
+            'photo_url' => 'nullable|string|max:255',
+            'is_active' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo_url'] = 'storage/' . $request->file('photo')->store('dewan-kehormatan', 'public');
+        }
+
+        $dewanKehormatan->fill([
+            'name' => trim($validated['name']),
+            'jabatan' => trim($validated['jabatan']),
+            'phone' => $validated['phone'] ?? $dewanKehormatan->phone,
+            'email' => $validated['email'] ?? $dewanKehormatan->email,
+            'status' => $validated['status'] ?? ($validated['is_active'] ?? $dewanKehormatan->is_active ? 'Aktif' : 'Non-Aktif'),
+            'bio' => $validated['bio'] ?? $dewanKehormatan->bio,
+            'photo_url' => $validated['photo_url'] ?? $dewanKehormatan->photo_url,
+            'is_active' => (bool) ($validated['is_active'] ?? $dewanKehormatan->is_active),
+            'sort_order' => (int) ($validated['sort_order'] ?? $dewanKehormatan->sort_order ?? 0),
+        ]);
+
+        if ($dewanKehormatan->is_active && empty($dewanKehormatan->status)) {
+            $dewanKehormatan->status = 'Aktif';
+        }
+
+        if (! $dewanKehormatan->is_active) {
+            $dewanKehormatan->status = 'Non-Aktif';
+        }
+
+        $dewanKehormatan->save();
+
+        return redirect()->route('admin.dewan-kehormatan')->with('success', 'Data dewan kehormatan berhasil diperbarui.');
+    }
+
+    public function toggleDewanKehormatan(DewanKehormatan $dewanKehormatan)
+    {
+        $dewanKehormatan->is_active = ! $dewanKehormatan->is_active;
+        $dewanKehormatan->status = $dewanKehormatan->is_active ? 'Aktif' : 'Non-Aktif';
+        $dewanKehormatan->save();
+
+        return redirect()->route('admin.dewan-kehormatan')->with('success', 'Status dewan kehormatan berhasil diperbarui.');
+    }
+
+    public function deleteDewanKehormatan(DewanKehormatan $dewanKehormatan)
+    {
+        $dewanKehormatan->delete();
+
+        return redirect()->route('admin.dewan-kehormatan')->with('success', 'Data dewan kehormatan berhasil dihapus.');
+    }
+
     public function dewanAmbalan()
     {
         $members = Schema::hasTable('dewan_ambalans')
@@ -914,30 +1034,6 @@ class ModuleController extends Controller
                 'aktif' => $members->where('is_active', true)->count(),
                 'nonaktif' => $members->where('is_active', false)->count(),
                 'kontak' => $members->filter(fn ($item) => ! empty($item->phone) || ! empty($item->email))->count(),
-            ],
-        ]);
-    }
-
-    public function mitra()
-    {
-        $partners = Schema::hasTable('mitras')
-            ? Mitra::query()
-                ->orderBy('sort_order')
-                ->orderBy('name')
-                ->get()
-            : collect();
-
-        return view('admin.modules.mitra', [
-            'title' => 'Kelola Mitra',
-            'description' => 'Kelola data mitra yang tampil di halaman depan.',
-            'publicRoute' => route('mitra'),
-            'publicLabel' => 'Lihat Halaman Mitra',
-            'partners' => $partners,
-            'stats' => [
-                'total' => $partners->count(),
-                'aktif' => $partners->where('is_active', true)->count(),
-                'nonaktif' => $partners->where('is_active', false)->count(),
-                'kontak' => $partners->filter(fn ($item) => ! empty($item->phone) || ! empty($item->email))->count(),
             ],
         ]);
     }
@@ -1037,216 +1133,6 @@ class ModuleController extends Controller
         $dewanAmbalan->delete();
 
         return redirect()->route('admin.dewan-ambalan')->with('success', 'Data dewan ambalan berhasil dihapus.');
-    }
-
-    public function storeMitra(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'jabatan' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'status' => 'nullable|string|max:50',
-            'bio' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
-            'photo_url' => 'nullable|string|max:255',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-        ]);
-
-        $photoUrl = $validated['photo_url'] ?? null;
-
-        if ($request->hasFile('photo')) {
-            $storedPath = $request->file('photo')->store('mitra', 'public');
-            $photoUrl = 'storage/' . $storedPath;
-        }
-
-        Mitra::query()->create([
-            'name' => trim($validated['name']),
-            'jabatan' => trim($validated['jabatan']),
-            'phone' => $validated['phone'] ?? null,
-            'email' => $validated['email'] ?? null,
-            'status' => $validated['status'] ?? 'Aktif',
-            'bio' => $validated['bio'] ?? null,
-            'photo_url' => $photoUrl,
-            'is_active' => (bool) ($validated['is_active'] ?? true),
-            'sort_order' => (int) ($validated['sort_order'] ?? 0),
-        ]);
-
-        return redirect()->route('admin.mitra')->with('success', 'Data mitra berhasil ditambahkan.');
-    }
-
-    public function updateMitra(Request $request, Mitra $mitra)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'jabatan' => 'required|string|max:255',
-            'phone' => 'nullable|string|max:50',
-            'email' => 'nullable|email|max:255',
-            'status' => 'nullable|string|max:50',
-            'bio' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
-            'photo_url' => 'nullable|string|max:255',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-        ]);
-
-        if ($request->hasFile('photo')) {
-            $validated['photo_url'] = 'storage/' . $request->file('photo')->store('mitra', 'public');
-        }
-
-        $mitra->fill([
-            'name' => trim($validated['name']),
-            'jabatan' => trim($validated['jabatan']),
-            'phone' => $validated['phone'] ?? $mitra->phone,
-            'email' => $validated['email'] ?? $mitra->email,
-            'status' => $validated['status'] ?? ($validated['is_active'] ?? $mitra->is_active ? 'Aktif' : 'Non-Aktif'),
-            'bio' => $validated['bio'] ?? $mitra->bio,
-            'photo_url' => $validated['photo_url'] ?? $mitra->photo_url,
-            'is_active' => (bool) ($validated['is_active'] ?? $mitra->is_active),
-            'sort_order' => (int) ($validated['sort_order'] ?? $mitra->sort_order ?? 0),
-        ]);
-
-        if ($mitra->is_active && empty($mitra->status)) {
-            $mitra->status = 'Aktif';
-        }
-
-        if (! $mitra->is_active) {
-            $mitra->status = 'Non-Aktif';
-        }
-
-        $mitra->save();
-
-        return redirect()->route('admin.mitra')->with('success', 'Data mitra berhasil diperbarui.');
-    }
-
-    public function toggleMitra(Mitra $mitra)
-    {
-        $mitra->is_active = ! $mitra->is_active;
-        $mitra->status = $mitra->is_active ? 'Aktif' : 'Non-Aktif';
-        $mitra->save();
-
-        return redirect()->route('admin.mitra')->with('success', 'Status mitra berhasil diperbarui.');
-    }
-
-    public function deleteMitra(Mitra $mitra)
-    {
-        $mitra->delete();
-
-        return redirect()->route('admin.mitra')->with('success', 'Data mitra berhasil dihapus.');
-    }
-
-    public function alumni()
-    {
-        $members = Schema::hasTable('alumni')
-            ? Alumni::query()
-                ->orderBy('sort_order')
-                ->orderBy('name')
-                ->get()
-            : collect();
-
-        return view('admin.modules.alumni', [
-            'title' => 'Kelola Alumni',
-            'description' => 'Kelola data alumni yang tampil di halaman depan.',
-            'publicRoute' => route('alumni'),
-            'publicLabel' => 'Lihat Halaman Alumni',
-            'members' => $members,
-            'stats' => [
-                'total' => $members->count(),
-                'aktif' => $members->where('is_active', true)->count(),
-                'nonaktif' => $members->where('is_active', false)->count(),
-                'jabatan' => $members->filter(fn ($item) => ! empty($item->jabatan))->count(),
-            ],
-        ]);
-    }
-
-    public function storeAlumni(Request $request)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'jabatan' => 'required|string|max:255',
-            'status' => 'nullable|string|max:50',
-            'bio' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
-            'photo_url' => 'nullable|string|max:255',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-        ]);
-
-        $photoUrl = $validated['photo_url'] ?? null;
-
-        if ($request->hasFile('photo')) {
-            $storedPath = $request->file('photo')->store('alumni', 'public');
-            $photoUrl = 'storage/' . $storedPath;
-        }
-
-        Alumni::query()->create([
-            'name' => trim($validated['name']),
-            'jabatan' => trim($validated['jabatan']),
-            'status' => $validated['status'] ?? 'Aktif',
-            'bio' => $validated['bio'] ?? null,
-            'photo_url' => $photoUrl,
-            'is_active' => (bool) ($validated['is_active'] ?? true),
-            'sort_order' => (int) ($validated['sort_order'] ?? 0),
-        ]);
-
-        return redirect()->route('admin.alumni')->with('success', 'Data alumni berhasil ditambahkan.');
-    }
-
-    public function updateAlumni(Request $request, Alumni $alumni)
-    {
-        $validated = $request->validate([
-            'name' => 'required|string|max:255',
-            'jabatan' => 'required|string|max:255',
-            'status' => 'nullable|string|max:50',
-            'bio' => 'nullable|string',
-            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
-            'photo_url' => 'nullable|string|max:255',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-        ]);
-
-        if ($request->hasFile('photo')) {
-            $validated['photo_url'] = 'storage/' . $request->file('photo')->store('alumni', 'public');
-        }
-
-        $alumni->fill([
-            'name' => trim($validated['name']),
-            'jabatan' => trim($validated['jabatan']),
-            'status' => $validated['status'] ?? ($validated['is_active'] ?? $alumni->is_active ? 'Aktif' : 'Non-Aktif'),
-            'bio' => $validated['bio'] ?? $alumni->bio,
-            'photo_url' => $validated['photo_url'] ?? $alumni->photo_url,
-            'is_active' => (bool) ($validated['is_active'] ?? $alumni->is_active),
-            'sort_order' => (int) ($validated['sort_order'] ?? $alumni->sort_order ?? 0),
-        ]);
-
-        if ($alumni->is_active && empty($alumni->status)) {
-            $alumni->status = 'Aktif';
-        }
-
-        if (! $alumni->is_active) {
-            $alumni->status = 'Non-Aktif';
-        }
-
-        $alumni->save();
-
-        return redirect()->route('admin.alumni')->with('success', 'Data alumni berhasil diperbarui.');
-    }
-
-    public function toggleAlumni(Alumni $alumni)
-    {
-        $alumni->is_active = ! $alumni->is_active;
-        $alumni->status = $alumni->is_active ? 'Aktif' : 'Non-Aktif';
-        $alumni->save();
-
-        return redirect()->route('admin.alumni')->with('success', 'Status alumni berhasil diperbarui.');
-    }
-
-    public function deleteAlumni(Alumni $alumni)
-    {
-        $alumni->delete();
-
-        return redirect()->route('admin.alumni')->with('success', 'Data alumni berhasil dihapus.');
     }
 
     public function anggota()

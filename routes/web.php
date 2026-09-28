@@ -39,29 +39,23 @@ Route::get('/pembina', function () {
 })->name('pembina');
 
 Route::get('/dewan-kehormatan', function () {
-    $members = [
-        [
-            'name' => 'Ketua Dewan Kehormatan',
-            'jabatan' => 'Ketua',
-            'status' => 'Utama',
-            'photo_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800',
-            'description' => 'Mengawasi integritas, etika, dan penegakan kode kehormatan Pramuka dalam setiap keputusan organisasi.',
-        ],
-        [
-            'name' => 'Wakil Ketua Dewan Kehormatan',
-            'jabatan' => 'Wakil Ketua',
-            'status' => 'Pendamping',
-            'photo_url' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800',
-            'description' => 'Mendukung evaluasi etika dan memastikan keputusan kehormatan berjalan adil dan konsisten.',
-        ],
-        [
-            'name' => 'Sekretaris Dewan Kehormatan',
-            'jabatan' => 'Sekretaris',
-            'status' => 'Dokumentasi',
-            'photo_url' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800',
-            'description' => 'Mengelola agenda, catatan keputusan, dan pendokumentasian proses evaluasi kehormatan.',
-        ],
-    ];
+    $members = \Illuminate\Support\Facades\Schema::hasTable('dewan_kehormatans')
+        ? \App\Models\DewanKehormatan::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($member) {
+                return [
+                    'name' => $member->name,
+                    'jabatan' => $member->jabatan,
+                    'status' => $member->status,
+                    'photo_url' => $member->photo_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600',
+                    'description' => $member->bio ?: 'Anggota aktif yang menjaga integritas dan etika dalam organisasi.',
+                ];
+            })
+            ->all()
+        : [];
 
     return view('pages.dewan-kehormatan', ['members' => $members]);
 })->name('dewan-kehormatan');
@@ -100,48 +94,6 @@ Route::get('/anggota-dewan', function () {
     return view('pages.anggota-dewan', compact('dewanAnggota'));
 })->name('anggota-dewan');
 
-Route::get('/mitra', function () {
-    $partners = \Illuminate\Support\Facades\Schema::hasTable('mitras')
-        ? \App\Models\Mitra::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->orderBy('name')
-            ->get()
-            ->map(fn ($partner) => [
-                'name' => $partner->name,
-                'jabatan' => $partner->jabatan,
-                'status' => $partner->status ?: ($partner->is_active ? 'Aktif' : 'Non-Aktif'),
-                'photo_url' => $partner->photo_url ?: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800',
-                'description' => $partner->bio ?: 'Mitra yang mendukung program, pembinaan, dan penguatan kegiatan Pramuka.',
-            ])
-            ->all()
-        : [
-            [
-                'name' => 'Kwartir Ranting',
-                'jabatan' => 'Pendamping Organisasi',
-                'status' => 'Resmi',
-                'photo_url' => 'https://images.unsplash.com/photo-1552664730-d307ca884978?auto=format&fit=crop&q=80&w=800',
-                'description' => 'Mendukung koordinasi program, pembinaan, serta pelaksanaan kegiatan kepramukaan di tingkat ranting.',
-            ],
-            [
-                'name' => 'Instansi Pendidikan',
-                'jabatan' => 'Kolaborator Program',
-                'status' => 'Strategis',
-                'photo_url' => 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?auto=format&fit=crop&q=80&w=800',
-                'description' => 'Menghubungkan kegiatan ambalan dengan proses pembelajaran, pelatihan, dan pengembangan sekolah.',
-            ],
-            [
-                'name' => 'Komunitas Lingkungan',
-                'jabatan' => 'Mitra Sosial',
-                'status' => 'Terlibat',
-                'photo_url' => 'https://images.unsplash.com/photo-1517048676732-d65bc937f952?auto=format&fit=crop&q=80&w=800',
-                'description' => 'Bersama-sama menyelenggarakan aksi peduli lingkungan, kebersamaan, dan pengabdian masyarakat.',
-            ],
-        ];
-
-    return view('pages.mitra', ['partners' => $partners]);
-})->name('mitra');
-
 Route::get('/pengurus-aktif', function () {
     $hasStudentsTable = \Illuminate\Support\Facades\Schema::hasTable('students');
 
@@ -165,48 +117,6 @@ Route::get('/pengurus-aktif', function () {
 
     return view('pages.active-board', ['anggota' => $query->get()]);
 })->name('active-board');
-
-Route::get('/alumni', function () {
-    $members = \Illuminate\Support\Facades\Schema::hasTable('alumni')
-        ? \App\Models\Alumni::query()
-            ->where('is_active', true)
-            ->orderBy('sort_order')
-            ->orderBy('name')
-            ->get()
-            ->map(fn ($member) => [
-                'name' => $member->name,
-                'jabatan' => $member->jabatan,
-                'status' => $member->status ?: ($member->is_active ? 'Aktif' : 'Non-Aktif'),
-                'photo_url' => $member->photo_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600',
-                'description' => $member->bio ?: 'Alumni aktif yang terus mendukung dan menyalurkan semangat Pramuka untuk generasi berikutnya.',
-            ])
-            ->all()
-        : [
-            [
-                'name' => 'Muhammad Rafi S.',
-                'jabatan' => 'Ketua Alumni',
-                'status' => 'Aktif',
-                'photo_url' => 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800',
-                'description' => 'Alumni yang aktif menjaga silaturahmi dan mendukung pengembangan kegiatan Pramuka.',
-            ],
-            [
-                'name' => 'Siti Nuraeni',
-                'jabatan' => 'Sekretaris Alumni',
-                'status' => 'Aktif',
-                'photo_url' => 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=800',
-                'description' => 'Berperan dalam penguatan jaringan alumni dan kegiatan sosial serta pembinaan generasi muda.',
-            ],
-            [
-                'name' => 'Dimas Pratama',
-                'jabatan' => 'Koordinator Kegiatan',
-                'status' => 'Aktif',
-                'photo_url' => 'https://images.unsplash.com/photo-1506794778202-cad84cf45f1d?auto=format&fit=crop&q=80&w=800',
-                'description' => 'Mensinergikan alumni dengan ambalan untuk menjaga kesinambungan semangat Pramuka.',
-            ],
-        ];
-
-    return view('pages.alumni', ['members' => $members]);
-})->name('alumni');
 
 Route::get('/event', function () {
     $events = \Illuminate\Support\Facades\Schema::hasTable('timeline_events')
@@ -251,7 +161,6 @@ Route::get('/search', function (Illuminate\Http\Request $request) {
         ['title' => 'Dewan Kehormatan', 'route' => route('dewan-kehormatan'), 'keywords' => 'dewan kehormatan pengurus organisasi'],
         ['title' => 'Dewan Ambalan', 'route' => route('dewan-ambalan'), 'keywords' => 'dewan ambalan pengurus ambalan'],
         ['title' => 'Pengurus Aktif', 'route' => route('active-board'), 'keywords' => 'pengurus aktif anggota dewan'],
-        ['title' => 'Alumni', 'route' => route('alumni'), 'keywords' => 'alumni mantan anggota'],
         ['title' => 'Event', 'route' => route('event'), 'keywords' => 'event agenda kegiatan'],
         ['title' => 'Artikel', 'route' => route('article'), 'keywords' => 'artikel tulisan informasi edukasi'],
         ['title' => 'Berita', 'route' => route('news'), 'keywords' => 'berita informasi kegiatan'],
@@ -405,23 +314,17 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::post('/admin/pembina/{pembina}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'togglePembina'])->name('admin.pembina.toggle');
     Route::delete('/admin/pembina/{pembina}', [\App\Http\Controllers\Admin\ModuleController::class, 'deletePembina'])->name('admin.pembina.delete');
 
+    Route::get('/admin/dewan-kehormatan', [\App\Http\Controllers\Admin\ModuleController::class, 'dewanKehormatan'])->name('admin.dewan-kehormatan');
+    Route::post('/admin/dewan-kehormatan/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeDewanKehormatan'])->name('admin.dewan-kehormatan.store');
+    Route::put('/admin/dewan-kehormatan/{dewanKehormatan}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateDewanKehormatan'])->name('admin.dewan-kehormatan.update');
+    Route::post('/admin/dewan-kehormatan/{dewanKehormatan}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleDewanKehormatan'])->name('admin.dewan-kehormatan.toggle');
+    Route::delete('/admin/dewan-kehormatan/{dewanKehormatan}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteDewanKehormatan'])->name('admin.dewan-kehormatan.delete');
+
     Route::get('/admin/dewan-ambalan', [\App\Http\Controllers\Admin\ModuleController::class, 'dewanAmbalan'])->name('admin.dewan-ambalan');
     Route::post('/admin/dewan-ambalan/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeDewanAmbalan'])->name('admin.dewan-ambalan.store');
     Route::put('/admin/dewan-ambalan/{dewanAmbalan}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateDewanAmbalan'])->name('admin.dewan-ambalan.update');
     Route::post('/admin/dewan-ambalan/{dewanAmbalan}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleDewanAmbalan'])->name('admin.dewan-ambalan.toggle');
     Route::delete('/admin/dewan-ambalan/{dewanAmbalan}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteDewanAmbalan'])->name('admin.dewan-ambalan.delete');
-
-    Route::get('/admin/mitra', [\App\Http\Controllers\Admin\ModuleController::class, 'mitra'])->name('admin.mitra');
-    Route::post('/admin/mitra/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeMitra'])->name('admin.mitra.store');
-    Route::put('/admin/mitra/{mitra}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateMitra'])->name('admin.mitra.update');
-    Route::post('/admin/mitra/{mitra}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleMitra'])->name('admin.mitra.toggle');
-    Route::delete('/admin/mitra/{mitra}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteMitra'])->name('admin.mitra.delete');
-
-    Route::get('/admin/alumni', [\App\Http\Controllers\Admin\ModuleController::class, 'alumni'])->name('admin.alumni');
-    Route::post('/admin/alumni/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeAlumni'])->name('admin.alumni.store');
-    Route::put('/admin/alumni/{alumni}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateAlumni'])->name('admin.alumni.update');
-    Route::post('/admin/alumni/{alumni}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleAlumni'])->name('admin.alumni.toggle');
-    Route::delete('/admin/alumni/{alumni}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteAlumni'])->name('admin.alumni.delete');
 
     Route::get('/admin/anggota', [\App\Http\Controllers\Admin\ModuleController::class, 'anggota'])->name('admin.anggota');
     Route::post('/admin/anggota/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeAnggota'])->name('admin.anggota.store');
