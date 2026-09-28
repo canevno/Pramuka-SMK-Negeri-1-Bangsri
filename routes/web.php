@@ -460,6 +460,8 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::put('/admin/profile', [\App\Http\Controllers\Admin\AdminProfileController::class, 'update'])->name('admin.profile.update');
     Route::get('/admin/settings', [\App\Http\Controllers\Admin\SiteSettingsController::class, 'index'])->name('admin.settings');
     Route::post('/admin/settings', [\App\Http\Controllers\Admin\SiteSettingsController::class, 'store'])->name('admin.settings.store');
+    Route::post('/admin/settings/devices/{visitorDevice}/block', [\App\Http\Controllers\Admin\SiteSettingsController::class, 'blockDevice'])->name('admin.settings.device.block');
+    Route::post('/admin/settings/devices/{visitorDevice}/unblock', [\App\Http\Controllers\Admin\SiteSettingsController::class, 'unblockDevice'])->name('admin.settings.device.unblock');
 });
 
 require __DIR__.'/settings.php';

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Setting;
+use App\Models\VisitorDevice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -14,13 +15,16 @@ class SiteSettingsController extends Controller
     {
         if (! Schema::hasTable('settings')) {
             $settings = [];
-
-            return view('admin.settings.index', compact('settings'));
+        } else {
+            $settings = Setting::query()->pluck('value', 'key')->all();
         }
 
-        $settings = Setting::query()->pluck('value', 'key')->all();
+        $visitorDevices = VisitorDevice::query()
+            ->orderByDesc('last_seen_at')
+            ->orderByDesc('visit_count')
+            ->get();
 
-        return view('admin.settings.index', compact('settings'));
+        return view('admin.settings.index', compact('settings', 'visitorDevices'));
     }
 
     public function store(Request $request)
@@ -109,5 +113,21 @@ class SiteSettingsController extends Controller
         }
 
         return redirect()->route('admin.settings')->with('success', 'Pengaturan website berhasil disimpan.');
+    }
+
+    public function blockDevice(VisitorDevice $visitorDevice)
+    {
+        $visitorDevice->blocked_at = now();
+        $visitorDevice->save();
+
+        return redirect()->route('admin.settings')->with('success', 'Perangkat berhasil diblokir.');
+    }
+
+    public function unblockDevice(VisitorDevice $visitorDevice)
+    {
+        $visitorDevice->blocked_at = null;
+        $visitorDevice->save();
+
+        return redirect()->route('admin.settings')->with('success', 'Blokir perangkat berhasil dibatalkan.');
     }
 }

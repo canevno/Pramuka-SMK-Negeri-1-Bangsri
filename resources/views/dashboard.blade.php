@@ -4,20 +4,20 @@
 @section('page-description', 'Selamat datang kembali, Admin. Panel ini dirancang untuk tata kelola sederhana, profesional, dan fokus.')
 
 @section('content')
-<div class="space-y-3 sm:space-y-4">
+<div class="space-y-2.5 sm:space-y-4">
 
     {{-- ===== Header ===== --}}
-    <div class="flex flex-col gap-2.5 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
-            <h1 class="text-xl font-semibold tracking-tight text-zinc-900 dark:text-slate-100 sm:text-2xl">Selamat datang kembali, Admin!</h1>
-            <p class="mt-1 text-xs text-zinc-500 dark:text-slate-400 sm:text-sm">Kelola anggota, berita, galeri, dan pendaftaran dengan tampilan yang bersih dan profesional.</p>
+            <h1 class="text-lg font-semibold tracking-tight text-zinc-900 dark:text-slate-100 sm:text-2xl">Selamat datang kembali, Admin!</h1>
+            <p class="mt-1 text-[11px] text-zinc-500 dark:text-slate-400 sm:text-sm">Kelola anggota, berita, galeri, dan pendaftaran dengan tampilan yang bersih dan profesional.</p>
         </div>
         <div class="flex items-center gap-2">
-            <button type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2.5 py-1.5 text-[11px] font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm">
+            <button type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-[10px] font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm">
                 <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
                 Export
             </button>
-            <button type="button" class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-2.5 py-1.5 text-[11px] font-medium text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm">
+            <button type="button" class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-2 py-1.5 text-[10px] font-medium text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm">
                 <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                 Buat Baru
             </button>
@@ -25,8 +25,8 @@
     </div>
 
     {{-- ===== Chart + Aktivitas ===== --}}
-    <div class="grid gap-3 xl:grid-cols-[1.6fr_1fr]">
-        <section class="rounded-xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:p-5">
+    <div class="grid gap-2.5 xl:grid-cols-[1.6fr_1fr]">
+        <section class="rounded-lg border border-zinc-200 bg-white p-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:rounded-xl sm:p-5">
             <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                     <h2 class="text-sm font-semibold text-zinc-900 dark:text-slate-100 sm:text-base">Statistik Pengunjung</h2>
@@ -84,8 +84,8 @@
             </div>
         </section>
 
-        <section class="rounded-xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:p-3">
-            <div class="mb-2.5 flex items-center justify-between gap-2 sm:mb-3">
+        <section class="rounded-lg border border-zinc-200 bg-white p-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:rounded-xl sm:p-3">
+            <div class="mb-2 flex items-center justify-between gap-2 sm:mb-3">
                 <h2 class="text-sm font-semibold text-zinc-900 dark:text-slate-100 sm:text-base">Petugas Teraktif</h2>
                 <a href="{{ route('admin.absensi') }}" class="inline-flex items-center rounded-[6px] border border-emerald-200 bg-emerald-50 px-2 py-1 text-[9px] font-semibold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-900/60 dark:bg-emerald-950/30 dark:text-emerald-300 sm:text-[10px]">
                     Lihat semua
@@ -123,8 +123,8 @@
     </div>
 
     {{-- ===== Tabel Pendaftaran + Berita ===== --}}
-    <div class="grid gap-3 xl:grid-cols-[1.3fr_0.95fr]">
-        <section class="rounded-xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:p-5">
+    <div class="grid gap-2.5 xl:grid-cols-[1.3fr_0.95fr]">
+        <section class="rounded-lg border border-zinc-200 bg-white p-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:rounded-xl sm:p-5">
             <div class="flex items-center justify-between gap-2 sm:items-center">
                 <h2 class="text-sm font-semibold text-zinc-900 dark:text-slate-100 sm:text-base">Pendaftaran Terbaru</h2>
                 <span class="rounded-full border border-zinc-200 bg-zinc-50 px-2 py-0.5 text-[9px] font-medium text-zinc-600 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-300 sm:text-[10px]">Semua</span>
@@ -218,14 +218,14 @@
             </div>
         </section>
 
-        <section class="min-w-0 rounded-xl border border-zinc-200 bg-white p-3 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:p-5">
+        <section class="min-w-0 rounded-lg border border-zinc-200 bg-white p-2.5 shadow-sm dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-slate-950/30 sm:rounded-xl sm:p-5">
             <div class="flex items-center justify-between gap-2">
                 <div class="min-w-0">
                     <h2 class="text-sm font-semibold text-zinc-900 dark:text-slate-100 sm:text-base">Berita Terbaru</h2>
                     <p class="mt-0.5 text-[10px] text-zinc-500 dark:text-slate-400 sm:text-sm">Konten terbaru yang dipublikasi.</p>
                 </div>
             </div>
-            <div class="mt-3 space-y-2 sm:mt-4">
+            <div class="mt-2.5 space-y-2 sm:mt-4">
                 @forelse($latestNews as $news)
                     <div class="flex min-w-0 items-start gap-2.5 rounded-lg bg-zinc-50 p-2.5 dark:bg-slate-800/80 sm:gap-3 sm:p-3">
                         @if(!empty($news['image']))
