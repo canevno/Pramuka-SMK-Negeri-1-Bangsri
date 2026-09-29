@@ -10,7 +10,9 @@
         @else
             @php
                 $featured = $newsItems[0];
-                $related = array_slice($newsItems, 1, 5);
+                $related = array_slice($newsItems, 1);
+                $visibleRelated = array_slice($related, 0, 5);
+                $hiddenRelated = array_slice($related, 5);
             @endphp
 
             <div class="mx-auto grid max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1.2fr)_420px]">
@@ -55,7 +57,7 @@
                     <div class="rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-xl sm:border sm:border-slate-200 sm:bg-white sm:p-4 sm:shadow-sm">
                         <h3 class="text-center text-lg font-semibold text-slate-900 sm:text-left">Berita Lainnya</h3>
                         <div class="mt-4 space-y-4">
-                            @foreach($related as $item)
+                            @foreach($visibleRelated as $item)
                                 <a href="{{ route('berita.show', ['slug' => $item['slug'] ?? Str::slug($item['title'])]) }}" class="flex items-center gap-3 overflow-hidden rounded-lg border-0 bg-transparent p-0 transition hover:bg-slate-50 sm:border sm:border-slate-100 sm:bg-white sm:p-1.5">
                                     <div class="flex h-[92px] w-[128px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-slate-100">
                                         <img src="{{ $item['image'] }}" alt="{{ $item['alt'] }}" class="h-full w-full object-cover object-center">
@@ -72,10 +74,76 @@
                                 </a>
                             @endforeach
                         </div>
+
+                        @if(count($hiddenRelated) > 0)
+                            <div id="news-related-more" class="mt-4 hidden space-y-4">
+                                @foreach($hiddenRelated as $item)
+                                    <a href="{{ route('berita.show', ['slug' => $item['slug'] ?? Str::slug($item['title'])]) }}" class="flex items-center gap-3 overflow-hidden rounded-lg border-0 bg-transparent p-0 transition hover:bg-slate-50 sm:border sm:border-slate-100 sm:bg-white sm:p-1.5">
+                                        <div class="flex h-[92px] w-[128px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-slate-100">
+                                            <img src="{{ $item['image'] }}" alt="{{ $item['alt'] }}" class="h-full w-full object-cover object-center">
+                                        </div>
+                                        <div class="min-w-0 flex-1 self-center pr-1">
+                                            <div class="flex items-center gap-2">
+                                                <p class="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500">{{ $item['category'] }}</p>
+                                                <span class="text-[9px] text-slate-400">•</span>
+                                                <p class="text-[9px] font-medium text-slate-400">{{ $item['date'] }}</p>
+                                            </div>
+                                            <h4 class="mt-1.5 text-left text-[0.95rem] font-semibold leading-5 text-slate-900 line-clamp-2">{{ $item['title'] }}</h4>
+                                            <p class="mt-1 text-left text-[11px] leading-5 text-slate-600 line-clamp-2">{{ $item['description'] }}</p>
+                                        </div>
+                                    </a>
+                                @endforeach
+                            </div>
+
+                            <div class="mt-5 flex justify-center">
+                                <button type="button" data-related-toggle aria-expanded="false" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0D1B2A] transition hover:text-slate-700 focus:outline-none">
+                                    <span class="related-toggle-label">Tampilkan Selengkapnya</span>
+                                </button>
+                            </div>
+                        @endif
                     </div>
                 </aside>
             </div>
         @endif
+
+        <script>
+            (() => {
+                const toggleButton = document.querySelector('[data-related-toggle]');
+                const extraList = document.getElementById('news-related-more');
+
+                if (!toggleButton || !extraList) {
+                    return;
+                }
+
+                const updateToggle = (expanded) => {
+                    toggleButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+                    toggleButton.dataset.expanded = expanded ? 'true' : 'false';
+                    const label = toggleButton.querySelector('.related-toggle-label');
+                    if (label) {
+                        label.textContent = expanded ? 'Tutup' : 'Tampilkan Selengkapnya';
+                    }
+
+                    extraList.classList.toggle('hidden', !expanded);
+
+                    if (expanded) {
+                        setTimeout(() => {
+                            const rect = extraList.getBoundingClientRect();
+                            if (rect.top < window.innerHeight) {
+                                window.scrollTo({
+                                    top: window.scrollY + rect.top - 80,
+                                    behavior: 'smooth'
+                                });
+                            }
+                        }, 50);
+                    }
+                };
+
+                toggleButton.addEventListener('click', () => {
+                    const expanded = toggleButton.dataset.expanded === 'true';
+                    updateToggle(!expanded);
+                });
+            })();
+        </script>
     </div>
 </section>
 @endsection

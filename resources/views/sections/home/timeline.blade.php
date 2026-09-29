@@ -194,7 +194,7 @@ if ($nextEvent === null && $latestEvent !== null) {
 
             {{-- ── RIGHT: Logo + Theme ── --}}
             <div class="order-3 flex-shrink-0 flex items-center justify-center gap-4 md:flex-col md:items-center w-full md:w-auto">
-                <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-2xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+                <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-2xl border border-transparent bg-transparent shadow-none dark:border-transparent dark:bg-transparent">
                     @php
                         $eventLogo = is_array($nextEvent) ? ($nextEvent['logo_path'] ?? null) : ($nextEvent->logo_path ?? null);
                     @endphp

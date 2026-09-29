@@ -152,8 +152,8 @@
 
                     </h2>
 
-                    <div class="mx-auto w-full max-w-[820px] overflow-hidden rounded-2xl border border-slate-200/80 bg-slate-100 shadow-sm">
-                        <div class="h-[180px] overflow-hidden bg-slate-100 sm:h-[240px] lg:h-[300px]">
+                    <div class="mx-auto w-full max-w-[820px] overflow-hidden rounded-none border-0 bg-transparent p-0 shadow-none">
+                        <div class="h-[180px] overflow-hidden bg-transparent sm:h-[240px] lg:h-[300px]">
                             <img src="<?php echo e($historySections['kepanduan-dunia']['image']); ?>"
                                  alt="Kepanduan Dunia - Baden Powell"
                                  class="h-full w-full object-cover object-center">
@@ -174,7 +174,7 @@
 
                     </h2>
 
-                    <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white shadow-sm">
+                    <div class="overflow-hidden rounded-none border-0 bg-transparent p-0 shadow-none">
                         <img src="<?php echo e($historySections['kepanduan-indonesia']['image']); ?>"
                              alt="Kepanduan Indonesia"
                              class="mx-auto h-auto w-auto max-h-[280px] object-cover sm:max-h-[320px]">
@@ -194,7 +194,7 @@
 
                     </h2>
 
-                    <div class="overflow-hidden rounded-2xl border border-slate-200/80 bg-white p-4 shadow-sm">
+                    <div class="overflow-hidden rounded-none border-0 bg-transparent p-0 shadow-none">
                         <img src="<?php echo e($historySections['gerakan-pramuka']['image']); ?>"
                              alt="Gerakan Pramuka"
                              class="mx-auto h-auto w-auto max-h-[240px] object-contain sm:max-h-[280px]">
@@ -255,12 +255,12 @@
                             Lambang Gerakan Pramuka
                         </h2>
 
-                        <div class="overflow-hidden rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm">
-                            <div class="flex justify-center mb-6">
+                        <div class="overflow-hidden rounded-none border-0 bg-transparent p-0 shadow-none sm:p-0">
+                            <div class="mb-6 flex justify-center">
                                 <img
                                     src="<?php echo e(asset('images/Tunas Kelapa.jpg')); ?>"
                                     alt="Lambang Tunas Kelapa Pramuka"
-                                    class="h-auto max-h-[180px] w-auto object-contain drop-shadow-md sm:max-h-[220px]"
+                                    class="h-auto max-h-[180px] w-auto object-contain drop-shadow-none sm:max-h-[220px]"
                                 >
                             </div>
 
