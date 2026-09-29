@@ -41,7 +41,7 @@ class AttendanceController extends Controller
         $participantAmbalanValue = is_array($participantAmbalan) ? trim((string) reset($participantAmbalan)) : trim((string) $participantAmbalan);
         $participantSanggaValue = is_array($participantSangga) ? trim((string) reset($participantSangga)) : trim((string) $participantSangga);
 
-        if ($bulan === '' || $tanggal === '' || $tahun === '' || empty($statuses) || $participantKelasValue === '' || $participantAmbalanValue === '' || $participantSanggaValue === '' || empty($iurans)) {
+        if ($bulan === '' || $tanggal === '' || $tahun === '' || empty($statuses) || empty($iurans)) {
             return redirect()->route('absensi.index')->with('absensi_verify_error', 'Data absensi tidak lengkap.');
         }
 
@@ -53,6 +53,14 @@ class AttendanceController extends Controller
 
         foreach ($statuses as $id => $status) {
             if (! filled($status)) {
+                continue;
+            }
+
+            $rowParticipantKelas = trim((string) (is_array($participantKelas) ? ($participantKelas[$id] ?? $participantKelasValue) : $participantKelasValue));
+            $rowParticipantAmbalan = trim((string) (is_array($participantAmbalan) ? ($participantAmbalan[$id] ?? $participantAmbalanValue) : $participantAmbalanValue));
+            $rowParticipantSangga = trim((string) (is_array($participantSangga) ? ($participantSangga[$id] ?? $participantSanggaValue) : $participantSanggaValue));
+
+            if ($rowParticipantKelas === '' || $rowParticipantAmbalan === '' || $rowParticipantSangga === '') {
                 continue;
             }
 
@@ -68,9 +76,9 @@ class AttendanceController extends Controller
                 'tahun' => $tahun,
                 'participant_id' => (string) $id,
                 'participant_name' => trim((string) ($participantNames[$id] ?? 'Unknown')),
-                'participant_kelas' => $participantKelasValue,
-                'participant_ambalan' => $participantAmbalanValue,
-                'participant_sangga' => trim((string) (($participantSangga[$id] ?? $participantSanggaValue) ?: session('absensi_verified.sangga', 'Perintis'))),
+                'participant_kelas' => $rowParticipantKelas,
+                'participant_ambalan' => $rowParticipantAmbalan,
+                'participant_sangga' => $rowParticipantSangga ?: trim((string) session('absensi_verified.sangga', 'Perintis')),
                 'status' => (string) $status,
                 'iuran' => $iuranValue,
                 'iuran_amount' => $iuranAmountValue,

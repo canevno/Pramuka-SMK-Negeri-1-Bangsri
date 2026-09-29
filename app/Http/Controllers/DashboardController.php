@@ -33,7 +33,7 @@ class DashboardController extends Controller
         $attendanceStats = AttendanceRecord::query()
             ->select('petugas_name', 'petugas_nta', 'petugas_kelas')
             ->selectRaw('MAX(created_at) as last_seen')
-            ->selectRaw('COUNT(*) as total_records')
+            ->selectRaw('COUNT(DISTINCT record_date) as total_records')
             ->groupBy('petugas_name', 'petugas_nta', 'petugas_kelas')
             ->get();
 

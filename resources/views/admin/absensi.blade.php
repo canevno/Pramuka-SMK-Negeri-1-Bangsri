@@ -30,53 +30,119 @@
     </section>
 
     <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900/80">
-        <div class="flex items-center justify-between gap-4">
+        <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div>
                 <h2 class="text-xl font-semibold text-slate-900 dark:text-white">Rekam Absensi Terbaru</h2>
-                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">10 entri terakhir dari database.</p>
+                <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Menampilkan 10 rekaman terbaru.</p>
             </div>
-            <!-- filter removed per request -->
         </div>
+
+        @php
+            $allRecapRecords = $recapRecords ?? collect();
+            $visibleRecapRecords = $allRecapRecords->take(10);
+            $hiddenRecapRecords = $allRecapRecords->skip(10);
+        @endphp
+
+        @if(session('success'))
+            <div class="mt-4 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+                {{ session('success') }}
+            </div>
+        @endif
+
+        @if(session('error'))
+            <div class="mt-4 rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+                {{ session('error') }}
+            </div>
+        @endif
 
         <div class="mt-6 overflow-hidden rounded-[1.75rem] border border-slate-200 bg-white dark:border-slate-700 dark:bg-slate-900/60">
             <div class="overflow-x-auto">
-                <table class="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700 dark:divide-slate-700 dark:text-slate-200">
-                    <thead class="bg-slate-50 dark:bg-slate-800/80">
-                        <tr>
-                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">No</th>
-                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Sangga</th>
-                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Ambalan</th>
-                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Petugas</th>
-                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Tanggal</th>
-                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Minggu-ke</th>
-                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Detail</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900/40">
-                        @forelse($recapRecords ?? [] as $index => $r)
-                            <tr>
-                                <td class="px-4 py-4">{{ $index + 1 }}</td>
-                                <td class="px-4 py-4">{{ $r['sangga'] ?? $r['kelas'] }}</td>
-                                <td class="px-4 py-4">{{ $r['ambalan'] }}</td>
-                                <td class="px-4 py-4">{{ $r['petugas'] }}</td>
-                                <td class="px-4 py-4">{{ $r['record_date'] }}</td>
-                                <td class="px-4 py-4">{{ $r['minggu_ke'] }}</td>
-                                <td class="px-4 py-4">
-                                    <a href="{{ route('admin.absensi.detail', [
-                                        'record_date' => $r['record_date'],
-                                        'participant_kelas' => $r['kelas'],
-                                        'participant_ambalan' => $r['ambalan'],
-                                        'petugas_name' => $r['petugas'],
-                                    ]) }}" class="text-emerald-600 hover:underline dark:text-emerald-400">Detail</a>
-                                </td>
-                            </tr>
-                        @empty
-                            <tr>
-                                <td colspan="7" class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada rekap absensi.</td>
-                            </tr>
-                        @endforelse
-                    </tbody>
-                </table>
+                @if(($recapRecords ?? collect())->isNotEmpty())
+                    <form method="POST" action="{{ route('admin.absensi.destroy-selected') }}" id="bulk-delete-form">
+                        @csrf
+                        <div class="flex items-center justify-between border-b border-slate-200 bg-slate-50 px-4 py-3 dark:border-slate-700 dark:bg-slate-800/80">
+                            <label class="inline-flex items-center gap-2 text-sm font-medium text-slate-700 dark:text-slate-200">
+                                <input type="checkbox" id="select-all-records" class="h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+                                Pilih semua
+                            </label>
+                            <button type="submit" class="inline-flex items-center rounded-xl border border-rose-200 bg-rose-50 px-3 py-2 text-sm font-medium text-rose-700 hover:bg-rose-100" onclick="return confirm('Apakah Anda yakin ingin menghapus rekaman yang dipilih?')">
+                                Hapus yang Dipilih
+                            </button>
+                        </div>
+
+                        <table class="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700 dark:divide-slate-700 dark:text-slate-200">
+                            <thead class="bg-slate-50 dark:bg-slate-800/80">
+                                <tr>
+                                    <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Pilih</th>
+                                    <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">No</th>
+                                    <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Sangga</th>
+                                    <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Ambalan</th>
+                                    <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Petugas</th>
+                                    <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Tanggal</th>
+                                    <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Minggu-ke</th>
+                                    <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900/40">
+                                @foreach($visibleRecapRecords as $index => $r)
+                                    <tr>
+                                        <td class="px-4 py-4">
+                                            <input type="checkbox" name="selected_records[]" value="{{ $r['group_key'] ?? '' }}" class="record-checkbox h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+                                        </td>
+                                        <td class="px-4 py-4">{{ $index + 1 }}</td>
+                                        <td class="px-4 py-4">{{ $r['sangga'] ?? $r['kelas'] }}</td>
+                                        <td class="px-4 py-4">{{ $r['ambalan'] }}</td>
+                                        <td class="px-4 py-4">{{ $r['petugas'] }}</td>
+                                        <td class="px-4 py-4">{{ $r['record_date'] }}</td>
+                                        <td class="px-4 py-4">{{ $r['minggu_ke'] }}</td>
+                                        <td class="px-4 py-4">
+                                            <a href="{{ route('admin.absensi.detail', [
+                                                'record_date' => $r['record_date'],
+                                                'participant_kelas' => $r['kelas'],
+                                                'participant_sangga' => $r['sangga'],
+                                                'participant_ambalan' => $r['ambalan'],
+                                                'petugas_name' => $r['petugas'],
+                                            ]) }}" class="text-emerald-600 hover:underline dark:text-emerald-400">Detail</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+
+                                @foreach($hiddenRecapRecords as $index => $r)
+                                    <tr class="more-records hidden">
+                                        <td class="px-4 py-4">
+                                            <input type="checkbox" name="selected_records[]" value="{{ $r['group_key'] ?? '' }}" class="record-checkbox h-4 w-4 rounded border-slate-300 text-emerald-600 focus:ring-emerald-500">
+                                        </td>
+                                        <td class="px-4 py-4">{{ $index + 11 }}</td>
+                                        <td class="px-4 py-4">{{ $r['sangga'] ?? $r['kelas'] }}</td>
+                                        <td class="px-4 py-4">{{ $r['ambalan'] }}</td>
+                                        <td class="px-4 py-4">{{ $r['petugas'] }}</td>
+                                        <td class="px-4 py-4">{{ $r['record_date'] }}</td>
+                                        <td class="px-4 py-4">{{ $r['minggu_ke'] }}</td>
+                                        <td class="px-4 py-4">
+                                            <a href="{{ route('admin.absensi.detail', [
+                                                'record_date' => $r['record_date'],
+                                                'participant_kelas' => $r['kelas'],
+                                                'participant_sangga' => $r['sangga'],
+                                                'participant_ambalan' => $r['ambalan'],
+                                                'petugas_name' => $r['petugas'],
+                                            ]) }}" class="text-emerald-600 hover:underline dark:text-emerald-400">Detail</a>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+
+                        @if($hiddenRecapRecords->isNotEmpty())
+                            <div class="border-t border-slate-200 px-4 py-3 text-center dark:border-slate-700">
+                                <button type="button" id="toggle-more-records" class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                                    Tampilkan selengkapnya
+                                </button>
+                            </div>
+                        @endif
+                    </form>
+                @else
+                    <div class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada rekap absensi.</div>
+                @endif
             </div>
         </div>
     </section>
@@ -128,4 +194,36 @@
         </div>
     </section>
 </div>
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectAll = document.getElementById('select-all-records');
+        if (selectAll) {
+            selectAll.addEventListener('change', function () {
+                document.querySelectorAll('.record-checkbox').forEach(function (checkbox) {
+                    checkbox.checked = selectAll.checked;
+                });
+            });
+        }
+
+        const toggleButton = document.getElementById('toggle-more-records');
+        if (!toggleButton) return;
+
+        const hiddenRows = document.querySelectorAll('.more-records');
+        const toggleRows = function (showAll) {
+            hiddenRows.forEach(function (row) {
+                row.classList.toggle('hidden', !showAll);
+            });
+            toggleButton.textContent = showAll ? 'Sembunyikan' : 'Tampilkan selengkapnya';
+        };
+
+        toggleButton.addEventListener('click', function () {
+            const expanded = toggleButton.dataset.expanded === 'true';
+            toggleButton.dataset.expanded = String(!expanded);
+            toggleRows(!expanded);
+        });
+    });
+</script>
+@endpush
+
 @endsection

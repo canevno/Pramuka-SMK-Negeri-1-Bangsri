@@ -52,7 +52,7 @@ class AttendanceController extends Controller
                 ->orderByDesc('last_seen')
                 ->get()
                 ->map(function ($record) use ($registeredPetugas) {
-                    $lastSeen = Carbon::parse($record->last_seen);
+                    $lastSeen = Carbon::parse($record->last_seen)->setTimezone('Asia/Jakarta');
                     $registered = $registeredPetugas->get($record->petugas_nta)
                         ?? $registeredPetugas->first(function ($petugas) use ($record) {
                             return strtolower(trim((string) $petugas->nama)) === strtolower(trim((string) $record->petugas_name));
@@ -77,24 +77,36 @@ class AttendanceController extends Controller
                 ->values();
         }
 
-        // Rekap agregat per tanggal + kelas + petugas
+        // Rekap agregat per tanggal + sub sangga + petugas, bukan per kelas peserta
+        // Kelas tetap diambil dari data asli tiap siswa di detail, agar satu sub sangga tidak terpecah.
         $recapRecords = AttendanceRecord::query()
-            ->select('record_date', 'participant_kelas', 'participant_sangga', 'participant_ambalan', 'petugas_name', 'week_label')
+            ->select('record_date', 'participant_sangga', 'participant_ambalan', 'petugas_name', 'week_label')
+            ->selectRaw('MAX(created_at) as last_saved_at')
             ->selectRaw('COUNT(*) as total_members')
+            ->selectRaw('GROUP_CONCAT(DISTINCT participant_kelas ORDER BY participant_kelas SEPARATOR ", ") as kelas_list')
             ->selectRaw("SUM(CASE WHEN status = 'Hadir' THEN 1 ELSE 0 END) as hadir")
             ->selectRaw("SUM(CASE WHEN status = 'Izin' THEN 1 ELSE 0 END) as izin")
             ->selectRaw("SUM(CASE WHEN status = 'Sakit' THEN 1 ELSE 0 END) as sakit")
             ->selectRaw("SUM(CASE WHEN status IN ('Alpha','Alpa','-','') THEN 1 ELSE 0 END) as alpha")
-            ->groupBy('record_date', 'participant_kelas', 'participant_sangga', 'participant_ambalan', 'petugas_name', 'week_label')
+            ->groupBy('record_date', 'participant_sangga', 'participant_ambalan', 'petugas_name', 'week_label')
+            ->orderByDesc('last_saved_at')
             ->orderByDesc('record_date')
             ->get()
             ->map(function ($r) {
+                $groupKey = implode('|', [
+                    (string) ($r->record_date ?? ''),
+                    (string) ($r->participant_sangga ?? ''),
+                    (string) ($r->participant_ambalan ?? ''),
+                    (string) ($r->petugas_name ?? ''),
+                ]);
+
                 return [
                     'record_date' => $r->record_date,
-                    'kelas' => $r->participant_kelas,
+                    'kelas' => $r->kelas_list ?: '-',
                     'sangga' => $r->participant_sangga ?? '-',
                     'ambalan' => $r->participant_ambalan,
                     'petugas' => $r->petugas_name,
+                    'group_key' => $groupKey,
                     'total_members' => (int) $r->total_members,
                     'hadir' => (int) $r->hadir,
                     'izin' => (int) $r->izin,
@@ -142,10 +154,11 @@ class AttendanceController extends Controller
     {
         $recordDate = $request->query('record_date');
         $participantKelas = $request->query('participant_kelas');
+        $participantSangga = $request->query('participant_sangga');
         $participantAmbalan = $request->query('participant_ambalan');
         $petugasName = $request->query('petugas_name');
 
-        if (! $recordDate || ! $participantKelas || ! $participantAmbalan || ! $petugasName) {
+        if (! $recordDate || ! $participantAmbalan || ! $petugasName) {
             return redirect()->route('admin.absensi')->with('error', 'Detail absensi tidak ditemukan.');
         }
 
@@ -153,11 +166,48 @@ class AttendanceController extends Controller
 
         return view('admin.absensi-detail', [
             'recordDate' => $recordDate,
-            'participantKelas' => $participantKelas,
+            'participantKelas' => $participantKelas ?? ($records->first()?->participant_kelas ?? 'Berbagai Kelas'),
+            'participantSangga' => $participantSangga ?? ($records->first()?->participant_sangga ?? 'Berbagai Sub Sangga'),
             'participantAmbalan' => $participantAmbalan,
             'petugasName' => $petugasName,
             'records' => $records,
         ]);
+    }
+
+    public function destroySelected(Request $request)
+    {
+        $selectedKeys = $request->input('selected_records', []);
+
+        if (empty($selectedKeys)) {
+            return redirect()->route('admin.absensi')->with('error', 'Pilih rekaman absensi yang ingin dihapus.');
+        }
+
+        $deleted = 0;
+
+        foreach ($selectedKeys as $key) {
+            $parts = array_map('trim', explode('|', (string) $key));
+            if (count($parts) < 4) {
+                continue;
+            }
+
+            [$recordDate, $participantSangga, $participantAmbalan, $petugasName] = $parts;
+
+            $deleted += AttendanceRecord::query()
+                ->where('record_date', $recordDate)
+                ->where('participant_sangga', $participantSangga)
+                ->where('participant_ambalan', $participantAmbalan)
+                ->where('petugas_name', $petugasName)
+                ->delete();
+        }
+
+        return redirect()->route('admin.absensi')->with('success', $deleted > 0 ? 'Rekaman absensi yang dipilih berhasil dihapus.' : 'Tidak ada rekaman absensi yang dihapus.');
+    }
+
+    public function destroyAll(Request $request)
+    {
+        $deleted = AttendanceRecord::query()->delete();
+
+        return redirect()->route('admin.absensi')->with('success', 'Semua rekaman absensi berhasil dihapus.');
     }
 
     public function exportExcel(Request $request)
@@ -165,8 +215,13 @@ class AttendanceController extends Controller
         $records = $this->detailRecords($request);
         $recordDate = $request->query('record_date', '');
         $participantKelas = $request->query('participant_kelas', '');
+        $participantSangga = $request->query('participant_sangga', '');
         $participantAmbalan = $request->query('participant_ambalan', '');
         $petugasName = $request->query('petugas_name', '');
+
+        if ($participantSangga === '') {
+            $participantSangga = $records->first()?->participant_sangga ?? 'Berbagai Sub Sangga';
+        }
 
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -186,8 +241,15 @@ class AttendanceController extends Controller
         $sheet->getStyle('A2:Q2')->getFont()->setBold(true)->setName('Times New Roman')->setSize(12);
         $sheet->getStyle('A2:Q2')->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-        $sheet->setCellValue('A4', 'PENDOBRAK 1 PI');
+        $sheet->setCellValue('A4', strtoupper((string) $participantSangga));
         $sheet->getStyle('A4')->getFont()->setBold(true)->setName('Times New Roman')->setSize(11);
+
+        $monthDate = $recordDate !== '' ? Carbon::parse($recordDate) : Carbon::now();
+        $monthWeekCount = (int) min(4, max(1, (int) ceil($monthDate->daysInMonth / 7)));
+        $weekLabels = [];
+        for ($week = 1; $week <= 4; $week++) {
+            $weekLabels[] = $week <= $monthWeekCount ? 'M'.$week : '';
+        }
 
         $headerRow = 5;
         $sheet->mergeCells('A'.$headerRow.':A'.($headerRow + 1));
@@ -195,44 +257,57 @@ class AttendanceController extends Controller
         $sheet->setCellValue('A'.$headerRow, 'Nama Lengkap');
         $sheet->setCellValue('B'.$headerRow, 'Kelas');
 
-        $groupStart = ['C', 'G', 'K'];
-        foreach ($groupStart as $start) {
-            $end = chr(ord($start) + 3);
-            $sheet->mergeCells($start.$headerRow.':'.$end.$headerRow);
+        $sheet->mergeCells('C'.$headerRow.':F'.$headerRow);
+        $sheet->setCellValue('C'.$headerRow, strtoupper($monthDate->translatedFormat('F')));
+
+        $weekColumns = ['C', 'D', 'E', 'F'];
+        foreach ($weekColumns as $index => $column) {
+            $sheet->setCellValue($column.($headerRow + 1), $weekLabels[$index] ?? '');
         }
 
-        $sheet->mergeCells('O'.$headerRow.':Q'.$headerRow);
-        $sheet->setCellValue('O'.$headerRow, 'Jumlah');
-        $sheet->setCellValue('O'.($headerRow + 1), 'A');
-        $sheet->setCellValue('P'.($headerRow + 1), 'S');
-        $sheet->setCellValue('Q'.($headerRow + 1), 'I');
+        $sheet->mergeCells('G'.$headerRow.':I'.$headerRow);
+        $sheet->setCellValue('G'.$headerRow, 'Jumlah');
+        $sheet->setCellValue('G'.($headerRow + 1), 'A');
+        $sheet->setCellValue('H'.($headerRow + 1), 'S');
+        $sheet->setCellValue('I'.($headerRow + 1), 'I');
 
-        foreach (range('C', 'N') as $column) {
-            $sheet->setCellValue($column.($headerRow + 1), '');
-        }
-
-        $sheet->getStyle('A'.$headerRow.':Q'.($headerRow + 1))->getFont()->setBold(true)->setName('Times New Roman');
-        $sheet->getStyle('A'.$headerRow.':Q'.($headerRow + 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-        $sheet->getStyle('A'.$headerRow.':Q'.($headerRow + 1))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle('A'.$headerRow.':I'.($headerRow + 1))->getFont()->setBold(true)->setName('Times New Roman');
+        $sheet->getStyle('A'.$headerRow.':I'.($headerRow + 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$headerRow.':I'.($headerRow + 1))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
         $rows = $records->map(function ($record) {
             $status = strtoupper((string) ($record->status ?? ''));
-            $attendance = ['H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H'];
-            $attendance[0] = match (true) {
-                $status === 'HADIR' => 'H',
-                $status === 'IZIN' => 'I',
-                $status === 'SAKIT' => 'S',
-                default => 'A',
-            };
-
             $a = $status === 'A' || $status === 'ALPHA' || $status === 'ALPA' ? 1 : 0;
             $s = $status === 'S' || $status === 'SAKIT' ? 1 : 0;
             $i = $status === 'I' || $status === 'IZIN' ? 1 : 0;
+            $weekValue = match (true) {
+                $status === 'HADIR' => 'H',
+                $status === 'SAKIT' => 'S',
+                $status === 'IZIN' => 'I',
+                default => 'A',
+            };
+
+            $weekIndex = 0;
+            if (! empty($record->record_date)) {
+                try {
+                    $weekIndex = (int) ceil(Carbon::parse($record->record_date)->day / 7) - 1;
+                } catch (\Throwable $e) {
+                    $weekIndex = 0;
+                }
+            }
+
+            $weekCells = ['', '', '', ''];
+            if ($weekIndex >= 0 && $weekIndex < 4) {
+                $weekCells[$weekIndex] = $weekValue;
+            }
 
             return [
                 $record->participant_name,
                 $record->participant_kelas,
-                ...$attendance,
+                $weekCells[0],
+                $weekCells[1],
+                $weekCells[2],
+                $weekCells[3],
                 $a,
                 $s,
                 $i,
@@ -241,11 +316,11 @@ class AttendanceController extends Controller
 
         if (empty($rows)) {
             $rows = [
-                ['Aldi Pratama', 'X-1', 'H', 'H', 'A', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 2, 0, 1],
-                ['Bima Ardiansyah', 'X-2', 'H', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 'H', 'I', 'H', 1, 1, 1],
-                ['Candra Wijaya', 'XI-1', 'H', 'A', 'H', 'H', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 1, 1, 0],
-                ['Dewi Lestari', 'XI-2', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'A', 'H', 'H', 'H', 'H', 2, 0, 1],
-                ['Eko Saputra', 'XII-1', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'A', 1, 1, 1],
+                ['Aldi Pratama', 'X-1', 'H', '', '', '', 2, 0, 1],
+                ['Bima Ardiansyah', 'X-2', '', 'A', '', '', 1, 1, 0],
+                ['Candra Wijaya', 'XI-1', '', '', 'I', '', 1, 0, 1],
+                ['Dewi Lestari', 'XI-2', '', '', '', 'H', 2, 0, 1],
+                ['Eko Saputra', 'XII-1', 'H', '', '', '', 1, 1, 1],
             ];
         }
 
@@ -253,32 +328,24 @@ class AttendanceController extends Controller
         $sheet->fromArray($rows, null, 'A'.$dataRow);
 
         $lastRow = $dataRow + count($rows) - 1;
-        $sheet->getStyle('A'.$dataRow.':Q'.$lastRow)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        $sheet->getStyle('A'.$dataRow.':Q'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$dataRow.':I'.$lastRow)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle('A'.$dataRow.':I'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
         $sheet->getStyle('A'.$dataRow.':A'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
         $sheet->getStyle('B'.$dataRow.':B'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
 
-        foreach (range('A', 'Q') as $column) {
+        foreach (range('A', 'I') as $column) {
             $sheet->getColumnDimension($column)->setWidth(15);
         }
 
         $sheet->getColumnDimension('A')->setWidth(28);
         $sheet->getColumnDimension('B')->setWidth(12);
-        $sheet->getColumnDimension('C')->setWidth(8);
-        $sheet->getColumnDimension('D')->setWidth(8);
-        $sheet->getColumnDimension('E')->setWidth(8);
-        $sheet->getColumnDimension('F')->setWidth(8);
-        $sheet->getColumnDimension('G')->setWidth(8);
-        $sheet->getColumnDimension('H')->setWidth(8);
-        $sheet->getColumnDimension('I')->setWidth(8);
-        $sheet->getColumnDimension('J')->setWidth(8);
-        $sheet->getColumnDimension('K')->setWidth(8);
-        $sheet->getColumnDimension('L')->setWidth(8);
-        $sheet->getColumnDimension('M')->setWidth(8);
-        $sheet->getColumnDimension('N')->setWidth(8);
-        $sheet->getColumnDimension('O')->setWidth(9);
-        $sheet->getColumnDimension('P')->setWidth(9);
-        $sheet->getColumnDimension('Q')->setWidth(9);
+        $sheet->getColumnDimension('C')->setWidth(10);
+        $sheet->getColumnDimension('D')->setWidth(10);
+        $sheet->getColumnDimension('E')->setWidth(10);
+        $sheet->getColumnDimension('F')->setWidth(10);
+        $sheet->getColumnDimension('G')->setWidth(10);
+        $sheet->getColumnDimension('H')->setWidth(10);
+        $sheet->getColumnDimension('I')->setWidth(10);
 
         $filename = sprintf('detail-absensi-%s-%s-%s.xlsx', $recordDate, str_replace([' ', '/'], ['-', '-'], $participantAmbalan), preg_replace('/[^A-Za-z0-9]/', '-', strtolower($petugasName)));
 
@@ -295,8 +362,13 @@ class AttendanceController extends Controller
         $records = $this->detailRecords($request);
         $recordDate = $request->query('record_date', '');
         $participantKelas = $request->query('participant_kelas', '');
+        $participantSangga = $request->query('participant_sangga', '');
         $participantAmbalan = $request->query('participant_ambalan', '');
         $petugasName = $request->query('petugas_name', '');
+
+        if ($participantSangga === '') {
+            $participantSangga = $records->first()?->participant_sangga ?? 'Berbagai Sub Sangga';
+        }
 
         $rows = $records->map(function ($record) {
             $status = strtoupper((string) ($record->status ?? ''));
@@ -332,7 +404,7 @@ class AttendanceController extends Controller
             ];
         }
 
-        $pdf = $this->buildFormalAttendancePdf($rows, $participantKelas, $participantAmbalan, $petugasName);
+        $pdf = $this->buildFormalAttendancePdf($rows, $participantKelas, $participantAmbalan, $petugasName, $participantSangga);
         $filename = sprintf('detail-absensi-%s.pdf', $recordDate);
 
         return response($pdf, 200)
@@ -343,28 +415,31 @@ class AttendanceController extends Controller
     private function detailRecords(Request $request)
     {
         $recordDate = $request->query('record_date');
-        $participantKelas = $request->query('participant_kelas');
         $participantAmbalan = $request->query('participant_ambalan');
         $petugasName = $request->query('petugas_name');
 
-        if (! $recordDate || ! $participantKelas || ! $participantAmbalan || ! $petugasName) {
+        if (! $recordDate || ! $participantAmbalan || ! $petugasName) {
             return collect();
         }
 
-        return AttendanceRecord::query()
+        $query = AttendanceRecord::query()
             ->where('record_date', $recordDate)
-            ->where('participant_kelas', $participantKelas)
             ->where('participant_ambalan', $participantAmbalan)
-            ->where('petugas_name', $petugasName)
-            ->orderBy('participant_name')
-            ->get();
+            ->where('petugas_name', $petugasName);
+
+        $participantSangga = $request->query('participant_sangga');
+        if ($participantSangga) {
+            $query->where('participant_sangga', $participantSangga);
+        }
+
+        return $query->orderBy('participant_name')->get();
     }
 
-    private function buildFormalAttendancePdf(array $rows, string $participantKelas = '', string $participantAmbalan = '', string $petugasName = ''): string
+    private function buildFormalAttendancePdf(array $rows, string $participantKelas = '', string $participantAmbalan = '', string $petugasName = '', string $participantSangga = ''): string
     {
         $content = "BT\n/F1 14 Tf\n180 790 Td\n(ABSENSI EXTRAKULIKULER PRAMUKA) Tj\nET\n";
         $content .= "BT\n/F1 12 Tf\n180 770 Td\n(SMK NEGERI 1 BANGSRI) Tj\nET\n";
-        $content .= "BT\n/F1 11 Tf\n45 744 Td\n(PENDOBRAK 1 PI) Tj\nET\n";
+        $content .= "BT\n/F1 11 Tf\n45 744 Td\n(" . $this->pdfEscape($participantSangga !== '' ? $participantSangga : 'Berbagai Sub Sangga') . ") Tj\nET\n";
 
         if ($participantKelas !== '') {
             $content .= "BT\n/F1 9 Tf\n45 724 Td\n(KELAS: {$this->pdfEscape($participantKelas)}) Tj\nET\n";

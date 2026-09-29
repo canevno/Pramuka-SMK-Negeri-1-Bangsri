@@ -61,6 +61,129 @@ test('absensi verification stores ambalan and sangga and submissions reach the d
     ]);
 });
 
+test('attendance records keep each student real class instead of reusing the first class value', function () {
+    PetugasAbsensi::query()->create([
+        'nama' => 'Test Petugas',
+        'nta' => '12346',
+        'kelas_petugas' => 'X PPLG 1',
+        'is_active' => true,
+        'is_approved' => true,
+        'status' => 'Aktif',
+    ]);
+
+    $response = $this->withSession([
+        'absensi_verified' => [
+            'name' => 'Test Petugas',
+            'kelas' => 'X PPLG 1',
+            'nta' => '12346',
+            'ambalan' => 'PA',
+            'sangga' => 'Perintis',
+        ],
+    ])->post('/absensi/submit', [
+        'status' => [1 => 'Hadir', 2 => 'Izin'],
+        'participant_name' => [1 => 'Peserta Satu', 2 => 'Peserta Dua'],
+        'participant_kelas' => [1 => 'X PPLG 1', 2 => 'X PPLG 2'],
+        'participant_ambalan' => [1 => 'PA', 2 => 'PA'],
+        'participant_sangga' => [1 => 'Perintis 1', 2 => 'Perintis 2'],
+        'iuran' => [1 => 'Lunas', 2 => 'Tidak'],
+        'bulan' => 'Agustus',
+        'tanggal' => '06',
+        'tahun' => '2026',
+    ]);
+
+    $response->assertRedirect('/absensi');
+    $response->assertSessionHas('absensi_success');
+
+    $this->assertDatabaseHas('attendance_records', [
+        'participant_name' => 'Peserta Satu',
+        'participant_kelas' => 'X PPLG 1',
+    ]);
+
+    $this->assertDatabaseHas('attendance_records', [
+        'participant_name' => 'Peserta Dua',
+        'participant_kelas' => 'X PPLG 2',
+    ]);
+});
+
+test('admin detail filters by sub-sangga so the count matches the submitted group', function () {
+    $user = \App\Models\User::factory()->create([
+        'email' => 'admin-subsangga@example.com',
+        'is_admin' => true,
+    ]);
+
+    \App\Models\AttendanceRecord::query()->create([
+        'participant_name' => 'Peserta A',
+        'participant_kelas' => 'X PPLG 1',
+        'participant_ambalan' => 'PA',
+        'participant_sangga' => 'Penegas 7',
+        'status' => 'Hadir',
+        'iuran' => 'Lunas',
+        'iuran_amount' => 2000,
+        'record_date' => '2026-09-10',
+        'petugas_name' => 'Petugas Valid',
+        'petugas_kelas' => 'XII RPL 1',
+        'petugas_nta' => 'NTA-VALID-7',
+        'bulan' => 'September',
+        'tanggal' => '10',
+        'tahun' => '2026',
+        'week_label' => 'Minggu 36 September 2026',
+        'month_key' => '09-2026',
+        'year_key' => '2026',
+    ]);
+
+    \App\Models\AttendanceRecord::query()->create([
+        'participant_name' => 'Peserta B',
+        'participant_kelas' => 'X PPLG 2',
+        'participant_ambalan' => 'PA',
+        'participant_sangga' => 'Penegas 7',
+        'status' => 'Hadir',
+        'iuran' => 'Lunas',
+        'iuran_amount' => 2000,
+        'record_date' => '2026-09-10',
+        'petugas_name' => 'Petugas Valid',
+        'petugas_kelas' => 'XII RPL 1',
+        'petugas_nta' => 'NTA-VALID-7',
+        'bulan' => 'September',
+        'tanggal' => '10',
+        'tahun' => '2026',
+        'week_label' => 'Minggu 36 September 2026',
+        'month_key' => '09-2026',
+        'year_key' => '2026',
+    ]);
+
+    \App\Models\AttendanceRecord::query()->create([
+        'participant_name' => 'Peserta C',
+        'participant_kelas' => 'X PPLG 3',
+        'participant_ambalan' => 'PA',
+        'participant_sangga' => 'Penegas 8',
+        'status' => 'Hadir',
+        'iuran' => 'Lunas',
+        'iuran_amount' => 2000,
+        'record_date' => '2026-09-10',
+        'petugas_name' => 'Petugas Valid',
+        'petugas_kelas' => 'XII RPL 1',
+        'petugas_nta' => 'NTA-VALID-7',
+        'bulan' => 'September',
+        'tanggal' => '10',
+        'tahun' => '2026',
+        'week_label' => 'Minggu 36 September 2026',
+        'month_key' => '09-2026',
+        'year_key' => '2026',
+    ]);
+
+    $this->actingAs($user)
+        ->get(route('admin.absensi.detail', [
+            'record_date' => '2026-09-10',
+            'participant_sangga' => 'Penegas 7',
+            'participant_ambalan' => 'PA',
+            'petugas_name' => 'Petugas Valid',
+        ]))
+        ->assertOk()
+        ->assertSee('Peserta A')
+        ->assertSee('Peserta B')
+        ->assertDontSee('Peserta C');
+});
+
 test('absensi verification blocks unregistered or inactive petugas nta', function () {
     PetugasAbsensi::query()->create([
         'nama' => 'Petugas Non Aktif',

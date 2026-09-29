@@ -288,6 +288,8 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     })->name('admin.agenda');
 
     Route::get('/admin/absensi', [\App\Http\Controllers\Admin\AttendanceController::class, 'index'])->name('admin.absensi');
+    Route::post('/admin/absensi/destroy-selected', [\App\Http\Controllers\Admin\AttendanceController::class, 'destroySelected'])->name('admin.absensi.destroy-selected');
+    Route::post('/admin/absensi/destroy-all', [\App\Http\Controllers\Admin\AttendanceController::class, 'destroyAll'])->name('admin.absensi.destroy-all');
     Route::get('/admin/absensi/detail', [\App\Http\Controllers\Admin\AttendanceController::class, 'detail'])->name('admin.absensi.detail');
     Route::get('/admin/absensi/detail/export/excel', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportExcel'])->name('admin.absensi.export.excel');
     Route::get('/admin/absensi/detail/export/pdf', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportPdf'])->name('admin.absensi.export.pdf');

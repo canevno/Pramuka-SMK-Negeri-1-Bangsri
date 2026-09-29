@@ -1,6 +1,6 @@
 <?php $__env->startSection('title', 'Dashboard Admin'); ?>
 <?php $__env->startSection('page-heading', 'Dashboard'); ?>
-<?php $__env->startSection('page-description', 'Selamat datang kembali, Admin. Panel ini dirancang untuk tata kelola sederhana, profesional, dan fokus.'); ?>
+<?php $__env->startSection('page-description', 'Selamat datang kembali, Admin. Panel ini dirancang untuk tata kelola kegiatan kepramukaan.'); ?>
 
 <?php $__env->startSection('content'); ?>
 <div class="space-y-2.5 sm:space-y-4">
@@ -9,13 +9,9 @@
     <div class="flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
             <h1 class="text-lg font-semibold tracking-tight text-zinc-900 dark:text-slate-100 sm:text-2xl">Selamat datang kembali, Admin!</h1>
-            <p class="mt-1 text-[11px] text-zinc-500 dark:text-slate-400 sm:text-sm">Kelola anggota, berita, galeri, dan pendaftaran dengan tampilan yang bersih dan profesional.</p>
+            <p class="mt-1 text-[11px] text-zinc-500 dark:text-slate-400 sm:text-sm">Kelola seluruh kegiatan kepramukaan dengan baik dan aman.</p>
         </div>
         <div class="flex items-center gap-2">
-            <button type="button" class="inline-flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-[10px] font-medium text-zinc-700 transition hover:border-zinc-300 hover:bg-zinc-50 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:border-slate-600 dark:hover:bg-slate-800 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm">
-                <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M16.5 12 12 16.5m0 0L7.5 12m4.5 4.5V3"/></svg>
-                Export
-            </button>
             <button type="button" class="inline-flex items-center gap-1.5 rounded-lg bg-emerald-600 px-2 py-1.5 text-[10px] font-medium text-white transition hover:bg-emerald-700 dark:bg-emerald-500 dark:hover:bg-emerald-400 sm:gap-2 sm:px-3.5 sm:py-2 sm:text-sm">
                 <svg viewBox="0 0 24 24" class="h-3.5 w-3.5 sm:h-4 sm:w-4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
                 Buat Baru

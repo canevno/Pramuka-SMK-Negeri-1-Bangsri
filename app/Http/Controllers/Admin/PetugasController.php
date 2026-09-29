@@ -31,7 +31,7 @@ class PetugasController extends Controller
             ->orderByDesc('last_seen')
             ->get()
             ->map(function ($record) use ($registeredPetugas) {
-                $lastSeen = Carbon::parse($record->last_seen);
+                $lastSeen = Carbon::parse($record->last_seen)->setTimezone('Asia/Jakarta');
                 $registered = $registeredPetugas->get($record->petugas_nta)
                     ?? $registeredPetugas->first(function ($petugas) use ($record) {
                         return strtolower(trim((string) $petugas->nama)) === strtolower(trim((string) $record->petugas_name));
