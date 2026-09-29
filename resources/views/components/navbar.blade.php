@@ -25,7 +25,7 @@
         },
         syncActiveNav() {
             const path = window.location.pathname.replace(/\/+$/, '') || '/';
-            const matchers = [
+                const matchers = [
                 { value: 'home', paths: ['/'] },
                 { value: 'profil', paths: ['/tentang-kami', '/visi-misi', '/ambalan'] },
                 { value: 'admin', paths: ['/absensi', '/pendaftaran-bantara', '/pendaftaran-laksana'] },
@@ -106,41 +106,6 @@
         nav .border-slate-800,
         nav .border-slate-700 {
             border-color: rgba(15, 23, 42, 0.12) !important;
-        }
-
-        nav [aria-label="Toggle menu"] {
-            display: inline-flex !important;
-            align-items: center !important;
-            justify-content: center !important;
-            width: 1.5rem !important;
-            height: 1.5rem !important;
-            padding: 0 !important;
-            margin: 0 !important;
-            background: transparent !important;
-            border: none !important;
-            border-radius: 0 !important;
-            box-shadow: none !important;
-            appearance: none !important;
-            -webkit-appearance: none !important;
-            -moz-appearance: none !important;
-            cursor: pointer !important;
-            outline: none !important;
-            text-decoration: none !important;
-            user-select: none !important;
-            -webkit-tap-highlight-color: transparent !important;
-        }
-
-        @media (min-width: 1024px) {
-            nav [aria-label="Toggle menu"] {
-                display: none !important;
-            }
-        }
-
-        nav [aria-label="Toggle menu"] svg {
-            width: 1.25rem !important;
-            height: 1.25rem !important;
-            stroke-width: 2.2 !important;
-            display: block !important;
         }
     </style>
 
@@ -292,6 +257,8 @@
                             </svg>
                             Anggota Dewan
                         </a>
+                        <!-- Mitra removed: resource deleted -->
+                        <!-- Alumni removed per request -->
                     </div>
                 </div>
 
@@ -308,7 +275,7 @@
                 >
                     <button type="button" @click="activeNav = 'berita'; publikasiOpen = !publikasiOpen; closeAllExcept('publikasi')" :aria-expanded="publikasiOpen"
                         :class="activeNav === 'berita' ? 'flex items-center gap-1 text-[14px] font-medium tracking-tight text-slate-900 border-b-2 border-slate-900 pb-0.5 focus:outline-none dark:text-white dark:border-white' : 'flex items-center gap-1 text-[14px] font-medium tracking-tight text-slate-700 border-b-2 border-transparent pb-0.5 transition-colors hover:text-slate-600 focus:outline-none dark:text-slate-200 dark:hover:text-blue-300'">
-                        Berita
+                        Publikasi
                         <svg class="h-4 w-4 transition-transform duration-200" :class="publikasiOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
                         </svg>
@@ -337,26 +304,26 @@
             </div>
 
             <!-- Mobile toggle -->
-            <span role="button" tabindex="0" @click="mobileMenuOpen = !mobileMenuOpen" @keydown.enter.prevent="mobileMenuOpen = !mobileMenuOpen" @keydown.space.prevent="mobileMenuOpen = !mobileMenuOpen" :aria-expanded="mobileMenuOpen" aria-controls="mobile-menu"
-                class="lg:hidden ml-auto flex h-6 w-6 items-center justify-center p-0 text-slate-700 transition-colors duration-200 hover:text-slate-900 focus:outline-none dark:text-slate-200 dark:hover:text-white"
-                style="background: transparent !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; appearance: none !important; -webkit-appearance: none !important; -moz-appearance: none !important; outline: none !important;"
+            <button type="button" @click="mobileMenuOpen = !mobileMenuOpen" :aria-expanded="mobileMenuOpen" aria-controls="mobile-menu"
+                class="lg:hidden ml-auto mr-0 flex h-9 w-9 items-center justify-center rounded-lg border-0 bg-transparent p-0 text-gray-700 shadow-none ring-0 outline-none hover:bg-slate-100 hover:text-gray-900 focus:outline-none focus:ring-2 focus:ring-slate-400 dark:text-white dark:hover:bg-slate-800 dark:hover:text-gray-200 active:scale-95 transition-all duration-200"
                 aria-label="Toggle menu">
-                <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2" aria-hidden="true">
-                    <path :d="mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'" stroke-linecap="round" stroke-linejoin="round" />
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path :d="mobileMenuOpen ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16'" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" />
                 </svg>
-            </span>
+            </button>
         </div>
     </div>
 
     <!-- Mobile Menu -->
-    <div id="mobile-menu" x-cloak x-show="mobileMenuOpen" @keydown.escape.window="mobileMenuOpen = false" class="lg:hidden fixed inset-0 z-[70] overflow-hidden">
+    <div id="mobile-menu" x-cloak x-show="mobileMenuOpen" @keydown.escape.window="mobileMenuOpen = false" class="lg:hidden fixed inset-0 z-50 overflow-hidden">
         <div class="absolute inset-0 bg-black/30 backdrop-blur-sm transition-opacity" @click="mobileMenuOpen = false"></div>
-        <div class="mobile-menu-panel relative z-[70] absolute inset-y-0 right-0 w-full max-w-sm overflow-y-auto bg-transparent shadow-none transition-transform duration-300 pointer-events-auto"
+        <div class="mobile-menu-panel absolute inset-y-0 right-0 w-full max-w-sm bg-white dark:bg-gray-950 shadow-2xl overflow-y-auto border-l border-slate-200 dark:border-slate-800 transition-transform duration-300"
             x-show="mobileMenuOpen"
             x-transition:enter="transition-transform ease-out duration-300" x-transition:enter-start="translate-x-full" x-transition:enter-end="translate-x-0"
             x-transition:leave="transition-transform ease-in duration-200" x-transition:leave-start="translate-x-0" x-transition:leave-end="translate-x-full">
             <div class="px-4 py-4 sm:px-6">
-                <div class="flex justify-end">
+                <div class="flex items-center justify-between">
+                    <div class="text-base font-bold text-gray-900 dark:text-white">Menu</div>
                     <button type="button" @click="mobileMenuOpen = false" class="rounded-lg p-2 text-gray-600 hover:bg-slate-100 dark:text-gray-300 dark:hover:bg-slate-800 transition-colors" aria-label="Close menu">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
@@ -493,6 +460,8 @@
                                 </svg>
                                 Anggota Dewan
                             </a>
+                                <!-- Mitra removed: resource deleted -->
+                            <!-- Alumni removed per request -->
                         </div>
                     </div>
 
@@ -509,7 +478,7 @@
                                 <svg class="w-5 h-5 text-slate-500 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="1.5">
                                     <path stroke-linecap="round" stroke-linejoin="round" d="M12 7.5h1.5m-1.5 3h1.5m-7.5 3h7.5m-7.5 3h7.5m3-9h3.375c.621 0 1.125.504 1.125 1.125V18a2.25 2.25 0 01-2.25 2.25M16.5 7.5V18a2.25 2.25 0 002.25 2.25M16.5 7.5V4.875c0-.621-.504-1.125-1.125-1.125H4.125C3.504 3.75 3 4.254 3 4.875V18a2.25 2.25 0 002.25 2.25h13.5M6 7.5h3v3H6v-3z"></path>
                                 </svg>
-                                Berita
+                                Publikasi
                             </span>
                             <svg class="h-4 w-4 transition-transform duration-200" :class="mobilePublikasiOpen ? 'rotate-180' : ''" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>

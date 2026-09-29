@@ -1,5 +1,5 @@
 
-<footer class="relative z-10 bg-[#0D1B2A] pb-4 text-slate-100 sm:pb-[4.75rem] lg:pb-0">
+<footer class="relative z-10 bg-[#0D1B2A] pb-[calc(3.5rem+env(safe-area-inset-bottom))] text-slate-100 sm:pb-[calc(4.75rem+env(safe-area-inset-bottom))] lg:pb-0">
     <div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8 lg:px-8 lg:py-12">
 
         <!-- Main Footer -->
@@ -189,7 +189,7 @@
                             <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5S10.62 6.5 12 6.5s2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/>
                         </svg>
 
-                        <a href="https://www.google.com/maps/search/?api=1&query=6.5274167,110.7508889" target="_blank" rel="noopener noreferrer" class="leading-6 text-slate-400 no-underline">
+                        <a href="https://maps.app.goo.gl/WtzzgjoyWUanrPa98" target="_blank" rel="noopener noreferrer" class="leading-6 text-slate-400 no-underline">
                             Jl. KH Achmad Fauzan No.17, Krasak, Bangsri,
                             Kec. Bangsri, Kabupaten Jepara, Jawa Tengah 59415
                         </a>

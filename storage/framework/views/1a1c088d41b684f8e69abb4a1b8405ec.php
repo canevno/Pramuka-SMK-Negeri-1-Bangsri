@@ -117,12 +117,36 @@ if ($nextEvent === null && $latestEvent !== null) {
                 <div class="flex flex-col items-center gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center md:justify-start sm:gap-x-8 sm:gap-y-2">
 
                     
+                    <?php
+                        $locationText = is_array($nextEvent) ? ($nextEvent['location'] ?? '-') : ($nextEvent->location ?? '-');
+                        $locationHref = null;
+
+                        if (is_array($nextEvent)) {
+                            $locationHref = trim((string) ($nextEvent['location_url'] ?? '')) ?: null;
+                        } else {
+                            $locationHref = trim((string) ($nextEvent->location_url ?? '')) ?: null;
+                        }
+
+                        if (empty($locationHref) && is_string($locationText) && $locationText !== '-') {
+                            if (filter_var($locationText, FILTER_VALIDATE_URL)) {
+                                $locationHref = $locationText;
+                            } elseif (! empty($nextEvent['latitude'] ?? null) && ! empty($nextEvent['longitude'] ?? null)) {
+                                $locationHref = 'https://www.google.com/maps/search/?api=1&query=' . urlencode(($nextEvent['latitude'] ?? '') . ',' . ($nextEvent['longitude'] ?? ''));
+                            } elseif (! empty($nextEvent->latitude ?? null) && ! empty($nextEvent->longitude ?? null)) {
+                                $locationHref = 'https://www.google.com/maps/search/?api=1&query=' . urlencode(($nextEvent->latitude ?? '') . ',' . ($nextEvent->longitude ?? ''));
+                            }
+                        }
+                    ?>
                     <div class="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                             <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                         </svg>
-                        <span class="font-medium"><?php echo e(is_array($nextEvent) ? ($nextEvent['location'] ?? '-') : ($nextEvent->location ?? '-')); ?></span>
+                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(! empty($locationHref)): ?>
+                            <a href="<?php echo e($locationHref); ?>" target="_blank" rel="noopener" class="font-medium text-slate-900 hover:underline dark:text-white"><?php echo e($locationText); ?></a>
+                        <?php else: ?>
+                            <span class="font-medium text-slate-900 dark:text-white"><?php echo e($locationText); ?></span>
+                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                     </div>
 
                     <div class="flex flex-col items-center gap-2.5 sm:flex-row sm:items-center"> 

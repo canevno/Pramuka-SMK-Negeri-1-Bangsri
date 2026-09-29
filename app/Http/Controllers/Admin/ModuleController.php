@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Alumni;
 use App\Models\DewanAmbalan;
 use App\Models\DewanKehormatan;
 use App\Models\GalleryItem;
@@ -655,6 +656,7 @@ class ModuleController extends Controller
             'date' => 'required|date',
             'time' => 'nullable|string|max:20',
             'location' => 'required|string|max:255',
+            'location_url' => 'nullable|url|max:500',
             'guide_url' => 'nullable|url|max:255',
             'theme' => 'nullable|string',
             'description' => 'nullable|string',
@@ -674,6 +676,7 @@ class ModuleController extends Controller
             'date' => $validated['date'],
             'time' => $validated['time'] ?? null,
             'location' => trim($validated['location']),
+            'location_url' => $validated['location_url'] ?? null,
             'guide_url' => $validated['guide_url'] ?? null,
             'theme' => $validated['theme'] ?? null,
             'logo_path' => $logoPath,
@@ -686,6 +689,12 @@ class ModuleController extends Controller
             $payload['description'] = $validated['description'] ?? null;
         }
 
+        // handle guide PDF upload after payload prepared so it persists
+        if ($request->hasFile('guide_pdf') && $request->file('guide_pdf')->isValid()) {
+            $pdfPath = $request->file('guide_pdf')->store('timeline/guides', 'public');
+            $payload['guide_url'] = asset('storage/' . ltrim($pdfPath, '/'));
+        }
+
         TimelineEvent::query()->create($payload);
 
         return redirect()->route('admin.timeline')->with('success', 'Timeline kegiatan berhasil ditambahkan.');
@@ -693,19 +702,24 @@ class ModuleController extends Controller
 
     public function updateTimeline(Request $request, TimelineEvent $timelineEvent)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'date' => 'required|date',
-            'time' => 'nullable|string|max:20',
-            'location' => 'required|string|max:255',
-            'guide_url' => 'nullable|url|max:255',
-            'theme' => 'nullable|string',
-            'description' => 'nullable|string',
-            'status' => 'nullable|string|in:upcoming,ongoing,completed',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp',
-        ]);
+        try {
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'date' => 'required|date',
+                'time' => 'nullable|string|max:20',
+                'location' => 'required|string|max:255',
+                'location_url' => 'nullable|url|max:500',
+                'guide_url' => 'nullable|url|max:255',
+                'theme' => 'nullable|string',
+                'description' => 'nullable|string',
+                'status' => 'nullable|string|in:upcoming,ongoing,completed',
+                'is_active' => 'nullable|boolean',
+                'sort_order' => 'nullable|integer|min:0',
+                'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp',
+            ]);
+        } catch (\Throwable $e) {
+            return redirect()->route('admin.timeline')->with('error', 'Validasi gagal: ' . $e->getMessage());
+        }
 
         $logoPath = $timelineEvent->logo_path;
         if ($request->hasFile('logo')) {
@@ -721,6 +735,7 @@ class ModuleController extends Controller
             'date' => $validated['date'],
             'time' => $validated['time'] ?? $timelineEvent->time,
             'location' => trim($validated['location']),
+            'location_url' => $validated['location_url'] ?? $timelineEvent->location_url,
             'guide_url' => $validated['guide_url'] ?? $timelineEvent->guide_url,
             'theme' => $validated['theme'] ?? $timelineEvent->theme,
             'logo_path' => $logoPath,
@@ -729,13 +744,34 @@ class ModuleController extends Controller
             'sort_order' => (int) ($validated['sort_order'] ?? $timelineEvent->sort_order ?? 0),
         ];
 
+        if ($request->hasFile('guide_pdf') && $request->file('guide_pdf')->isValid()) {
+            if (! empty($timelineEvent->guide_url)) {
+                // attempt to delete old file if stored under storage
+                try {
+                    $oldPath = preg_replace('#^' . preg_quote(asset('storage/'), '#') . '#', '', $timelineEvent->guide_url);
+                    if ($oldPath && Storage::disk('public')->exists($oldPath)) {
+                        Storage::disk('public')->delete($oldPath);
+                    }
+                } catch (\Throwable $e) {
+                    // ignore deletion errors
+                }
+
+            }
+
+            $pdfPath = $request->file('guide_pdf')->store('timeline/guides', 'public');
+            $payload['guide_url'] = asset('storage/' . ltrim($pdfPath, '/'));
+        }
+
         if (Schema::hasColumn('timeline_events', 'description')) {
             $payload['description'] = $validated['description'] ?? $timelineEvent->description;
         }
 
-        $timelineEvent->fill($payload);
-
-        $timelineEvent->save();
+        try {
+            $timelineEvent->fill($payload);
+            $timelineEvent->save();
+        } catch (\Throwable $e) {
+            return redirect()->route('admin.timeline')->withInput()->with('error', 'Gagal menyimpan perubahan: ' . $e->getMessage());
+        }
 
         return redirect()->route('admin.timeline')->with('success', 'Timeline kegiatan berhasil diperbarui.');
     }
@@ -1133,6 +1169,119 @@ class ModuleController extends Controller
         $dewanAmbalan->delete();
 
         return redirect()->route('admin.dewan-ambalan')->with('success', 'Data dewan ambalan berhasil dihapus.');
+    }
+
+    public function alumni()
+    {
+        $members = Schema::hasTable('alumni')
+            ? Alumni::query()
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get()
+            : collect();
+
+        return view('admin.modules.alumni', [
+            'title' => 'Kelola Alumni',
+            'description' => 'Kelola data alumni yang tampil di halaman depan.',
+            'publicRoute' => route('alumni'),
+            'publicLabel' => 'Lihat Halaman Alumni',
+            'members' => $members,
+            'stats' => [
+                'total' => $members->count(),
+                'aktif' => $members->where('is_active', true)->count(),
+                'nonaktif' => $members->where('is_active', false)->count(),
+                'jabatan' => $members->filter(fn ($item) => ! empty($item->jabatan))->count(),
+            ],
+        ]);
+    }
+
+    public function storeAlumni(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'status' => 'nullable|string|max:50',
+            'bio' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
+            'photo_url' => 'nullable|string|max:255',
+            'is_active' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        $photoUrl = $validated['photo_url'] ?? null;
+
+        if ($request->hasFile('photo')) {
+            $storedPath = $request->file('photo')->store('alumni', 'public');
+            $photoUrl = 'storage/' . $storedPath;
+        }
+
+        Alumni::query()->create([
+            'name' => trim($validated['name']),
+            'jabatan' => trim($validated['jabatan']),
+            'status' => $validated['status'] ?? 'Aktif',
+            'bio' => $validated['bio'] ?? null,
+            'photo_url' => $photoUrl,
+            'is_active' => (bool) ($validated['is_active'] ?? true),
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+        ]);
+
+        return redirect()->route('admin.alumni')->with('success', 'Data alumni berhasil ditambahkan.');
+    }
+
+    public function updateAlumni(Request $request, Alumni $alumni)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'jabatan' => 'required|string|max:255',
+            'status' => 'nullable|string|max:50',
+            'bio' => 'nullable|string',
+            'photo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
+            'photo_url' => 'nullable|string|max:255',
+            'is_active' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+        ]);
+
+        if ($request->hasFile('photo')) {
+            $validated['photo_url'] = 'storage/' . $request->file('photo')->store('alumni', 'public');
+        }
+
+        $alumni->fill([
+            'name' => trim($validated['name']),
+            'jabatan' => trim($validated['jabatan']),
+            'status' => $validated['status'] ?? ($validated['is_active'] ?? $alumni->is_active ? 'Aktif' : 'Non-Aktif'),
+            'bio' => $validated['bio'] ?? $alumni->bio,
+            'photo_url' => $validated['photo_url'] ?? $alumni->photo_url,
+            'is_active' => (bool) ($validated['is_active'] ?? $alumni->is_active),
+            'sort_order' => (int) ($validated['sort_order'] ?? $alumni->sort_order ?? 0),
+        ]);
+
+        if ($alumni->is_active && empty($alumni->status)) {
+            $alumni->status = 'Aktif';
+        }
+
+        if (! $alumni->is_active) {
+            $alumni->status = 'Non-Aktif';
+        }
+
+        $alumni->save();
+
+        return redirect()->route('admin.alumni')->with('success', 'Data alumni berhasil diperbarui.');
+    }
+
+    public function toggleAlumni(Alumni $alumni)
+    {
+        $alumni->is_active = ! $alumni->is_active;
+        $alumni->status = $alumni->is_active ? 'Aktif' : 'Non-Aktif';
+        $alumni->save();
+
+        return redirect()->route('admin.alumni')->with('success', 'Status alumni berhasil diperbarui.');
+    }
+
+    public function deleteAlumni(Alumni $alumni)
+    {
+        $alumni->delete();
+
+        return redirect()->route('admin.alumni')->with('success', 'Data alumni berhasil dihapus.');
     }
 
     public function anggota()

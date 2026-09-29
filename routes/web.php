@@ -82,6 +82,28 @@ Route::get('/dewan-ambalan', function () {
     return view('pages.dewan-ambalan', ['members' => $members]);
 })->name('dewan-ambalan');
 
+Route::get('/alumni', function () {
+    $members = \Illuminate\Support\Facades\Schema::hasTable('alumni')
+        ? \App\Models\Alumni::query()
+            ->where('is_active', true)
+            ->orderBy('sort_order')
+            ->orderBy('name')
+            ->get()
+            ->map(function ($member) {
+                return [
+                    'name' => $member->name,
+                    'jabatan' => $member->jabatan,
+                    'status' => $member->status,
+                    'photo_url' => $member->photo_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600',
+                    'description' => $member->bio ?: 'Alumni aktif yang menjaga silaturahmi dan mendukung kegiatan Pramuka.',
+                ];
+            })
+            ->all()
+        : [];
+
+    return view('pages.alumni', ['members' => $members]);
+})->name('alumni');
+
 Route::get('/anggota-dewan', function () {
     $dewanAnggota = \Illuminate\Support\Facades\Schema::hasTable('students')
         ? \App\Models\Student::query()
@@ -327,6 +349,12 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::put('/admin/dewan-ambalan/{dewanAmbalan}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateDewanAmbalan'])->name('admin.dewan-ambalan.update');
     Route::post('/admin/dewan-ambalan/{dewanAmbalan}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleDewanAmbalan'])->name('admin.dewan-ambalan.toggle');
     Route::delete('/admin/dewan-ambalan/{dewanAmbalan}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteDewanAmbalan'])->name('admin.dewan-ambalan.delete');
+
+    Route::get('/admin/alumni', [\App\Http\Controllers\Admin\ModuleController::class, 'alumni'])->name('admin.alumni');
+    Route::post('/admin/alumni/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeAlumni'])->name('admin.alumni.store');
+    Route::put('/admin/alumni/{alumni}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateAlumni'])->name('admin.alumni.update');
+    Route::post('/admin/alumni/{alumni}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleAlumni'])->name('admin.alumni.toggle');
+    Route::delete('/admin/alumni/{alumni}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteAlumni'])->name('admin.alumni.delete');
 
     Route::get('/admin/anggota', [\App\Http\Controllers\Admin\ModuleController::class, 'anggota'])->name('admin.anggota');
     Route::post('/admin/anggota/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeAnggota'])->name('admin.anggota.store');

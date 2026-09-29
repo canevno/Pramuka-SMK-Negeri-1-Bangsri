@@ -31,7 +31,14 @@
     @include('components.navbar')
 
     <main>
-        @yield('content')
+        @hasSection('content')
+            @yield('content')
+        @else
+            {{-- Support component-style usage: render slot when used as <x-layouts.frontend> --}}
+            @isset($slot)
+                {{ $slot }}
+            @endisset
+        @endif
     </main>
 
     @include('components.back-to-top')

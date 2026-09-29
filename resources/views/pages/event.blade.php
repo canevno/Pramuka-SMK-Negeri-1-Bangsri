@@ -23,8 +23,8 @@
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach($upcoming as $event)
                         <article class="group overflow-hidden rounded-2xl border border-slate-300 bg-white transition hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
-                            <div class="flex items-center justify-center py-6 bg-white">
-                                <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-2xl border border-slate-300 bg-white p-1 shadow-sm dark:border-slate-600 dark:bg-slate-900">
+                            <div class="flex items-center justify-center py-6 bg-transparent">
+                                <div class="w-32 h-32 sm:w-32 sm:h-32 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden p-1">
                                     @php
                                         $eventLogo = $event->logo_path ?? $event->image ?? null;
                                     @endphp
@@ -65,7 +65,7 @@
                                         <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ \Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y') }}</p>
                                         <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ \Illuminate\Support\Str::limit($event->description ?? $event->excerpt ?? $event->theme ?? '', 120) }}</p>
                                     </div>
-                                    <div class="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-xl border border-slate-200 bg-slate-50 shadow-sm dark:border-slate-700 dark:bg-slate-900 ml-4">
+                                    <div class="w-32 h-32 sm:w-32 sm:h-32 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden ml-4">
                                         @php
                                             $eventLogo = $event->logo_path ?? $event->image ?? null;
                                         @endphp

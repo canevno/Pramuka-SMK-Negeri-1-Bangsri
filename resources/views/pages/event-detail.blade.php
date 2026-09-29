@@ -19,9 +19,28 @@
                         <img src="{{ $logoSrc }}" alt="{{ $event->title }}" class="h-40 w-40 object-contain" onerror="this.style.display='none'" />
                     </div>
                     <div class="mt-4 text-sm text-slate-600 dark:text-slate-400">
-                        <p><strong>Lokasi:</strong> {{ $event->location }}</p>
+                        @php
+                            $locationText = trim((string) ($event->location ?? ''));
+                            $locationUrl = trim((string) ($event->location_url ?? ''));
+
+                            if ($locationUrl === '' && $locationText !== '' && filter_var($locationText, FILTER_VALIDATE_URL)) {
+                                $locationUrl = $locationText;
+                            }
+
+                            if ($locationUrl === '' && ! empty($event->latitude) && ! empty($event->longitude)) {
+                                $locationUrl = 'https://www.google.com/maps/search/?api=1&query=' . urlencode($event->latitude . ',' . $event->longitude);
+                            }
+                        @endphp
+                        <p class="text-slate-900 dark:text-white"><strong class="text-slate-900 dark:text-white">Lokasi:</strong>
+                            @if(! empty($locationUrl))
+                                <a href="{{ $locationUrl }}" target="_blank" rel="noopener" class="font-medium text-slate-900 hover:underline dark:text-white">{{ $locationText ?: 'Lokasi belum diatur' }}</a>
+                            @else
+                                <span class="text-slate-900 dark:text-white">{{ $locationText ?: 'Lokasi belum diatur' }}</span>
+                            @endif
+                        </p>
+
                         @if(! empty($event->guide_url))
-                            <p class="mt-2"><a href="{{ $event->guide_url }}" class="text-emerald-600 hover:underline">Panduan kegiatan</a></p>
+                            <p class="mt-2"><a href="{{ $event->guide_url }}" target="_blank" rel="noopener" class="text-emerald-600 hover:underline">Panduan kegiatan (PDF)</a></p>
                         @endif
                     </div>
                 </div>

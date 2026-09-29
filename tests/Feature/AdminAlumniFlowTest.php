@@ -4,6 +4,9 @@ use App\Models\Alumni;
 use App\Models\User;
 
 it('shows alumni data in the public page and admin list', function () {
+    expect(Route::has('alumni'))->toBeTrue();
+    expect(Route::has('admin.alumni'))->toBeTrue();
+
     $admin = User::factory()->create([
         'email' => 'admin-alumni@example.com',
         'is_admin' => true,
@@ -31,6 +34,8 @@ it('shows alumni data in the public page and admin list', function () {
 });
 
 it('allows admin to store, update, toggle and delete an alumni', function () {
+    expect(Route::has('admin.alumni'))->toBeTrue();
+
     $admin = User::factory()->create([
         'email' => 'admin-alumni-actions@example.com',
         'is_admin' => true,

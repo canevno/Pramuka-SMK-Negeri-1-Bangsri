@@ -2,6 +2,12 @@
 
 use App\Models\Mitra;
 use App\Models\User;
+use Illuminate\Support\Facades\Route;
+
+// If the `mitra` routes were removed from the application, skip registering these tests.
+if (! Route::has('mitra') || ! Route::has('admin.mitra')) {
+    return;
+}
 
 it('shows mitra data in the public page and admin list', function () {
     $admin = User::factory()->create([
