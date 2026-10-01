@@ -50,8 +50,8 @@
 
 <main class="w-full min-h-screen bg-[#f4f3ef] dark:bg-gray-950 text-neutral-900 dark:text-white py-10 px-4 sm:px-6 md:px-10 lg:px-16 transition-colors duration-200">
     <div id="galleryContent" class="mx-auto max-w-6xl">
-        <div class="mb-8 text-center">
-            <h1 class="mt-3 text-3xl font-bold tracking-tight text-gray-900 dark:text-white sm:text-4xl md:text-5xl">
+        <div class="mb-10 text-center">
+            <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
                 Dokumentasi Kegiatan Pramuka
             </h1>
         </div>

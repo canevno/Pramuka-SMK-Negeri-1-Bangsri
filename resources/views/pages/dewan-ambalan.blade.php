@@ -26,17 +26,22 @@
             </aside>
 
             <main class="order-1 lg:order-2 lg:col-span-8 xl:col-span-9">
-                <div class="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm">
-                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-6 text-center lg:text-left">
-                        Dewan Ambalan
-                    </h1>
+                <div class="space-y-6">
+                    <div class="mb-10 text-center">
+                        <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+                            Dewan Ambalan
+                        </h1>
+                        <p class="mx-auto mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-300">
+                            Badan pengurus harian penegak yang merencanakan, mengelola, dan melaksanakan program kerja harian ambalan putra maupun putri.
+                        </p>
+                    </div>
 
                     @if($members->isEmpty())
-                        <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">
+                        <p class="text-sm text-slate-500">
                             Belum ada data dewan ambalan yang aktif untuk ditampilkan.
-                        </div>
+                        </p>
                     @else
-                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
                             @foreach($members as $index => $member)
                                 @php
                                     $image = $member['photo_url'] ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600';

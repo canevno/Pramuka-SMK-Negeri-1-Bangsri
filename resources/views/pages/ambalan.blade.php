@@ -1,8 +1,13 @@
 @extends('layouts.frontend')
 
 @section('content')
+@php
+    $profiles = $profiles ?? collect();
+    $activeProfiles = $profiles->where('is_active', true)->values();
+    $defaultTab = $activeProfiles->first() ? 'ambalan-' . str_replace('ambalan-', '', $activeProfiles->first()->slug ?? 'ambalan-putra') : 'ambalan-fauzan';
+@endphp
 <div x-data="{ 
-    activeTab: 'ambalan-fauzan',
+    activeTab: '{{ $defaultTab }}',
     changeTab(tabName) {
         this.activeTab = tabName;
         window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -85,16 +90,27 @@
                             Ambalan
                         </span>
                         <div class="space-y-1 pl-2">
-                            <button @click="changeTab('ambalan-fauzan')" 
-                                :class="activeTab === 'ambalan-fauzan' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
-                                class="w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition">
-                                KH. Achmad Fauzan (Putra)
-                            </button>
-                            <button @click="changeTab('ambalan-sartika')" 
-                                :class="activeTab === 'ambalan-sartika' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
-                                class="w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition">
-                                Dewi Sartika (Putri)
-                            </button>
+                            @if($activeProfiles->isNotEmpty())
+                                @foreach($activeProfiles as $profile)
+                                    @php $tabKey = $profile->slug ?? ('ambalan-' . strtolower($profile->type ?? 'PA')); @endphp
+                                    <button @click="changeTab('{{ $tabKey }}')" 
+                                        :class="activeTab === '{{ $tabKey }}' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
+                                        class="w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition">
+                                        {{ $profile->subtitle ?: $profile->name }}
+                                    </button>
+                                @endforeach
+                            @else
+                                <button @click="changeTab('ambalan-fauzan')" 
+                                    :class="activeTab === 'ambalan-fauzan' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
+                                    class="w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition">
+                                    KH. Achmad Fauzan (Putra)
+                                </button>
+                                <button @click="changeTab('ambalan-sartika')" 
+                                    :class="activeTab === 'ambalan-sartika' ? 'bg-slate-100 text-slate-950 font-bold' : 'text-slate-600 hover:bg-slate-50 hover:text-slate-950'"
+                                    class="w-full text-left rounded-lg px-3 py-2 text-sm font-medium transition">
+                                    Dewi Sartika (Putri)
+                                </button>
+                            @endif
                         </div>
                     </div>
 
@@ -241,53 +257,57 @@
                     </div>
                 </section>
 
-                <!-- 4. Ambalan KH. Achmad Fauzan (Putra) -->
-                <section x-show="activeTab === 'ambalan-fauzan'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <div class="flex justify-center">
-                        <div class="overflow-hidden rounded-2xl bg-transparent p-1">
-                            <img src="{{ asset('images/logos/aflogo.png') }}" 
-                                 alt="Logo Ambalan KH. Achmad Fauzan" 
-                                 class="mx-auto h-[180px] w-full max-w-[180px] object-contain sm:h-[220px] sm:max-w-[220px]">
-                        </div>
-                    </div>
+                @if($activeProfiles->isNotEmpty())
+                    @foreach($activeProfiles as $profile)
+                        @php $tabKey = $profile->slug ?? ('ambalan-' . strtolower($profile->type ?? 'PA')); @endphp
+                        <section x-show="activeTab === '{{ $tabKey }}'" x-cloak class="pb-2 sm:pb-12 space-y-6">
+                            <div class="flex justify-center">
+                                <div class="overflow-hidden rounded-2xl bg-transparent p-1">
+                                    <img src="{{ $profile->logo_url ?: ($profile->slug === 'ambalan-putri' || str_contains(strtolower($profile->name ?? ''), 'putri') ? asset('images/logos/dslogo.png') : asset('images/logos/aflogo.png')) }}"
+                                         alt="Logo {{ $profile->name }}"
+                                         class="mx-auto h-[180px] w-full max-w-[180px] object-contain sm:h-[220px] sm:max-w-[220px]">
+                                </div>
+                            </div>
 
-                    <div class="border-0 bg-transparent p-0 shadow-none sm:p-0">
-                        <strong class="block border-b border-slate-100 pb-3 text-xl font-bold text-slate-900">
-                            Biografi Singkat KH. Achmad Fauzan
-                        </strong>
-                        <div class="mt-4 space-y-4 text-justify text-base leading-relaxed text-slate-700">
-                            <p>
-                                <strong>KH. Achmad Fauzan</strong> merupakan salah satu tokoh ulama karismatik dan pejuang kemerdekaan terkemuka dari Jepara. Beliau dikenal sebagai sosok pendidik, pejuang syariat, dan pahlawan lokal yang gigih menentang penjajahan Belanda serta membela kedaulatan NKRI.
-                            </p>
-                            <p>
-                                Semasa hidupnya, beliau tidak hanya mengajarkan ilmu-ilmu keagamaan dan moralitas di tengah masyarakat, tetapi juga aktif menggembleng para pemuda untuk memiliki keberanian fisik dan mental dalam mempertahankan kemerdekaan Indonesia. Ketegasan, kejujuran, dan kesederhanaan hidup beliau menjadi cermin utama karakter kepemimpinan Islam dan nasionalis.
-                            </p>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- 5. Ambalan Dewi Sartika (Putri) -->
-                <section x-show="activeTab === 'ambalan-sartika'" x-cloak class="pb-2 sm:pb-12 space-y-6">
-                    <div class="flex justify-center">
-                        <div class="overflow-hidden rounded-2xl bg-transparent p-1">
-                            <img src="{{ asset('images/logos/dslogo.png') }}" alt="Logo Ambalan Dewi Sartika" class="mx-auto h-[180px] w-full max-w-[180px] object-contain sm:h-[220px] sm:max-w-[220px]">
-                        </div>
-                    </div>
-
-                    <div class="border-0 bg-transparent p-0 shadow-none sm:p-0">
-                        <strong class="block border-b border-slate-100 pb-3 text-xl font-bold text-slate-900">
-                            Biografi Singkat Raden Dewi Sartika
-                        </strong>
-                        <div class="mt-4 space-y-4 text-justify text-base leading-relaxed text-slate-700">
-                            <p>
-                                <strong>Raden Dewi Sartika</strong> adalah salah satu tokoh perintis pendidikan bagi kaum perempuan di Indonesia. Beliau mendirikan <em>Sakola Istri</em> pada tahun 1904 di Bandung, yang menjadi pilar penting pembinaan keterampilan, moralitas, dan kemandirian wanita bumiputera.
-                            </p>
-                            <p>
-                                Perjuangan beliau menginspirasi pembentukan Ambalan Putri sebagai wadah untuk melatih Pramuka Penegak Putri agar berwawasan luas, terampil, berkarakter luhur, serta siap menjadi pelopor kebaikan di lingkungan keluarga dan masyarakat.
-                            </p>
-                        </div>
-                    </div>
-                </section>
+                            <div class="border-0 bg-transparent p-0 shadow-none sm:p-0">
+                                <strong class="block border-b border-slate-100 pb-3 text-xl font-bold text-slate-900">
+                                    {{ $profile->subtitle ?: $profile->name }}
+                                </strong>
+                                @php
+                                    $descriptionParagraphs = array_values(array_filter(array_map(fn ($paragraph) => trim($paragraph), preg_split('/\R\s*\R+|\R/', trim((string) ($profile->description ?? ''))))));
+                                    $visionParagraphs = array_values(array_filter(array_map(fn ($paragraph) => trim($paragraph), preg_split('/\R\s*\R+|\R/', trim((string) ($profile->vision ?? ''))))));
+                                    $missionParagraphs = array_values(array_filter(array_map(fn ($paragraph) => trim($paragraph), preg_split('/\R\s*\R+|\R/', trim((string) ($profile->mission ?? ''))))));
+                                @endphp
+                                <div class="mt-4 space-y-4 text-justify text-base leading-relaxed text-slate-700">
+                                    @if($profile->tagline)
+                                        <p class="font-semibold text-slate-900">{{ $profile->tagline }}</p>
+                                    @endif
+                                    @if($descriptionParagraphs)
+                                        @foreach($descriptionParagraphs as $paragraph)
+                                            <p>{{ $paragraph }}</p>
+                                        @endforeach
+                                    @endif
+                                    @if($visionParagraphs)
+                                        <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                                            <p class="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Visi</p>
+                                            @foreach($visionParagraphs as $paragraph)
+                                                <p class="mt-2 first:mt-0">{{ $paragraph }}</p>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                    @if($missionParagraphs)
+                                        <div class="rounded-xl border border-slate-200 bg-slate-50 p-4">
+                                            <p class="mb-1 text-xs font-semibold uppercase tracking-[0.14em] text-slate-500">Misi</p>
+                                            @foreach($missionParagraphs as $paragraph)
+                                                <p class="mt-2 first:mt-0">{{ $paragraph }}</p>
+                                            @endforeach
+                                        </div>
+                                    @endif
+                                </div>
+                            </div>
+                        </section>
+                    @endforeach
+                @endif
 
                 <!-- 6. AD - ART Munas 2023 -->
                 <section x-show="activeTab === 'ad-art-munas-2023'" x-cloak class="pb-2 sm:pb-12 space-y-6">

@@ -2,8 +2,8 @@
 
 <?php $__env->startSection('content'); ?>
 <?php
-    $activeMembers = collect($dewanAnggota ?? [])->where('is_active', true)->sortBy(fn ($item) => [$item->sort_order ?? 0, $item->nama ?? ''])->values();
-    $selectedMemberId = $activeMembers->isNotEmpty() ? 0 : 'null';
+    $members = collect($members ?? [])->filter(fn ($item) => ! empty($item['name'] ?? null))->values();
+    $selectedMemberId = $members->isNotEmpty() ? 0 : 'null';
 ?>
 
 <div class="bg-slate-50 text-slate-900 pt-8 pb-16 min-h-screen" x-data="{ selectedMember: <?php echo e($selectedMemberId); ?> }">
@@ -26,21 +26,26 @@
             </aside>
 
             <main class="order-1 lg:order-2 lg:col-span-8 xl:col-span-9">
-                <div class="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm">
-                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-6 text-center lg:text-left">
-                        Anggota Dewan
-                    </h1>
+                <div class="space-y-6">
+                    <div class="mb-10 text-center">
+                        <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+                            Dewan Kehormatan
+                        </h1>
+                        <p class="mx-auto mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-300">
+                            Dewan Kehormatan bertugas menjaga integritas, kode etik, Kode Kehormatan Pramuka (Satya dan Darma), serta memberikan pertimbangan penghargaan dan pelanggaran disiplin.
+                        </p>
+                    </div>
 
-                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activeMembers->isEmpty()): ?>
-                        <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">
-                            Belum ada data anggota dewan yang aktif untuk ditampilkan.
-                        </div>
+                    <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($members->isEmpty()): ?>
+                        <p class="text-sm text-slate-500">
+                            Belum ada data dewan kehormatan yang aktif untuk ditampilkan.
+                        </p>
                     <?php else: ?>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-3">
-                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $activeMembers; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-5">
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $members; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $index => $member): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <?php
-                                    $image = $item->photo_url ?: 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600';
-                                    $description = trim((string) ($item->bio ?? $item->description ?? '')) ?: 'Anggota aktif yang berperan dalam pengelolaan dan pembinaan organisasi.';
+                                    $image = $member['photo_url'] ?? 'https://images.unsplash.com/photo-1544005313-94ddf0286df2?auto=format&fit=crop&q=80&w=600';
+                                    $description = trim((string) ($member['description'] ?? $member['bio'] ?? '')) ?: 'Anggota aktif yang menjaga integritas dan etika dalam organisasi.';
                                 ?>
 
                                 <div @click="selectedMember = (selectedMember === <?php echo e($index); ?> ? null : <?php echo e($index); ?>)"
@@ -50,19 +55,19 @@
                                         : 'bg-white border-slate-200 hover:border-slate-300'"
                                     class="relative rounded-xl border p-1.5 cursor-pointer transition-all duration-300 select-none shadow-sm lg:scale-[0.96] lg:hover:scale-[0.97]">
                                     <div class="relative overflow-hidden rounded-lg aspect-square bg-slate-100">
-                                        <img src="<?php echo e($image); ?>" alt="<?php echo e($item->nama); ?>" class="w-full h-full object-cover transition duration-300"
+                                        <img src="<?php echo e($image); ?>" alt="<?php echo e($member['name'] ?? 'Dewan Kehormatan'); ?>" class="w-full h-full object-cover transition duration-300"
                                             :class="selectedMember === <?php echo e($index); ?> ? 'grayscale-0' : 'grayscale-0'">
                                     </div>
 
                                     <div class="px-2 pt-2.5 pb-1">
                                         <h3 class="font-bold text-sm sm:text-base leading-tight transition-colors"
                                             :class="selectedMember === <?php echo e($index); ?> ? 'text-white' : 'text-slate-900'">
-                                            <?php echo e($item->nama); ?>
+                                            <?php echo e($member['name'] ?? 'Nama'); ?>
 
                                         </h3>
                                         <p class="text-xs transition-colors mt-0.5"
                                            :class="selectedMember === <?php echo e($index); ?> ? 'text-sky-200' : 'text-slate-500'">
-                                            <?php echo e($item->jabatan ?: 'Anggota Dewan'); ?>
+                                            <?php echo e($member['jabatan'] ?? 'Anggota'); ?>
 
                                         </p>
                                         <p class="mt-2 text-[11px] leading-relaxed transition-colors"
@@ -82,4 +87,4 @@
 </div>
 <?php $__env->stopSection(); ?>
 
-<?php echo $__env->make('layouts.frontend', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views\pages\anggota-dewan.blade.php ENDPATH**/ ?>
+<?php echo $__env->make('layouts.frontend', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views/pages/dewan-kehormatan.blade.php ENDPATH**/ ?>

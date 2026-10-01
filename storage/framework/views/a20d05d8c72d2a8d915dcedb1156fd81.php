@@ -43,11 +43,16 @@
             </aside>
 
             <main class="order-1 lg:order-2 lg:col-span-8 xl:col-span-9">
-                <div class="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm">
+                <div class="space-y-6">
                     <div x-show="activeTab === 'pembina'" x-cloak>
-                        <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-6 text-center lg:text-left">
-                            Pembina Pramuka SMKN 1 Bangsri
-                        </h1>
+                        <div class="mb-10 text-center">
+                            <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+                                Pembina Pramuka SMKN 1 Bangsri
+                            </h1>
+                            <p class="mx-auto mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-300">
+                                Profil para pembina yang membimbing, mengarahkan, dan menjadi teladan dalam kegiatan kepramukaan.
+                            </p>
+                        </div>
 
                         <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if($activePembina->isEmpty()): ?>
                             <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">

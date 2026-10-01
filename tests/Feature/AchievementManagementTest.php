@@ -38,6 +38,8 @@ test('admin can create a new achievement', function () {
         'title' => 'Juara 2 Pencak Silat',
         'category' => 'Tingkat Cabang',
         'year' => 2025,
+        'date' => '2025-06-18',
+        'location' => 'Semarang',
         'winner' => 'Nafa Anjani',
         'description' => 'Mendapatkan medali perak dalam kompetisi pencak silat.',
         'image' => 'images/achievement/prestasi1.jpg',
@@ -45,8 +47,10 @@ test('admin can create a new achievement', function () {
 
     $response->assertRedirect(route('admin.prestasi'));
 
-    expect(AchievementStore::all())->toHaveCount(1);
-    expect(AchievementStore::all()[0]['title'])->toBe('Juara 2 Pencak Silat');
+    expect(AchievementStore::all())->toHaveCount(1)
+        ->and(AchievementStore::all()[0]['title'])->toBe('Juara 2 Pencak Silat')
+        ->and(AchievementStore::all()[0]['date'])->toBe('2025-06-18')
+        ->and(AchievementStore::all()[0]['location'])->toBe('Semarang');
 });
 
 test('admin can upload a photo for an achievement', function () {

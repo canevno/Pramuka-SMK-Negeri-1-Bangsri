@@ -9,15 +9,7 @@
                 <h1 class="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">Struktur dan Kepengurusan</h1>
             </div>
 
-            <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
-                <a href="{{ route('pembina') }}" class="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-[#0D1B2A] hover:shadow-md">
-                    <div class="mb-4 overflow-hidden rounded-xl">
-                        <img src="{{ asset('images/visimisi/visimisi1.jpg') }}" alt="Pembina" class="h-44 w-full object-cover transition duration-300 group-hover:scale-105">
-                    </div>
-                    <h2 class="text-lg font-bold text-slate-900">Pembina</h2>
-                    <p class="mt-2 text-sm text-slate-600">Pimpinan pembina serta pendamping kegiatan dan program ambalan.</p>
-                </a>
-
+            <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
                 <a href="{{ route('dewan-kehormatan') }}" class="group rounded-2xl border border-slate-200 bg-slate-50 p-4 transition hover:-translate-y-1 hover:border-[#0D1B2A] hover:shadow-md">
                     <div class="mb-4 overflow-hidden rounded-xl">
                         <img src="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=900" alt="Dewan Kehormatan" class="h-44 w-full object-cover transition duration-300 group-hover:scale-105">

@@ -9,7 +9,11 @@ Route::view('/', 'pages.home')->name('home');
 
 Route::view('/tentang-kami', 'pages.about')->name('about');
 Route::view('/visi-misi', 'pages.visi-misi')->name('visi-misi');
-Route::view('/ambalan', 'pages.ambalan')->name('ambalan');
+Route::get('/ambalan', function () {
+    $profiles = \App\Models\AmbalanProfile::activeProfilesForPage();
+
+    return view('pages.ambalan', ['profiles' => $profiles]);
+})->name('ambalan');
 Route::view('/organisasi', 'pages.organisasi')->name('organisasi');
 Route::get('/pembina', function () {
     $pembinas = \Illuminate\Support\Facades\Schema::hasTable('pembinas')
@@ -170,6 +174,8 @@ Route::get('/galeri', function () {
     return view('pages.gallery', compact('galleryItems'));
 })->name('gallery');
 
+Route::view('/prestasi', 'pages.prestasi.index')->name('prestasi');
+
 Route::get('/search', function (Illuminate\Http\Request $request) {
     $q = trim((string) $request->query('q', ''));
 
@@ -316,6 +322,12 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::get('/admin/absensi/detail/export/excel', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportExcel'])->name('admin.absensi.export.excel');
     Route::get('/admin/absensi/detail/export/pdf', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportPdf'])->name('admin.absensi.export.pdf');
 
+    Route::get('/admin/prestasi', [ModuleController::class, 'prestasi'])->name('admin.prestasi');
+    Route::post('/admin/prestasi/store', [ModuleController::class, 'storePrestasi'])->name('admin.prestasi.store');
+    Route::put('/admin/prestasi/{achievement}/update', [ModuleController::class, 'updatePrestasi'])->name('admin.prestasi.update');
+    Route::post('/admin/prestasi/{achievement}/duplicate', [ModuleController::class, 'duplicatePrestasi'])->name('admin.prestasi.duplicate');
+    Route::delete('/admin/prestasi/{achievement}', [ModuleController::class, 'deletePrestasi'])->name('admin.prestasi.delete');
+
     Route::get('/admin/petugas', [\App\Http\Controllers\Admin\PetugasController::class, 'index'])->name('admin.petugas');
     Route::post('/admin/petugas/store', [\App\Http\Controllers\Admin\PetugasController::class, 'store'])->name('admin.petugas.store');
     Route::post('/admin/petugas/{id}/toggle', [\App\Http\Controllers\Admin\PetugasController::class, 'toggle'])->name('admin.petugas.toggle');
@@ -343,6 +355,12 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::put('/admin/dewan-kehormatan/{dewanKehormatan}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateDewanKehormatan'])->name('admin.dewan-kehormatan.update');
     Route::post('/admin/dewan-kehormatan/{dewanKehormatan}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleDewanKehormatan'])->name('admin.dewan-kehormatan.toggle');
     Route::delete('/admin/dewan-kehormatan/{dewanKehormatan}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteDewanKehormatan'])->name('admin.dewan-kehormatan.delete');
+
+    Route::get('/admin/ambalan', [\App\Http\Controllers\Admin\ModuleController::class, 'ambalan'])->name('admin.ambalan');
+    Route::post('/admin/ambalan/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeAmbalan'])->name('admin.ambalan.store');
+    Route::put('/admin/ambalan/{ambalanProfile}/update', [\App\Http\Controllers\Admin\ModuleController::class, 'updateAmbalan'])->name('admin.ambalan.update');
+    Route::post('/admin/ambalan/{ambalanProfile}/toggle', [\App\Http\Controllers\Admin\ModuleController::class, 'toggleAmbalan'])->name('admin.ambalan.toggle');
+    Route::delete('/admin/ambalan/{ambalanProfile}', [\App\Http\Controllers\Admin\ModuleController::class, 'deleteAmbalan'])->name('admin.ambalan.delete');
 
     Route::get('/admin/dewan-ambalan', [\App\Http\Controllers\Admin\ModuleController::class, 'dewanAmbalan'])->name('admin.dewan-ambalan');
     Route::post('/admin/dewan-ambalan/store', [\App\Http\Controllers\Admin\ModuleController::class, 'storeDewanAmbalan'])->name('admin.dewan-ambalan.store');

@@ -27,9 +27,14 @@
 
             <main class="order-1 lg:order-2 lg:col-span-8 xl:col-span-9">
                 <div class="rounded-2xl bg-white border border-slate-200 p-6 sm:p-8 shadow-sm">
-                    <h1 class="text-2xl sm:text-3xl font-extrabold text-slate-900 mb-6 text-center lg:text-left">
-                        Anggota Dewan
-                    </h1>
+                    <div class="mb-10 text-center">
+                        <h1 class="mt-4 text-3xl font-bold tracking-tight text-slate-900 dark:text-white sm:text-4xl">
+                            Anggota Dewan
+                        </h1>
+                        <p class="mx-auto mt-3 max-w-2xl text-sm text-slate-600 dark:text-slate-300">
+                            Daftar seluruh fungsionaris dan anggota aktif yang masuk dalam struktur kepengurusan Dewan Ambalan periode berjalan.
+                        </p>
+                    </div>
 
                     @if($activeMembers->isEmpty())
                         <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 p-8 text-center text-slate-500">

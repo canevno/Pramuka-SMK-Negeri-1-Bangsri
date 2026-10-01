@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Achievement;
 use App\Models\Alumni;
+use App\Models\AmbalanProfile;
 use App\Models\DewanAmbalan;
 use App\Models\DewanKehormatan;
 use App\Models\GalleryItem;
@@ -12,6 +14,7 @@ use App\Models\Setting;
 use App\Models\Pembina;
 use App\Models\Post;
 use App\Models\TimelineEvent;
+use App\Support\AchievementStore;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -129,6 +132,119 @@ class ModuleController extends Controller
                 ['label' => 'Terbaru', 'value' => $posts->first()?->published_at?->translatedFormat('d M Y') ?? '-', 'caption' => 'Update terakhir'],
             ],
         ]);
+    }
+
+    public function prestasi()
+    {
+        $achievements = AchievementStore::all();
+
+        return view('admin.modules.prestasi', [
+            'title' => 'Kelola Prestasi',
+            'description' => 'Kelola data prestasi yang tampil di halaman depan.',
+            'publicRoute' => route('prestasi'),
+            'publicLabel' => 'Lihat Halaman Prestasi',
+            'achievements' => $achievements,
+            'stats' => [
+                'total' => count($achievements),
+                'kategori' => count(array_unique(array_column($achievements, 'category'))),
+                'tahun_terbaru' => $achievements[0]['year'] ?? null,
+                'terbaru' => $achievements[0]['title'] ?? null,
+            ],
+        ]);
+    }
+
+    public function storePrestasi(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'year' => 'required|integer|min:2000|max:2100',
+            'date' => 'nullable|date',
+            'location' => 'nullable|string|max:255',
+            'winner' => 'required|string|max:255',
+            'winner_social_link' => 'nullable|url|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
+            'image_path' => 'nullable|string|max:255',
+        ]);
+
+        $payload = [
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'year' => $validated['year'],
+            'date' => $validated['date'] ?? null,
+            'location' => $validated['location'] ?? null,
+            'winner' => $validated['winner'],
+            'winner_social_link' => $validated['winner_social_link'] ?? '',
+            'description' => $validated['description'],
+            'image' => $validated['image_path'] ?? 'images/achievement/prestasi1.jpg',
+        ];
+
+        if ($request->hasFile('image')) {
+            $payload['image'] = 'storage/' . $request->file('image')->store('achievement', 'public');
+        }
+
+        AchievementStore::add($payload);
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil ditambahkan.');
+    }
+
+    public function updatePrestasi(Request $request, Achievement $achievement)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'year' => 'required|integer|min:2000|max:2100',
+            'date' => 'nullable|date',
+            'location' => 'nullable|string|max:255',
+            'winner' => 'required|string|max:255',
+            'winner_social_link' => 'nullable|url|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
+            'image_path' => 'nullable|string|max:255',
+        ]);
+
+        $payload = [
+            'title' => $validated['title'],
+            'category' => $validated['category'],
+            'year' => $validated['year'],
+            'date' => $validated['date'] ?? $achievement->date,
+            'location' => $validated['location'] ?? $achievement->location,
+            'winner' => $validated['winner'],
+            'winner_social_link' => $validated['winner_social_link'] ?? '',
+            'description' => $validated['description'],
+            'image' => $validated['image_path'] ?? $achievement->image ?: 'images/achievement/prestasi1.jpg',
+        ];
+
+        if ($request->hasFile('image')) {
+            $payload['image'] = 'storage/' . $request->file('image')->store('achievement', 'public');
+        }
+
+        $updated = AchievementStore::update((int) $achievement->id, $payload);
+
+        if ($updated === null) {
+            return redirect()->route('admin.prestasi')->with('error', 'Prestasi tidak ditemukan.');
+        }
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diperbarui.');
+    }
+
+    public function duplicatePrestasi(Achievement $achievement)
+    {
+        $duplicated = AchievementStore::duplicate((int) $achievement->id);
+
+        if ($duplicated === null) {
+            return redirect()->route('admin.prestasi')->with('error', 'Prestasi tidak ditemukan.');
+        }
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diduplikasi.');
+    }
+
+    public function deletePrestasi(Achievement $achievement)
+    {
+        AchievementStore::delete((int) $achievement->id);
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil dihapus.');
     }
 
     public function hero()
@@ -1125,6 +1241,139 @@ class ModuleController extends Controller
         $dewanKehormatan->delete();
 
         return redirect()->route('admin.dewan-kehormatan')->with('success', 'Data dewan kehormatan berhasil dihapus.');
+    }
+
+    public function ambalan()
+    {
+        $profiles = Schema::hasTable('ambalan_profiles')
+            ? AmbalanProfile::query()
+                ->orderBy('sort_order')
+                ->orderBy('name')
+                ->get()
+            : collect();
+
+        return view('admin.modules.ambalan', [
+            'title' => 'Kelola Ambalan',
+            'description' => 'Kelola profil Ambalan Putra dan Putri yang tampil di halaman depan.',
+            'publicRoute' => route('ambalan'),
+            'publicLabel' => 'Lihat Halaman Ambalan',
+            'profiles' => $profiles,
+            'stats' => [
+                'total' => $profiles->count(),
+                'aktif' => $profiles->where('is_active', true)->count(),
+                'nonaktif' => $profiles->where('is_active', false)->count(),
+                'terbaru' => $profiles->sortByDesc('updated_at')->first()?->name ?? '-',
+            ],
+        ]);
+    }
+
+    public function storeAmbalan(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'vision' => 'nullable|string',
+            'mission' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
+            'image_path' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        $slug = trim((string) ($validated['slug'] ?? $validated['name']));
+        $slug = Str::slug($slug) ?: 'ambalan';
+        $baseSlug = $slug;
+        $counter = 1;
+
+        while (AmbalanProfile::query()->where('slug', $slug)->exists()) {
+            $slug = $baseSlug . '-' . $counter;
+            $counter++;
+        }
+
+        $imagePath = $validated['image_path'] ?? null;
+
+        if ($request->hasFile('image')) {
+            $storedPath = $request->file('image')->store('ambalan', 'public');
+            $imagePath = 'storage/' . $storedPath;
+        }
+
+        AmbalanProfile::query()->create([
+            'name' => trim($validated['name']),
+            'slug' => $slug,
+            'subtitle' => $validated['subtitle'] ?? null,
+            'description' => $validated['description'] ?? null,
+            'vision' => $validated['vision'] ?? null,
+            'mission' => $validated['mission'] ?? null,
+            'image_path' => $imagePath,
+            'is_active' => (bool) ($validated['is_active'] ?? true),
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+        ]);
+
+        return redirect()->route('admin.ambalan')->with('success', 'Profil ambalan berhasil ditambahkan.');
+    }
+
+    public function updateAmbalan(Request $request, AmbalanProfile $ambalanProfile)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+            'subtitle' => 'nullable|string|max:255',
+            'description' => 'nullable|string',
+            'vision' => 'nullable|string',
+            'mission' => 'nullable|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
+            'image_path' => 'nullable|string|max:255',
+            'slug' => 'nullable|string|max:255',
+            'sort_order' => 'nullable|integer|min:0',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        if ($request->hasFile('image')) {
+            $validated['image_path'] = 'storage/' . $request->file('image')->store('ambalan', 'public');
+        }
+
+        $slug = trim((string) ($validated['slug'] ?? $validated['name']));
+        $slug = Str::slug($slug) ?: 'ambalan';
+
+        if ($slug !== $ambalanProfile->slug) {
+            $baseSlug = $slug;
+            $counter = 1;
+            while (AmbalanProfile::query()->where('slug', $slug)->whereKeyNot($ambalanProfile->getKey())->exists()) {
+                $slug = $baseSlug . '-' . $counter;
+                $counter++;
+            }
+        }
+
+        $ambalanProfile->fill([
+            'name' => trim($validated['name']),
+            'slug' => $slug,
+            'subtitle' => $validated['subtitle'] ?? $ambalanProfile->subtitle,
+            'description' => $validated['description'] ?? $ambalanProfile->description,
+            'vision' => $validated['vision'] ?? $ambalanProfile->vision,
+            'mission' => $validated['mission'] ?? $ambalanProfile->mission,
+            'image_path' => $validated['image_path'] ?? $ambalanProfile->image_path,
+            'is_active' => (bool) ($validated['is_active'] ?? $ambalanProfile->is_active),
+            'sort_order' => (int) ($validated['sort_order'] ?? $ambalanProfile->sort_order ?? 0),
+        ]);
+        $ambalanProfile->save();
+
+        return redirect()->route('admin.ambalan')->with('success', 'Profil ambalan berhasil diperbarui.');
+    }
+
+    public function toggleAmbalan(AmbalanProfile $ambalanProfile)
+    {
+        $ambalanProfile->is_active = ! $ambalanProfile->is_active;
+        $ambalanProfile->save();
+
+        return redirect()->route('admin.ambalan')->with('success', 'Status profil ambalan berhasil diperbarui.');
+    }
+
+    public function deleteAmbalan(AmbalanProfile $ambalanProfile)
+    {
+        $ambalanProfile->delete();
+
+        return redirect()->route('admin.ambalan')->with('success', 'Profil ambalan berhasil dihapus.');
     }
 
     public function dewanAmbalan()

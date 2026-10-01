@@ -47,9 +47,9 @@
             @yield('content')
         @else
             {{-- Support component-style usage: render slot when used as <x-layouts.frontend> --}}
-            @isset($slot)
+            @if (isset($slot))
                 {{ $slot }}
-            @endisset
+            @endif
         @endif
     </main>
 
