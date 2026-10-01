@@ -28,7 +28,7 @@
     })->all();
 @endphp
 
-<section class="bg-[#f8fafc] py-10 dark:bg-slate-950 transition-colors duration-200">
+<section class="bg-white py-10 dark:bg-slate-950 transition-colors duration-200">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         <div class="mb-6 border-b border-slate-200 pb-4 text-center dark:border-slate-800 sm:text-left">
             <h2 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">

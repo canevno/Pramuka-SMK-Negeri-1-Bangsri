@@ -160,7 +160,7 @@
                         </div>
                     </div>
 
-                    <div class="border-0 bg-transparent p-0 px-1 shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:p-5 sm:shadow-sm sm:p-8 space-y-5 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                    <div class="space-y-5 border-0 bg-transparent p-0 px-1 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg sm:p-0 sm:px-0 sm:shadow-none text-justify">
                         <?php echo $historySections['kepanduan-dunia']['content']; ?>
 
                     </div>
@@ -180,7 +180,7 @@
                              class="mx-auto h-auto w-auto max-h-[280px] object-cover sm:max-h-[320px]">
                     </div>
 
-                    <div class="border-0 bg-transparent p-0 px-1 shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:p-5 sm:shadow-sm sm:p-8 space-y-5 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                    <div class="space-y-5 border-0 bg-transparent p-0 px-1 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg sm:p-0 sm:px-0 sm:shadow-none text-justify">
                         <?php echo $historySections['kepanduan-indonesia']['content']; ?>
 
                     </div>
@@ -200,7 +200,7 @@
                              class="mx-auto h-auto w-auto max-h-[240px] object-contain sm:max-h-[280px]">
                     </div>
 
-                    <div class="border-0 bg-transparent p-0 px-1 shadow-none sm:rounded-2xl sm:border sm:border-slate-200 sm:bg-white sm:p-5 sm:shadow-sm sm:p-8 space-y-5 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
+                    <div class="space-y-5 border-0 bg-transparent p-0 px-1 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg sm:p-0 sm:px-0 sm:shadow-none text-justify">
                         <?php echo $historySections['gerakan-pramuka']['content']; ?>
 
                     </div>
@@ -222,7 +222,7 @@
                         </a>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-8">
+                    <div class="border-0 bg-transparent p-0 shadow-none">
                         <div class="space-y-4 text-base leading-relaxed text-slate-700 sm:text-lg text-justify">
                             <?php echo $historySections['ad-art-munas-2023']['content']; ?>
 
@@ -324,8 +324,8 @@
                     
                     <div class="grid gap-6 sm:grid-cols-2">
                         <!-- Card Hymne Pramuka -->
-                        <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
+                        <div class="space-y-4 border-0 bg-transparent p-0 shadow-none sm:p-0">
+                            <h3 class="border-b border-slate-200 pb-3 text-xl font-semibold text-slate-900">
                                 Hymne Pramuka
                             </h3>
                             
@@ -352,8 +352,8 @@
                         </div>
 
                         <!-- Card Mars Pramuka -->
-                        <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
+                        <div class="space-y-4 border-0 bg-transparent p-0 shadow-none sm:p-0">
+                            <h3 class="border-b border-slate-200 pb-3 text-xl font-semibold text-slate-900">
                                 Mars Jayalah Pramuka
                             </h3>
 
@@ -395,7 +395,7 @@
                     </div>
 
                     <!-- Materi Teks UU -->
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-5 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
+                    <div class="space-y-5 border-0 bg-transparent p-0 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg text-justify">
                         <p>
                             Pendidikan kepramukaan merupakan salah satu pendidikan nonformal yang menjadi wadah pengembangan potensi diri serta memiliki akhlak mulia, pengendalian diri, dan kecakapan hidup untuk melahirkan kader penerus perjuangan bangsa dan negara.
                         </p>
@@ -445,7 +445,7 @@
                         </p>
 
                         <!-- Box Catatan Legalitas Pengesahan -->
-                        <div class="border-t border-slate-200 pt-5 mt-6 grid gap-2.5 sm:grid-cols-2 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl text-left">
+                        <div class="mt-6 grid gap-2.5 border-0 bg-transparent p-0 pt-5 text-left text-sm text-slate-600 sm:grid-cols-2">
                             <div>
                                 <span class="font-bold text-slate-900 block">Pengesahan:</span>
                                 Disahkan oleh Presiden Dr. H. Susilo Bambang Yudhoyono di Jakarta pada tanggal 24 November 2010.

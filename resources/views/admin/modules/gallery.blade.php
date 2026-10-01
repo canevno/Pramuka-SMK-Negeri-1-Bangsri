@@ -327,6 +327,9 @@
                 @csrf
                 <input type="hidden" name="_method" id="galleryFormMethod" value="POST">
 
+                {{-- Kategori disembunyikan; nilai default tetap dikirim karena wajib di server --}}
+                <input type="hidden" name="category" id="category" value="{{ old('category', 'kegiatan') }}">
+
                 <div class="md:col-span-2">
                     <label for="title" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">
                         Judul Album <span class="text-red-500">*</span>
@@ -343,22 +346,6 @@
                     @error('title')
                         <p class="mt-1 text-red-500">{{ $message }}</p>
                     @enderror
-                </div>
-
-                <div>
-                    <label for="category" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">
-                        Kategori <span class="text-red-500">*</span>
-                    </label>
-                    <select
-                        id="category"
-                        name="category"
-                        required
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                    >
-                        <option value="kegiatan" {{ old('category', 'kegiatan') == 'kegiatan' ? 'selected' : '' }}>Kegiatan</option>
-                        <option value="pelatihan" {{ old('category') == 'pelatihan' ? 'selected' : '' }}>Pelatihan</option>
-                        <option value="acara" {{ old('category') == 'acara' ? 'selected' : '' }}>Event</option>
-                    </select>
                     @error('category')
                         <p class="mt-1 text-red-500">{{ $message }}</p>
                     @enderror
@@ -393,21 +380,6 @@
                     @enderror
                 </div>
 
-                <div class="md:col-span-2">
-                    <label for="alt_text" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">Alt Text</label>
-                    <input
-                        type="text"
-                        id="alt_text"
-                        name="alt_text"
-                        value="{{ old('alt_text') }}"
-                        placeholder="Deskripsi ringkas gambar untuk aksesibilitas dan SEO"
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                    >
-                    @error('alt_text')
-                        <p class="mt-1 text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
-
                 <div>
                     <label for="is_published" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">Status Publikasi</label>
                     <select
@@ -422,17 +394,6 @@
                         <p class="mt-1 text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
-
-                <label class="flex cursor-pointer items-center gap-2 rounded-xl border border-gray-200 bg-gray-50 p-3 dark:border-gray-700 dark:bg-gray-800">
-                    <input
-                        type="checkbox"
-                        name="is_featured"
-                        value="1"
-                        {{ old('is_featured') ? 'checked' : '' }}
-                        class="rounded border-gray-300 text-emerald-600 focus:ring-emerald-500 dark:border-gray-600"
-                    >
-                    <span class="font-medium text-gray-700 dark:text-gray-300">Tampilkan di Beranda</span>
-                </label>
 
                 {{-- Upload Gambar (Drag & Drop) --}}
                 <div class="md:col-span-2">
@@ -485,20 +446,6 @@
                     </div>
 
                     @error('image')
-                        <p class="mt-1 text-red-500">{{ $message }}</p>
-                    @enderror
-                </div>
-
-                <div class="md:col-span-2">
-                    <label for="description" class="mb-2 block font-semibold text-gray-700 dark:text-gray-300">Deskripsi Album</label>
-                    <textarea
-                        id="description"
-                        name="description"
-                        rows="4"
-                        placeholder="Tuliskan deskripsi album..."
-                        class="w-full rounded-xl border border-gray-200 bg-gray-50 p-3 text-gray-900 outline-none focus:ring-2 focus:ring-emerald-500 dark:border-gray-700 dark:bg-gray-800 dark:text-white"
-                    >{{ old('description') }}</textarea>
-                    @error('description')
                         <p class="mt-1 text-red-500">{{ $message }}</p>
                     @enderror
                 </div>
@@ -586,6 +533,11 @@
         if (!galleryForm) return;
 
         galleryForm.reset();
+
+        // Kategori tersembunyi: kembalikan ke nilai default setelah form di-reset
+        const categoryField = galleryForm.querySelector('[name="category"]');
+        if (categoryField) categoryField.value = 'kegiatan';
+
         galleryForm.action = '{{ route('admin.gallery.store') }}';
 
         if (galleryFormMethod) {

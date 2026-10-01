@@ -59,67 +59,69 @@
         </div>
 
         <div class="mt-6 overflow-hidden rounded-[1.75rem] border border-slate-200 dark:border-slate-700">
-            <table class="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700 dark:divide-slate-700 dark:text-slate-200">
-                <thead class="bg-slate-50 dark:bg-slate-800/80">
-                    <tr>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Profil</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Nama Petugas</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">NTA</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Kelas Petugas</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Jenis Kelamin</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Status</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Aksi</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900/40">
-                    @forelse($registeredPetugas as $item)
+            <div class="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <table class="min-w-[820px] divide-y divide-slate-200 text-left text-sm text-slate-700 dark:divide-slate-700 dark:text-slate-200">
+                    <thead class="bg-slate-50 dark:bg-slate-800/80">
                         <tr>
-                            <td class="px-4 py-4">
-                                @php
-                                    $initials = strtoupper(substr($item->nama, 0, 2));
-                                @endphp
-                                @if(!empty($item->photo_url))
-                                    <img src="{{ asset($item->photo_url) }}" alt="Foto {{ $item->nama }}" class="h-11 w-11 rounded-full object-cover ring-2 ring-slate-200">
-                                @else
-                                    <div class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700 ring-2 ring-slate-200">
-                                        {{ $initials }}
-                                    </div>
-                                @endif
-                            </td>
-                            <td class="px-4 py-4">{{ $item->nama }}</td>
-                            <td class="px-4 py-4">{{ $item->nta }}</td>
-                            <td class="px-4 py-4">{{ $item->kelas_petugas }}</td>
-                            <td class="px-4 py-4">{{ $item->jenis_kelamin === 'P' ? 'Perempuan' : 'Laki-laki' }}</td>
-                            <td class="px-4 py-4">
-                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $item->is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
-                                    {{ $item->is_active ? 'Aktif' : 'Non-Aktif' }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-4">
-                                <div class="flex items-center gap-2">
-                                    <form action="{{ route('admin.petugas.toggle', $item->id) }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
-                                            {{ $item->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
-                                        </button>
-                                    </form>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Profil</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Nama Petugas</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">NTA</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Kelas Petugas</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Jenis Kelamin</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Status</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900/40">
+                        @forelse($registeredPetugas as $item)
+                            <tr>
+                                <td class="px-4 py-4">
+                                    @php
+                                        $initials = strtoupper(substr($item->nama, 0, 2));
+                                    @endphp
+                                    @if(!empty($item->photo_url))
+                                        <img src="{{ asset($item->photo_url) }}" alt="Foto {{ $item->nama }}" class="h-11 w-11 rounded-full object-cover ring-2 ring-slate-200">
+                                    @else
+                                        <div class="flex h-11 w-11 items-center justify-center rounded-full bg-slate-200 text-xs font-bold text-slate-700 ring-2 ring-slate-200">
+                                            {{ $initials }}
+                                        </div>
+                                    @endif
+                                </td>
+                                <td class="px-4 py-4">{{ $item->nama }}</td>
+                                <td class="px-4 py-4">{{ $item->nta }}</td>
+                                <td class="px-4 py-4">{{ $item->kelas_petugas }}</td>
+                                <td class="px-4 py-4">{{ $item->jenis_kelamin === 'P' ? 'Perempuan' : 'Laki-laki' }}</td>
+                                <td class="px-4 py-4">
+                                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $item->is_active ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
+                                        {{ $item->is_active ? 'Aktif' : 'Non-Aktif' }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-4">
+                                    <div class="flex items-center gap-2">
+                                        <form action="{{ route('admin.petugas.toggle', $item->id) }}" method="POST">
+                                            @csrf
+                                            <button type="submit" class="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-50">
+                                                {{ $item->is_active ? 'Nonaktifkan' : 'Aktifkan' }}
+                                            </button>
+                                        </form>
 
-                                    <form action="{{ route('admin.petugas.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus petugas ini?')">
-                                        @csrf
-                                        <button type="submit" class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100">
-                                            Hapus
-                                        </button>
-                                    </form>
-                                </div>
-                            </td>
-                        </tr>
-                    @empty
-                        <tr>
-                            <td colspan="7" class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada data petugas.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                                        <form action="{{ route('admin.petugas.destroy', $item->id) }}" method="POST" onsubmit="return confirm('Yakin ingin menghapus petugas ini?')">
+                                            @csrf
+                                            <button type="submit" class="rounded-lg border border-red-200 bg-red-50 px-3 py-1.5 text-xs font-semibold text-red-700 hover:bg-red-100">
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="7" class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada data petugas.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 </div>

@@ -159,38 +159,40 @@
         </div>
 
         <div class="mt-6 overflow-hidden rounded-[1.75rem] border border-slate-200 dark:border-slate-700">
-            <table class="min-w-full divide-y divide-slate-200 text-left text-sm text-slate-700 dark:divide-slate-700 dark:text-slate-200">
-                <thead class="bg-slate-50 dark:bg-slate-800/80">
-                    <tr>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Nama Petugas</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">NTA</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Kelas Petugas</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Keaktifan</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Terakhir Melakukan</th>
-                        <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Jumlah Rekam</th>
-                    </tr>
-                </thead>
-                <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900/40">
-                    @forelse($petugasSummary as $petugas)
+            <div class="overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+                <table class="min-w-[720px] divide-y divide-slate-200 text-left text-sm text-slate-700 dark:divide-slate-700 dark:text-slate-200">
+                    <thead class="bg-slate-50 dark:bg-slate-800/80">
                         <tr>
-                            <td class="px-4 py-4">{{ $petugas['name'] }}</td>
-                            <td class="px-4 py-4">{{ $petugas['nta'] }}</td>
-                            <td class="px-4 py-4">{{ $petugas['kelas'] }}</td>
-                            <td class="px-4 py-4">
-                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $petugas['status'] === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
-                                    {{ $petugas['status'] }}
-                                </span>
-                            </td>
-                            <td class="px-4 py-4">{{ $petugas['last_seen'] }}</td>
-                            <td class="px-4 py-4">{{ $petugas['total_records'] }}</td>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Nama Petugas</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">NTA</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Kelas Petugas</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Keaktifan</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Terakhir Melakukan</th>
+                            <th class="px-4 py-3 uppercase tracking-[0.12em] text-slate-500 dark:text-slate-300">Jumlah Rekam</th>
                         </tr>
-                    @empty
-                        <tr>
-                            <td colspan="6" class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada data petugas.</td>
-                        </tr>
-                    @endforelse
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-900/40">
+                        @forelse($petugasSummary as $petugas)
+                            <tr>
+                                <td class="px-4 py-4">{{ $petugas['name'] }}</td>
+                                <td class="px-4 py-4">{{ $petugas['nta'] }}</td>
+                                <td class="px-4 py-4">{{ $petugas['kelas'] }}</td>
+                                <td class="px-4 py-4">
+                                    <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $petugas['status'] === 'Aktif' ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700' }}">
+                                        {{ $petugas['status'] }}
+                                    </span>
+                                </td>
+                                <td class="px-4 py-4">{{ $petugas['last_seen'] }}</td>
+                                <td class="px-4 py-4">{{ $petugas['total_records'] }}</td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada data petugas.</td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
+            </div>
         </div>
     </section>
 </div>

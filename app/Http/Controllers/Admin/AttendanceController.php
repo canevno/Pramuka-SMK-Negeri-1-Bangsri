@@ -370,24 +370,49 @@ class AttendanceController extends Controller
             $participantSangga = $records->first()?->participant_sangga ?? 'Berbagai Sub Sangga';
         }
 
+        $monthDate = $recordDate !== '' ? Carbon::parse($recordDate) : Carbon::now();
+        $monthWeekCount = (int) min(4, max(1, (int) ceil($monthDate->daysInMonth / 7)));
+        $weekLabels = array_fill(0, 4, '');
+        for ($week = 1; $week <= 4; $week++) {
+            if ($week <= $monthWeekCount) {
+                $weekLabels[$week - 1] = 'M'.$week;
+            }
+        }
+
         $rows = $records->map(function ($record) {
             $status = strtoupper((string) ($record->status ?? ''));
-            $attendance = ['H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H'];
-            $attendance[0] = match (true) {
-                $status === 'HADIR' => 'H',
-                $status === 'IZIN' => 'I',
-                $status === 'SAKIT' => 'S',
-                default => 'A',
-            };
-
             $a = $status === 'A' || $status === 'ALPHA' || $status === 'ALPA' ? 1 : 0;
             $s = $status === 'S' || $status === 'SAKIT' ? 1 : 0;
             $i = $status === 'I' || $status === 'IZIN' ? 1 : 0;
 
+            $weekValue = match (true) {
+                $status === 'HADIR' => 'H',
+                $status === 'SAKIT' => 'S',
+                $status === 'IZIN' => 'I',
+                default => 'A',
+            };
+
+            $weekIndex = 0;
+            if (! empty($record->record_date)) {
+                try {
+                    $weekIndex = (int) ceil(Carbon::parse($record->record_date)->day / 7) - 1;
+                } catch (\Throwable $e) {
+                    $weekIndex = 0;
+                }
+            }
+
+            $weekCells = ['', '', '', ''];
+            if ($weekIndex >= 0 && $weekIndex < 4) {
+                $weekCells[$weekIndex] = $weekValue;
+            }
+
             return [
                 $record->participant_name,
                 $record->participant_kelas,
-                ...$attendance,
+                $weekCells[0],
+                $weekCells[1],
+                $weekCells[2],
+                $weekCells[3],
                 $a,
                 $s,
                 $i,
@@ -396,15 +421,15 @@ class AttendanceController extends Controller
 
         if (empty($rows)) {
             $rows = [
-                ['Aldi Pratama', 'X-1', 'H', 'H', 'A', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 2, 0, 1],
-                ['Bima Ardiansyah', 'X-2', 'H', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 'H', 'I', 'H', 1, 1, 1],
-                ['Candra Wijaya', 'XI-1', 'H', 'A', 'H', 'H', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 1, 1, 0],
-                ['Dewi Lestari', 'XI-2', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'A', 'H', 'H', 'H', 'H', 2, 0, 1],
-                ['Eko Saputra', 'XII-1', 'H', 'H', 'S', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'H', 'A', 1, 1, 1],
+                ['Aldi Pratama', 'X-1', 'H', '', '', '', 2, 0, 1],
+                ['Bima Ardiansyah', 'X-2', '', 'A', '', '', 1, 1, 0],
+                ['Candra Wijaya', 'XI-1', '', '', 'I', '', 1, 0, 1],
+                ['Dewi Lestari', 'XI-2', '', '', '', 'H', 2, 0, 1],
+                ['Eko Saputra', 'XII-1', 'H', '', '', '', 1, 1, 1],
             ];
         }
 
-        $pdf = $this->buildFormalAttendancePdf($rows, $participantKelas, $participantAmbalan, $petugasName, $participantSangga);
+        $pdf = $this->buildFormalAttendancePdf($rows, $participantKelas, $participantAmbalan, $petugasName, $participantSangga, $weekLabels, $monthDate);
         $filename = sprintf('detail-absensi-%s.pdf', $recordDate);
 
         return response($pdf, 200)
@@ -435,8 +460,10 @@ class AttendanceController extends Controller
         return $query->orderBy('participant_name')->get();
     }
 
-    private function buildFormalAttendancePdf(array $rows, string $participantKelas = '', string $participantAmbalan = '', string $petugasName = '', string $participantSangga = ''): string
+    private function buildFormalAttendancePdf(array $rows, string $participantKelas = '', string $participantAmbalan = '', string $petugasName = '', string $participantSangga = '', array $weekLabels = ['M1', 'M2', 'M3', 'M4'], Carbon|string|null $monthDate = null): string
     {
+        $monthName = $monthDate instanceof Carbon ? $monthDate->translatedFormat('F') : Carbon::now()->translatedFormat('F');
+
         $content = "BT\n/F1 14 Tf\n180 790 Td\n(ABSENSI EXTRAKULIKULER PRAMUKA) Tj\nET\n";
         $content .= "BT\n/F1 12 Tf\n180 770 Td\n(SMK NEGERI 1 BANGSRI) Tj\nET\n";
         $content .= "BT\n/F1 11 Tf\n45 744 Td\n(" . $this->pdfEscape($participantSangga !== '' ? $participantSangga : 'Berbagai Sub Sangga') . ") Tj\nET\n";
@@ -454,7 +481,7 @@ class AttendanceController extends Controller
         $startX = 30;
         $startY = 650;
         $rowHeight = 20;
-        $colWidths = [180, 60, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18, 18];
+        $colWidths = [190, 70, 44, 44, 44, 44, 36, 36, 36];
 
         $draw = function (float $xPos, float $yPos, float $width, float $height) use (&$content) {
             $content .= sprintf("%.2f %.2f %.2f %.2f re S\n", $xPos, $yPos, $width, $height);
@@ -467,35 +494,33 @@ class AttendanceController extends Controller
 
         $headerY = $startY;
         $x = $startX;
-        foreach ([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16] as $index) {
-            $cellWidth = $colWidths[$index] ?? 18;
-            $draw($x, $headerY, $cellWidth, 44);
+        foreach ([0, 1, 2, 3, 4, 5, 6, 7, 8] as $index) {
+            $cellWidth = $colWidths[$index] ?? 36;
+            $draw($x, $headerY, $cellWidth, 40);
             $x += $cellWidth;
         }
 
         $drawText($startX + 4, $headerY + 24, 'Nama Lengkap', 'F1', 7);
-        $drawText($startX + 190, $headerY + 24, 'Kelas', 'F1', 7);
-        $drawText($startX + 255, $headerY + 24, '1', 'F1', 7);
-        $drawText($startX + 273, $headerY + 24, '2', 'F1', 7);
-        $drawText($startX + 291, $headerY + 24, '3', 'F1', 7);
-        $drawText($startX + 309, $headerY + 24, '4', 'F1', 7);
-        $drawText($startX + 327, $headerY + 24, '5', 'F1', 7);
-        $drawText($startX + 345, $headerY + 24, '6', 'F1', 7);
-        $drawText($startX + 363, $headerY + 24, '7', 'F1', 7);
-        $drawText($startX + 381, $headerY + 24, '8', 'F1', 7);
-        $drawText($startX + 399, $headerY + 24, '9', 'F1', 7);
-        $drawText($startX + 417, $headerY + 24, '10', 'F1', 7);
-        $drawText($startX + 435, $headerY + 24, '11', 'F1', 7);
-        $drawText($startX + 453, $headerY + 24, '12', 'F1', 7);
-        $drawText($startX + 471, $headerY + 24, 'A', 'F1', 7);
-        $drawText($startX + 489, $headerY + 24, 'S', 'F1', 7);
-        $drawText($startX + 507, $headerY + 24, 'I', 'F1', 7);
+        $drawText($startX + 200, $headerY + 24, 'Kelas', 'F1', 7);
+        $drawText($startX + 270, $headerY + 24, strtoupper($monthName), 'F1', 7);
 
-        $yPos = $startY - 44;
+        $bodyStartX = $startX + 260;
+        $bodyHeaderY = $headerY - 20;
+        $weekX = $bodyStartX;
+        foreach ($weekLabels as $label) {
+            $labelValue = $label !== '' ? $label : '';
+            $drawText($weekX + 8, $bodyHeaderY + 20, $labelValue, 'F1', 7);
+            $weekX += 44;
+        }
+        $drawText($weekX + 6, $bodyHeaderY + 20, 'A', 'F1', 7);
+        $drawText($weekX + 42, $bodyHeaderY + 20, 'S', 'F1', 7);
+        $drawText($weekX + 78, $bodyHeaderY + 20, 'I', 'F1', 7);
+
+        $yPos = $startY - 40;
         foreach ($rows as $row) {
             $xPos = $startX;
             foreach ($row as $cellIndex => $cell) {
-                $cellWidth = $colWidths[$cellIndex] ?? 18;
+                $cellWidth = $colWidths[$cellIndex] ?? 36;
                 $draw($xPos, $yPos, $cellWidth, $rowHeight);
 
                 $value = (string) $cell;
@@ -504,7 +529,7 @@ class AttendanceController extends Controller
                 } elseif ($cellIndex === 1) {
                     $drawText($xPos + 8, $yPos + 8, $value, 'F2', 7);
                 } else {
-                    $drawText($xPos + 6, $yPos + 8, $value, 'F2', 7);
+                    $drawText($xPos + 10, $yPos + 8, $value, 'F2', 7);
                 }
 
                 $xPos += $cellWidth;

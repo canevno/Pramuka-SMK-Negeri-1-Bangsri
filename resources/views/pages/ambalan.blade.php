@@ -118,7 +118,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-4 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
+                    <div class="space-y-4 border-0 bg-transparent p-0 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg text-justify">
                         <p>
                             Kepanduan dunia berawal dari pemikiran seorang pemuda Inggris yang merangkum atau menulis pengalamannya saat bertugas di Afrika dan India. Pemuda tersebut adalah <strong>Lord Baden-Powell of Gilwell</strong> yang nama lengkapnya adalah <strong>Robert Stephenson Smyth Baden-Powell</strong>, namun lebih dikenal dengan sebutan <strong>BP</strong>.
                         </p>
@@ -176,7 +176,7 @@
                              class="mx-auto h-auto w-auto max-h-[280px] object-cover sm:max-h-[320px]">
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-4 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
+                    <div class="space-y-4 border-0 bg-transparent p-0 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg text-justify">
                         <p>
                             Gerakan pendidikan kepanduan di Tanah Air sudah muncul sejak zaman Hindia-Belanda. Pada 1912, dimulai latihan sekelompok pandu di Batavia (nama Jakarta pada masa penjajahan Belanda), yang kemudian menjadi cabang dari <em>Nederlandsche Padvinders Organisatie</em> (NPO). Dua tahun kemudian cabang tersebut disahkan berdiri sendiri dan dinamakan <em>Nederlands-Indische Padvinders Vereeniging</em> (NIPV) atau Persatuan Pandu-Pandu Hindia Belanda.
                         </p>
@@ -210,7 +210,7 @@
                              class="mx-auto h-auto w-auto max-h-[240px] object-contain sm:max-h-[280px]">
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-4 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
+                    <div class="space-y-4 border-0 bg-transparent p-0 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg text-justify">
                         <p>
                             Gerakan Pramuka adalah organisasi pendidikan nonformal yang menyelenggarakan pendidikan kepanduan yang dilaksanakan di Indonesia. Kata Pramuka merupakan singkatan dari <strong>Praja Muda Karana</strong>, yang memiliki arti Orang Muda yang Suka Berkarya. Sebutan "Pramuka" diperuntukkan bagi Anggota Gerakan Pramuka yang terbagi dalam beberapa tingkatan usia: Pramuka Siaga (7-10 tahun), Pramuka Penggalang (11-15 tahun), Pramuka Penegak (16-20 tahun), dan Pramuka Pandega (21-25 tahun), sedangkan kelompok anggota lainnya disebut anggota dewasa.
                         </p>
@@ -251,7 +251,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                    <div class="border-0 bg-transparent p-0 shadow-none sm:p-0">
                         <strong class="block border-b border-slate-100 pb-3 text-xl font-bold text-slate-900">
                             Biografi Singkat KH. Achmad Fauzan
                         </strong>
@@ -274,7 +274,7 @@
                         </div>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm sm:p-8">
+                    <div class="border-0 bg-transparent p-0 shadow-none sm:p-0">
                         <strong class="block border-b border-slate-100 pb-3 text-xl font-bold text-slate-900">
                             Biografi Singkat Raden Dewi Sartika
                         </strong>
@@ -385,8 +385,8 @@
                     </h2>
                     
                     <div class="grid gap-6 sm:grid-cols-2">
-                        <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
+                        <div class="space-y-4 border-0 bg-transparent p-0 shadow-none sm:p-0">
+                            <h3 class="border-b border-slate-200 pb-3 text-xl font-semibold text-slate-900">
                                 Hymne Pramuka
                             </h3>
                             <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
@@ -407,8 +407,8 @@
                             </audio>
                         </div>
 
-                        <div class="rounded-2xl bg-white p-5 sm:p-6 border border-slate-200 shadow-sm space-y-4">
-                            <h3 class="text-xl font-semibold text-slate-900 border-b border-slate-200 pb-3">
+                        <div class="space-y-4 border-0 bg-transparent p-0 shadow-none sm:p-0">
+                            <h3 class="border-b border-slate-200 pb-3 text-xl font-semibold text-slate-900">
                                 Mars Jayalah Pramuka
                             </h3>
                             <p class="text-slate-600 text-sm sm:text-base leading-relaxed">
@@ -443,7 +443,7 @@
                         </p>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-5 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
+                    <div class="space-y-5 border-0 bg-transparent p-0 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg text-justify">
                         <p>
                             Pendidikan kepramukaan merupakan salah satu pendidikan nonformal yang menjadi wadah pengembangan potensi diri serta memiliki akhlak mulia, pengendalian diri, dan kecakapan hidup untuk melahirkan kader penerus perjuangan bangsa dan negara.
                         </p>
@@ -481,7 +481,7 @@
                             Selanjutnya, tujuan Gerakan Pramuka adalah membentuk setiap pramuka agar memiliki kepribadian yang beriman, bertakwa, berakhlak mulia, berjiwa patriotik, taat hukum, disiplin, menjunjung tinggi nilai-nilai luhur bangsa, dan memiliki kecakapan hidup sebagai kader bangsa dalam menjaga dan membangun Negara Kesatuan Republik Indonesia, mengamalkan Pancasila, serta melestarikan lingkungan hidup.
                         </p>
 
-                        <div class="border-t border-slate-200 pt-5 mt-6 grid gap-2.5 sm:grid-cols-2 text-sm text-slate-600 bg-slate-50 p-4 rounded-xl text-left">
+                        <div class="mt-6 grid gap-2.5 border-0 bg-transparent p-0 pt-5 text-left text-sm text-slate-600 sm:grid-cols-2">
                             <div>
                                 <span class="font-bold text-slate-900 block">Pengesahan:</span>
                                 Disahkan oleh Presiden Dr. H. Susilo Bambang Yudhoyono di Jakarta pada tanggal 24 November 2010.
@@ -571,7 +571,7 @@
                         </h2>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-6 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
+                    <div class="space-y-6 border-0 bg-transparent p-0 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg text-justify">
                         <div class="space-y-4">
                             <h3 class="text-xl font-semibold text-slate-900">
                                 Visi Pengembangan Gerakan Pramuka
@@ -664,7 +664,7 @@
                         </h2>
                     </div>
 
-                    <div class="rounded-2xl border border-slate-200 bg-white p-5 sm:p-8 shadow-sm space-y-6 text-base sm:text-lg leading-relaxed text-slate-700 text-justify">
+                    <div class="space-y-6 border-0 bg-transparent p-0 text-base leading-relaxed text-slate-700 shadow-none sm:text-lg text-justify">
                         <div class="space-y-4">
                             <h3 class="text-xl font-semibold text-slate-900">
                                 Visi Ambalan

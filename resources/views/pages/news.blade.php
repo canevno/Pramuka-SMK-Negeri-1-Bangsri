@@ -11,14 +11,21 @@
             @php
                 $featured = $newsItems[0];
                 $related = array_slice($newsItems, 1);
-                $visibleRelated = array_slice($related, 0, 5);
-                $hiddenRelated = array_slice($related, 5);
+                $newsData = collect($newsItems)->map(fn ($n) => [
+                    'category' => $n['category'],
+                    'date' => $n['date'],
+                    'title' => $n['title'],
+                    'image' => $n['image'],
+                    'alt' => $n['alt'],
+                    'description' => $n['description'],
+                    'url' => route('berita.show', ['slug' => $n['slug'] ?? Str::slug($n['title'])]),
+                ])->values();
             @endphp
 
             <div class="mx-auto grid max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1.2fr)_420px]">
                 <article class="max-w-[760px]">
                     <div class="mb-3 flex items-center justify-between gap-3">
-                        <div class="text-[11px] font-medium text-slate-600">
+                        <div id="featured-category" class="text-[11px] font-medium text-slate-600">
                             {{ $featured['category'] }}
                         </div>
 
@@ -29,22 +36,22 @@
                                 <line x1="8" y1="2" x2="8" y2="6"></line>
                                 <line x1="3" y1="10" x2="21" y2="10"></line>
                             </svg>
-                            <span>{{ $featured['date'] }}</span>
+                            <span id="featured-date">{{ $featured['date'] }}</span>
                         </div>
                     </div>
 
-                    <a href="{{ route('berita.show', ['slug' => $featured['slug'] ?? Str::slug($featured['title'])]) }}" class="block">
-                        <h1 class="mb-5 text-2xl font-bold leading-[1.1] text-slate-900 sm:text-[2.5rem]">{{ $featured['title'] }}</h1>
+                    <a href="{{ route('berita.show', ['slug' => $featured['slug'] ?? Str::slug($featured['title'])]) }}" class="block" data-featured-link>
+                        <h1 id="featured-title" class="mb-5 text-2xl font-bold leading-[1.1] text-slate-900 sm:text-[2.5rem]">{{ $featured['title'] }}</h1>
                     </a>
 
-                    <a href="{{ route('berita.show', ['slug' => $featured['slug'] ?? Str::slug($featured['title'])]) }}" class="block">
+                    <a href="{{ route('berita.show', ['slug' => $featured['slug'] ?? Str::slug($featured['title'])]) }}" class="block" data-featured-link>
                         <div class="mt-5 overflow-hidden rounded-xl bg-slate-100">
-                            <img src="{{ $featured['image'] }}" alt="{{ $featured['alt'] }}" class="h-[220px] w-full object-cover sm:h-[330px]">
+                            <img id="featured-image" src="{{ $featured['image'] }}" alt="{{ $featured['alt'] }}" class="h-[220px] w-full object-cover sm:h-[330px]">
                         </div>
                     </a>
 
-                    <div class="mt-6 space-y-6 text-base leading-8 text-slate-700">
-                        <p class="text-justify sm:text-left">
+                    <div class="mt-6 space-y-6 text-base leading-6 text-slate-700">
+                        <p id="featured-description" class="text-justify sm:text-left">
                             {{ $featured['description'] }}
                         </p>
                         <p class="text-justify sm:text-left">
@@ -56,9 +63,10 @@
                 <aside class="space-y-6">
                     <div class="rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-xl sm:border sm:border-slate-200 sm:bg-white sm:p-4 sm:shadow-sm">
                         <h3 class="text-center text-lg font-semibold text-slate-900 sm:text-left">Berita Lainnya</h3>
-                        <div class="mt-4 space-y-4">
-                            @foreach($visibleRelated as $item)
-                                <a href="{{ route('berita.show', ['slug' => $item['slug'] ?? Str::slug($item['title'])]) }}" class="flex items-center gap-3 overflow-hidden rounded-lg border-0 bg-transparent p-0 transition hover:bg-slate-50 sm:border sm:border-slate-100 sm:bg-white sm:p-1.5">
+
+                        <div class="related-scroll mt-4 space-y-4 lg:max-h-[600px] lg:overflow-y-auto lg:pr-2">
+                            @foreach($related as $item)
+                                <a href="{{ route('berita.show', ['slug' => $item['slug'] ?? Str::slug($item['title'])]) }}" data-news-index="{{ $loop->index + 1 }}" class="flex items-center gap-3 overflow-hidden rounded-lg border-0 bg-transparent p-0 transition hover:bg-slate-50 sm:border sm:border-slate-100 sm:bg-white sm:p-1.5">
                                     <div class="flex h-[92px] w-[128px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-slate-100">
                                         <img src="{{ $item['image'] }}" alt="{{ $item['alt'] }}" class="h-full w-full object-cover object-center">
                                     </div>
@@ -74,33 +82,6 @@
                                 </a>
                             @endforeach
                         </div>
-
-                        @if(count($hiddenRelated) > 0)
-                            <div id="news-related-more" class="mt-4 hidden space-y-4">
-                                @foreach($hiddenRelated as $item)
-                                    <a href="{{ route('berita.show', ['slug' => $item['slug'] ?? Str::slug($item['title'])]) }}" class="flex items-center gap-3 overflow-hidden rounded-lg border-0 bg-transparent p-0 transition hover:bg-slate-50 sm:border sm:border-slate-100 sm:bg-white sm:p-1.5">
-                                        <div class="flex h-[92px] w-[128px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-slate-100">
-                                            <img src="{{ $item['image'] }}" alt="{{ $item['alt'] }}" class="h-full w-full object-cover object-center">
-                                        </div>
-                                        <div class="min-w-0 flex-1 self-center pr-1">
-                                            <div class="flex items-center gap-2">
-                                                <p class="text-[10px] font-semibold uppercase tracking-[0.15em] text-slate-500">{{ $item['category'] }}</p>
-                                                <span class="text-[9px] text-slate-400">•</span>
-                                                <p class="text-[9px] font-medium text-slate-400">{{ $item['date'] }}</p>
-                                            </div>
-                                            <h4 class="mt-1.5 text-left text-[0.95rem] font-semibold leading-5 text-slate-900 line-clamp-2">{{ $item['title'] }}</h4>
-                                            <p class="mt-1 text-left text-[11px] leading-5 text-slate-600 line-clamp-2">{{ $item['description'] }}</p>
-                                        </div>
-                                    </a>
-                                @endforeach
-                            </div>
-
-                            <div class="mt-5 flex justify-center">
-                                <button type="button" data-related-toggle aria-expanded="false" class="inline-flex items-center gap-1.5 text-sm font-semibold text-[#0D1B2A] transition hover:text-slate-700 focus:outline-none">
-                                    <span class="related-toggle-label">Tampilkan Selengkapnya</span>
-                                </button>
-                            </div>
-                        @endif
                     </div>
                 </aside>
             </div>
@@ -108,42 +89,54 @@
 
         <script>
             (() => {
-                const toggleButton = document.querySelector('[data-related-toggle]');
-                const extraList = document.getElementById('news-related-more');
+                const news = @json($newsData);
+                const $ = (id) => document.getElementById(id);
 
-                if (!toggleButton || !extraList) {
-                    return;
-                }
+                const showFeatured = (item) => {
+                    $('featured-category').textContent = item.category;
+                    $('featured-date').textContent = item.date;
+                    $('featured-title').textContent = item.title;
+                    $('featured-description').textContent = item.description;
 
-                const updateToggle = (expanded) => {
-                    toggleButton.setAttribute('aria-expanded', expanded ? 'true' : 'false');
-                    toggleButton.dataset.expanded = expanded ? 'true' : 'false';
-                    const label = toggleButton.querySelector('.related-toggle-label');
-                    if (label) {
-                        label.textContent = expanded ? 'Tutup' : 'Tampilkan Selengkapnya';
-                    }
+                    const img = $('featured-image');
+                    img.src = item.image;
+                    img.alt = item.alt;
 
-                    extraList.classList.toggle('hidden', !expanded);
-
-                    if (expanded) {
-                        setTimeout(() => {
-                            const rect = extraList.getBoundingClientRect();
-                            if (rect.top < window.innerHeight) {
-                                window.scrollTo({
-                                    top: window.scrollY + rect.top - 80,
-                                    behavior: 'smooth'
-                                });
-                            }
-                        }, 50);
-                    }
+                    document.querySelectorAll('[data-featured-link]').forEach((a) => {
+                        a.href = item.url;
+                    });
                 };
 
-                toggleButton.addEventListener('click', () => {
-                    const expanded = toggleButton.dataset.expanded === 'true';
-                    updateToggle(!expanded);
+                document.querySelectorAll('[data-news-index]').forEach((link) => {
+                    link.addEventListener('click', (e) => {
+                        const item = news[Number(link.dataset.newsIndex)];
+                        if (!item) {
+                            return;
+                        }
+
+                        e.preventDefault();
+                        showFeatured(item);
+
+                        // Di mobile, naik ke artikel utama supaya perubahannya terlihat
+                        if (window.innerWidth < 1024) {
+                            $('featured-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                        }
+                    });
                 });
             })();
         </script>
+
+        <style>
+            @media (min-width: 1024px) {
+                .related-scroll {
+                    scrollbar-width: none;
+                    -ms-overflow-style: none;
+                }
+                .related-scroll::-webkit-scrollbar {
+                    display: none;
+                }
+            }
+        </style>
     </div>
 </section>
 @endsection

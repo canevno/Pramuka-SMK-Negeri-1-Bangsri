@@ -206,7 +206,7 @@
                         </p>
 
                         <p>
-                            Bila pada Jambore Sedunia 1933 di Hungaria hanya sebatas pada kunjungan delegasi kecil untuk menyaksikan kegiatan akbar itu, maka pada Jambore Sedunia 1937 di Belanda, ikut pula Kontingen Pandu Hindia-Belanda yang terdiri dari Pandu-pandu keturunan Belanda, bumiputera khususnya dari Batavia dan Bandung, lalu dari Pandu Mangkunegaran, dari Ambon, dan sejumlah Pandu keturunan Tionghoa dan Arab. Sementara di dalam negeri, kegiatan perkemahan dan jamboree kepanduan juga diadakan di sejumlah tempat. Di antaranya pada 19-23 Juli 1941 di Yogyakarta berlangsung All Indonesian Jamboree atau “Perkemahan Kepanduan Indonesia Oemoem.”
+                            Bila pada Jambore Sedunia 1933 di Hungaria hanya sebatas pada kunjungan delegasi kecil untuk menyaksikan kegiatan akbar itu, maka pada Jambore Sedunia 1937 di Belanda, ikut pula Kontingen Pandu Hindia-Belanda yang terdiri dari Pandu-pandu keturunan Belanda, bumiputera khususnya dari Batavia dan Bandung, lalu dari Pandu Mangkunegaran, dari Ambon, dan sejumlah Pandu keturunan Tionghoa dan Arab. Sementara di dalam negeri, kegiatan perkemahan dan jamboree kepanduan juga diadakan di sejumlah tempat. Di antaranya pada 19-23 Juli 1941 di Yogyakarta berlangsung All Indonesian Jamboree atau “Perkemahan Kepanduan Indonesia Oemoem.
                         </p>
 
                         <p>

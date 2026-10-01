@@ -12,10 +12,9 @@
                 <h2 class="text-xl font-semibold text-slate-950 dark:text-white">Detail Absensi</h2>
                 <p class="mt-1 text-sm text-slate-500 dark:text-slate-300">{{ $recordDate }} • {{ $participantKelas }} • {{ $participantAmbalan }} • Petugas: {{ $petugasName }}</p>
             </div>
-            <div class="flex gap-2">
-                <a href="{{ route('admin.absensi.export.excel', request()->query()) }}" class="inline-flex items-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-medium text-emerald-700 hover:bg-emerald-100">Export Excel</a>
-                <a href="{{ route('admin.absensi.export.pdf', request()->query()) }}" class="inline-flex items-center rounded-xl border border-rose-200 bg-rose-50 px-4 py-2 text-sm font-medium text-rose-700 hover:bg-rose-100">Export PDF</a>
-                <a href="{{ route('admin.absensi') }}" class="inline-flex items-center rounded-xl border border-slate-300 bg-white px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">Kembali</a>
+            <div class="flex items-center gap-2">
+                <a href="{{ route('admin.absensi.export.excel', request()->query()) }}" class="inline-flex h-8 items-center justify-center rounded-lg border border-slate-300 bg-white px-2.5 text-[10px] font-medium leading-none text-slate-700 transition hover:bg-slate-50">Export Excel</a>
+                <a href="{{ route('admin.absensi') }}" class="inline-flex h-8 items-center justify-center rounded-lg border border-slate-300 bg-white px-2.5 text-[10px] font-medium leading-none text-slate-700 transition hover:bg-slate-50">Kembali</a>
             </div>
         </div>
 
@@ -47,7 +46,7 @@
                                 {{ $sanggaLabel !== '' ? $sanggaLabel : '-' }}
                             </td>
                             <td class="px-4 py-4">
-                                <span class="inline-flex rounded-full px-3 py-1 text-xs font-semibold {{ $record->status === 'Hadir' ? 'bg-emerald-100 text-emerald-700' : ($record->status === 'Izin' ? 'bg-amber-100 text-amber-700' : 'bg-rose-100 text-rose-700') }}">
+                                <span class="inline-flex h-8 min-w-[82px] items-center justify-center rounded-lg border border-slate-300 bg-white px-2.5 text-[10px] font-medium leading-none text-slate-700 shadow-sm">
                                     {{ $record->status }}
                                 </span>
                             </td>

@@ -625,6 +625,83 @@ class ModuleController extends Controller
         return redirect()->route('admin.sejarah')->with('success', 'Profil sejarah berhasil diperbarui.');
     }
 
+    public function visiMisi()
+    {
+        $settings = [];
+
+        if (Schema::hasTable('settings')) {
+            $settings = Setting::query()->pluck('value', 'key')->all();
+        }
+
+        return view('admin.modules.visi-misi', [
+            'title' => 'Kelola Visi & Misi',
+            'description' => 'Atur judul, logo, dan deskripsi yang tampil di halaman profil.',
+            'publicRoute' => route('visi-misi'),
+            'publicLabel' => 'Lihat Halaman Visi & Misi',
+            'settings' => $settings,
+            'stats' => [
+                ['label' => 'Kwarnas', 'value' => '3', 'caption' => 'Judul, logo, dan deskripsi'],
+                ['label' => 'Pangkalan', 'value' => '3', 'caption' => 'Judul, logo, dan deskripsi'],
+                ['label' => 'Tampilan', 'value' => 'Live', 'caption' => 'Langsung di halaman profil'],
+                ['label' => 'Format', 'value' => 'Paragraf', 'caption' => 'Deskripsi yang rapi'],
+            ],
+        ]);
+    }
+
+    public function storeVisiMisi(Request $request)
+    {
+        $request->validate([
+            'visi_misi_kwarnas_title' => 'nullable|string|max:255',
+            'visi_misi_kwarnas_logo' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            'visi_misi_kwarnas_description' => 'nullable|string',
+            'visi_misi_pangkalan_title' => 'nullable|string|max:255',
+            'visi_misi_pangkalan_logo' => 'nullable|image|mimes:jpg,jpeg,png,svg,webp|max:2048',
+            'visi_misi_pangkalan_description' => 'nullable|string',
+        ]);
+
+        $sections = [
+            'visi_misi_kwarnas' => ['title', 'logo', 'description'],
+            'visi_misi_pangkalan' => ['title', 'logo', 'description'],
+        ];
+
+        foreach ($sections as $prefix => $fields) {
+            foreach ($fields as $field) {
+                $key = "{$prefix}_{$field}";
+
+                if ($field === 'logo') {
+                    $uploadedFile = $request->file($key);
+
+                    if ($uploadedFile) {
+                        $path = $uploadedFile->store('visi-misi', 'public');
+                        Setting::setValue($key, $path);
+                        continue;
+                    }
+
+                    $value = trim((string) $request->input($key, ''));
+
+                    if ($value === '') {
+                        Setting::query()->where('key', $key)->delete();
+                        continue;
+                    }
+
+                    Setting::setValue($key, $value);
+                    continue;
+                }
+
+                $value = trim((string) $request->input($key, ''));
+
+                if ($value === '') {
+                    Setting::query()->where('key', $key)->delete();
+                    continue;
+                }
+
+                Setting::setValue($key, $value);
+            }
+        }
+
+        return redirect()->route('admin.visi-misi')->with('success', 'Konten Visi & Misi berhasil diperbarui.');
+    }
+
     public function timeline()
     {
         $events = Schema::hasTable('timeline_events')

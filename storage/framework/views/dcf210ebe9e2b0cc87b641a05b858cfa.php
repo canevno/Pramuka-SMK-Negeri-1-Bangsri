@@ -17,6 +17,7 @@
         [x-cloak] { display: none !important; }
         html { background: #ffffff; }
         body {
+            background: #ffffff !important;
             opacity: 0;
             visibility: hidden;
             transition: opacity 0.12s ease, visibility 0.12s ease;
@@ -24,6 +25,17 @@
         body.ready {
             opacity: 1;
             visibility: visible;
+        }
+
+        main,
+        main > div,
+        main > section,
+        section,
+        .bg-slate-50,
+        .bg-slate-100,
+        .bg-gray-50,
+        .bg-gray-100 {
+            background-color: #ffffff !important;
         }
     </style>
 </head>

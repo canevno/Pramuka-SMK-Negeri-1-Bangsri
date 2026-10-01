@@ -1,0 +1,1 @@
+<?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views\admin\modules\profile.blade.php ENDPATH**/ ?>

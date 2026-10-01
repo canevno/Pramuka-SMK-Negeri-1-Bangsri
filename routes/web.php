@@ -443,3 +443,14 @@ Route::prefix('absensi')->group(function () {
 
     Route::post('/submit', [AttendanceController::class, 'submit'])->name('absensi.submit');
 });
+
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/run-migrate', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        return 'Migration Berhasil! Tabel dewan_kehormatans telah dibuat.';
+    } catch (\Exception $e) {
+        return 'Gagal: ' . $e->getMessage();
+    }
+});

@@ -8,11 +8,10 @@ use App\Models\GalleryItem;
 use App\Models\LaksanaRegistration;
 use App\Models\PetugasAbsensi;
 use App\Models\Post;
+use App\Models\SiteVisit;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
 
 class DashboardController extends Controller
 {
@@ -159,24 +158,26 @@ class DashboardController extends Controller
         });
         $latestRegistrations = array_slice($latestRegistrations, 0, 6);
 
-        $visitorStats = collect(range(6, 0))->map(function ($offset) {
+        // ===== Statistik Pengunjung (dari tabel site_visits) =====
+        // Ambil 14 hari terakhir sekaligus: 7 hari ini + 7 hari sebelumnya (untuk garis "Minggu lalu").
+        $prevStart = now()->subDays(13)->startOfDay();
+
+        $visitsByDate = SiteVisit::query()
+            ->where('visit_date', '>=', $prevStart->toDateString())
+            ->selectRaw('visit_date, COUNT(*) as total')
+            ->groupBy('visit_date')
+            ->pluck('total', 'visit_date')
+            ->mapWithKeys(fn ($total, $date) => [Carbon::parse($date)->toDateString() => (int) $total]);
+
+        $visitorStats = collect(range(6, 0))->map(function ($offset) use ($visitsByDate) {
             $date = now()->subDays($offset)->startOfDay();
-            $start = $date->copy()->startOfDay()->timestamp;
-            $end = $date->copy()->endOfDay()->timestamp;
-
-            $count = 0;
-
-            if (Schema::hasTable('sessions')) {
-                $count = (int) DB::table('sessions')
-                    ->where('last_activity', '>=', $start)
-                    ->where('last_activity', '<=', $end)
-                    ->count();
-            }
+            $prevDate = $date->copy()->subDays(7);
 
             return [
                 'label' => $date->translatedFormat('D'),
                 'day' => $date->translatedFormat('d'),
-                'count' => $count,
+                'count' => $visitsByDate[$date->toDateString()] ?? 0,
+                'prev_count' => $visitsByDate[$prevDate->toDateString()] ?? 0,
             ];
         })->values()->all();
 
@@ -193,7 +194,7 @@ class DashboardController extends Controller
                     'title' => $post->title,
                     'date' => $post->published_at?->translatedFormat('d M Y') ?? 'Tanggal belum diatur',
                     'type' => $post->type ?: 'Berita',
-                    'image' => $post->image_path ? asset($post->image_path) : null,
+                    'image' => $this->resolvePublicImageUrl($post->image_path),
                     'excerpt' => $post->excerpt ?: str($post->content ?? '')->stripTags()->limit(90)->toString(),
                 ];
             })
@@ -217,5 +218,26 @@ class DashboardController extends Controller
             'visitorStats' => $visitorStats,
             'visitorTotalThisWeek' => $visitorTotalThisWeek,
         ]);
+    }
+
+    protected function resolvePublicImageUrl(?string $imagePath): string
+    {
+        if (empty($imagePath)) {
+            return asset('images/logokegiatan1.png');
+        }
+
+        if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
+            return $imagePath;
+        }
+
+        if (str_starts_with($imagePath, 'storage/')) {
+            return asset($imagePath);
+        }
+
+        if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
+            return $imagePath;
+        }
+
+        return asset('storage/' . ltrim($imagePath, '/'));
     }
 }

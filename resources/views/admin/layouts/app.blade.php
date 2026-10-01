@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-gray-50 dark:bg-black">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="h-full bg-[#F6F8FA] dark:bg-black">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -55,7 +55,7 @@
         /* Custom scrollbar untuk dropdown */
         .custom-scrollbar::-webkit-scrollbar { width: 4px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: #374151; border-radius: 10px; }
+        .custom-scrollbar::-webkit-scrollbar-thumb { background: #d4d4d8; border-radius: 10px; }
         .dark .custom-scrollbar::-webkit-scrollbar-thumb { background: #1f2937; }
         
         /* Theme switching should feel instant; avoid global transitions across every element. */
@@ -103,7 +103,7 @@
             z-index: 50;
             backdrop-filter: blur(16px);
             -webkit-backdrop-filter: blur(16px);
-            border-bottom: 1px solid rgba(229, 231, 235, 0.6);
+            border-bottom: 1px solid #E3E8EE;
         }
 
         @media (min-width: 1024px) {
@@ -120,7 +120,7 @@
         /* Theme toggle active state */
         .theme-btn-active {
             background-color: white !important;
-            color: #111827 !important;
+            color: #0D1B2A !important;
             box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
         }
 
@@ -173,61 +173,61 @@
         }
 
         /* Admin-only flat card system: keep the natural panel size, remove fake wrapper cards */
-        #admin-shell,
-        #admin-shell * {
+        .dark #admin-shell,
+        .dark #admin-shell * {
             box-shadow: none !important;
         }
 
-        #admin-shell [class*="rounded"],
-        #admin-shell [class*="rounded-"],
-        #admin-shell .rounded,
-        #admin-shell .rounded-sm,
-        #admin-shell .rounded-md,
-        #admin-shell .rounded-lg,
-        #admin-shell .rounded-xl,
-        #admin-shell .rounded-2xl,
-        #admin-shell .rounded-3xl,
-        #admin-shell .rounded-full,
-        #admin-shell .rounded-\[2rem\],
-        #admin-shell .rounded-\[1\.5rem\],
-        #admin-shell .rounded-\[1rem\],
-        #admin-shell .rounded-\[0\.75rem\] {
+        .dark #admin-shell [class*="rounded"],
+        .dark #admin-shell [class*="rounded-"],
+        .dark #admin-shell .rounded,
+        .dark #admin-shell .rounded-sm,
+        .dark #admin-shell .rounded-md,
+        .dark #admin-shell .rounded-lg,
+        .dark #admin-shell .rounded-xl,
+        .dark #admin-shell .rounded-2xl,
+        .dark #admin-shell .rounded-3xl,
+        .dark #admin-shell .rounded-full,
+        .dark #admin-shell .rounded-\[2rem\],
+        .dark #admin-shell .rounded-\[1\.5rem\],
+        .dark #admin-shell .rounded-\[1rem\],
+        .dark #admin-shell .rounded-\[0\.75rem\] {
             border-radius: 0 !important;
         }
 
-        #admin-shell .bg-white,
-        #admin-shell [class*="bg-white"],
-        #admin-shell .bg-slate-50,
-        #admin-shell [class*="bg-slate-50"],
-        #admin-shell .bg-slate-100,
-        #admin-shell [class*="bg-slate-100"],
-        #admin-shell .bg-zinc-50,
-        #admin-shell [class*="bg-zinc-50"],
-        #admin-shell .bg-zinc-100,
-        #admin-shell [class*="bg-zinc-100"],
-        #admin-shell .bg-gray-50,
-        #admin-shell [class*="bg-gray-50"],
-        #admin-shell .bg-gray-100,
-        #admin-shell [class*="bg-gray-100"],
-        #admin-shell .dark\:bg-slate-900,
-        #admin-shell .dark\:bg-\[#0A0A0A\],
-        #admin-shell .dark\:bg-slate-950 {
+        .dark #admin-shell .bg-white,
+        .dark #admin-shell [class*="bg-white"],
+        .dark #admin-shell .bg-slate-50,
+        .dark #admin-shell [class*="bg-slate-50"],
+        .dark #admin-shell .bg-slate-100,
+        .dark #admin-shell [class*="bg-slate-100"],
+        .dark #admin-shell .bg-zinc-50,
+        .dark #admin-shell [class*="bg-zinc-50"],
+        .dark #admin-shell .bg-zinc-100,
+        .dark #admin-shell [class*="bg-zinc-100"],
+        .dark #admin-shell .bg-gray-50,
+        .dark #admin-shell [class*="bg-gray-50"],
+        .dark #admin-shell .bg-gray-100,
+        .dark #admin-shell [class*="bg-gray-100"],
+        .dark #admin-shell .dark\:bg-slate-900,
+        .dark #admin-shell .dark\:bg-\[#0A0A0A\],
+        .dark #admin-shell .dark\:bg-slate-950 {
             background-color: #f8fafc !important;
         }
 
-        #admin-shell .border,
-        #admin-shell [class*="border-"],
-        #admin-shell .border-slate-200,
-        #admin-shell .border-zinc-200,
-        #admin-shell .border-gray-200,
-        #admin-shell .border-slate-100,
-        #admin-shell .border-zinc-100,
-        #admin-shell .border-gray-100,
-        #admin-shell .dark\:border-slate-800,
-        #admin-shell .dark\:border-gray-800,
-        #admin-shell .dark\:border-slate-700,
-        #admin-shell .dark\:border-gray-700,
-        #admin-shell .dark\:border-\[#262626\] {
+        .dark #admin-shell .border,
+        .dark #admin-shell [class*="border-"],
+        .dark #admin-shell .border-slate-200,
+        .dark #admin-shell .border-zinc-200,
+        .dark #admin-shell .border-gray-200,
+        .dark #admin-shell .border-slate-100,
+        .dark #admin-shell .border-zinc-100,
+        .dark #admin-shell .border-gray-100,
+        .dark #admin-shell .dark\:border-slate-800,
+        .dark #admin-shell .dark\:border-gray-800,
+        .dark #admin-shell .dark\:border-slate-700,
+        .dark #admin-shell .dark\:border-gray-700,
+        .dark #admin-shell .dark\:border-\[#262626\] {
             border-color: #dfe3e8 !important;
             border-width: 1px !important;
         }
@@ -250,9 +250,15 @@
             box-shadow: none !important;
         }
 
-        input:focus,
-        select:focus,
-        textarea:focus {
+        html:not(.dark) input:focus,
+        html:not(.dark) select:focus,
+        html:not(.dark) textarea:focus {
+            border-color: #0D1B2A !important;
+        }
+
+        html.dark input:focus,
+        html.dark select:focus,
+        html.dark textarea:focus {
             border-color: rgba(148, 163, 184, 0.9) !important;
         }
 
@@ -262,9 +268,60 @@
             border-color: rgba(148, 163, 184, 0.75) !important;
         }
 
+
+        /* ================= LIGHT THEME: Clean Professional =================
+           Warna sekunder #0D1B2A dipakai untuk semua tombol utama.
+           Hanya aktif saat mode light (html:not(.dark)); mode dark tidak berubah. */
+        :root {
+            --color-secondary: #0D1B2A;
+            --color-secondary-hover: #1B2A3D;
+            --color-canvas: #F6F8FA;
+            --color-line: #E3E8EE;
+        }
+
+        html:not(.dark) body {
+            background-color: var(--color-canvas);
+        }
+
+        html:not(.dark) .border-zinc-200,
+        html:not(.dark) .border-zinc-100 {
+            border-color: var(--color-line);
+        }
+
+        html:not(.dark) .text-zinc-900 {
+            color: var(--color-secondary);
+        }
+
+        /* Tombol utama (button, link tombol, submit) */
+        html:not(.dark) :is(button, a, input[type="submit"]):is(
+            .btn-primary,
+            .bg-black,
+            .bg-zinc-900, .bg-zinc-800,
+            .bg-slate-900, .bg-gray-900,
+            .bg-emerald-500, .bg-emerald-600,
+            .bg-green-600,
+            .bg-blue-600, .bg-indigo-600
+        ) {
+            background-color: var(--color-secondary) !important;
+            border-color: var(--color-secondary) !important;
+            color: #ffffff !important;
+        }
+
+        html:not(.dark) :is(button, a, input[type="submit"]):is(
+            .btn-primary,
+            .bg-black,
+            .bg-zinc-900, .bg-zinc-800,
+            .bg-slate-900, .bg-gray-900,
+            .bg-emerald-500, .bg-emerald-600,
+            .bg-green-600,
+            .bg-blue-600, .bg-indigo-600
+        ):hover:not(:disabled) {
+            background-color: var(--color-secondary-hover) !important;
+            border-color: var(--color-secondary-hover) !important;
+        }
     </style>
 </head>
-<body id="admin-shell" class="h-full font-sans antialiased text-gray-800 dark:text-gray-200" x-data="{ fullscreen: false, mobileSidebarOpen: false }">
+<body id="admin-shell" class="h-full font-sans antialiased text-zinc-800 dark:text-gray-200" x-data="{ fullscreen: false, mobileSidebarOpen: false }">
     @php
         $pageTitle = trim((string) $__env->yieldContent('page-title'))
             ?: trim((string) $__env->yieldContent('page-heading'))
@@ -288,14 +345,14 @@
 
         <!-- ================= SIDEBAR ================= -->
         <aside class="hidden lg:flex lg:flex-shrink-0">
-            <div class="sidebar-sticky w-60 border-r border-gray-200 dark:border-gray-800 bg-white dark:bg-[#0a0a0a]">
+            <div class="sidebar-sticky w-60 border-r border-zinc-200 dark:border-gray-800 bg-white dark:bg-[#0a0a0a]">
                 
-                <div class="sidebar-fixed-header h-14 flex items-center px-5 border-b border-gray-200 dark:border-gray-800">
+                <div class="sidebar-fixed-header h-14 flex items-center px-5 border-b border-zinc-200 dark:border-gray-800">
                     <div class="flex items-center space-x-2.5">
                         <img src="{{ asset('images/logos/smklogo.png') }}" alt="Logo SMK" class="h-8 w-8 object-contain rounded-md bg-white p-0.5 shadow-sm" />
                         <div>
-                            <p class="text-sm font-semibold text-gray-900 dark:text-white">Scoutmind</p>
-                            <p class="text-[10px] text-gray-500 dark:text-gray-500">Admin Panel</p>
+                            <p class="text-sm font-semibold text-zinc-900 dark:text-white">Scoutmind</p>
+                            <p class="text-[10px] text-zinc-500 dark:text-gray-500">Admin Panel</p>
                         </div>
                     </div>
                 </div>
@@ -326,7 +383,7 @@
                         @foreach($menu as $item)
                             @if(isset($item['section']))
                                 <li class="pt-4 pb-1.5">
-                                    <p class="px-2.5 text-[10px] font-semibold text-gray-400 dark:text-gray-600 uppercase tracking-wider">
+                                    <p class="px-2.5 text-[10px] font-semibold text-zinc-400 dark:text-gray-600 uppercase tracking-wider">
                                         {{ $item['section'] }}
                                     </p>
                                 </li>
@@ -343,9 +400,9 @@
                                     <a href="{{ route($item['route']) }}" wire:navigate
                                        class="group flex items-center px-2.5 py-2 text-xs font-medium rounded-md transition-all duration-150 
                                        {{ $active 
-                                          ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300 shadow-sm' 
-                                          : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-gray-200' }}">
-                                        <svg class="mr-2.5 h-4 w-4 flex-shrink-0 {{ $active ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                          ? 'bg-[#0D1B2A]/[0.06] text-[#0D1B2A] dark:bg-emerald-950/30 dark:text-emerald-300' 
+                                          : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-gray-200' }}">
+                                        <svg class="mr-2.5 h-4 w-4 flex-shrink-0 {{ $active ? 'text-[#0D1B2A] dark:text-emerald-400' : 'text-zinc-400 group-hover:text-zinc-500 dark:group-hover:text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                             <path d="{{ $item['icon'] }}"/>
                                         </svg>
                                         {{ $item['label'] }}
@@ -356,20 +413,20 @@
                     </ul>
                 </nav>
 
-                <div class="sidebar-fixed-footer border-t border-gray-200 dark:border-gray-800 px-3 py-3">
+                <div class="sidebar-fixed-footer border-t border-zinc-200 dark:border-gray-800 px-3 py-3">
                     <div class="flex items-center space-x-2.5">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 rounded-full bg-gradient-to-br from-emerald-600 to-green-700 flex items-center justify-center text-white text-xs font-bold shadow-sm">
+                            <div class="w-8 h-8 rounded-full bg-[#0D1B2A] dark:bg-gradient-to-br dark:from-emerald-600 dark:to-green-700 flex items-center justify-center text-white text-xs font-bold shadow-sm">
                                 A
                             </div>
                         </div>
                         <div class="flex-1 min-w-0">
-                            <p class="text-xs font-semibold text-gray-900 dark:text-white truncate">Administrator</p>
-                            <p class="text-[10px] text-gray-500 dark:text-gray-500 truncate">Scoutmind Admin</p>
+                            <p class="text-xs font-semibold text-zinc-900 dark:text-white truncate">Administrator</p>
+                            <p class="text-[10px] text-zinc-500 dark:text-gray-500 truncate">Scoutmind Admin</p>
                         </div>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
-                            <button type="submit" class="p-1.5 text-gray-400 hover:text-red-500 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-md transition-colors" title="Logout">
+                            <button type="submit" class="p-1.5 text-zinc-400 hover:text-zinc-900 dark:hover:text-red-400 hover:bg-[#f4f4f5] dark:hover:bg-red-950/20 rounded-md transition-colors" title="Logout">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                                 </svg>
@@ -388,7 +445,7 @@
                 
                 <!-- Left: Mobile menu + Breadcrumb -->
                 <div class="flex items-center gap-3 flex-1 min-w-0">
-                    <button type="button" class="lg:hidden inline-flex h-6 w-6 items-center justify-center border-0 bg-transparent p-0 text-gray-600 shadow-none hover:text-gray-700 focus:outline-none dark:text-gray-300 dark:hover:text-gray-100"
+                    <button type="button" class="lg:hidden inline-flex h-6 w-6 items-center justify-center border-0 bg-transparent p-0 text-zinc-600 shadow-none hover:text-zinc-700 focus:outline-none dark:text-gray-300 dark:hover:text-gray-100"
                             @click="mobileSidebarOpen = !mobileSidebarOpen" aria-label="Buka menu admin"
                             style="background: transparent !important; border: none !important; border-radius: 0 !important; box-shadow: none !important; appearance: none !important; -webkit-appearance: none !important;">
                         <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
@@ -397,15 +454,15 @@
                     </button>
 
                     <nav class="hidden md:flex items-center space-x-2 text-xs min-w-0">
-                        <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center text-gray-400 hover:text-gray-600 dark:hover:text-gray-300 transition-colors">
+                        <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center text-zinc-400 hover:text-zinc-600 dark:hover:text-gray-300 transition-colors">
                             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                             </svg>
                         </a>
-                        <svg class="w-3 h-3 text-gray-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <svg class="w-3 h-3 text-zinc-300 dark:text-gray-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                         </svg>
-                        <span class="font-semibold text-gray-900 dark:text-white truncate">
+                        <span class="font-semibold text-zinc-900 dark:text-white truncate">
                             {{ $pageTitle }}
                         </span>
                     </nav>
@@ -416,7 +473,7 @@
                 <div class="flex items-center gap-2 sm:gap-2.5">
                     
                     <!-- Theme Toggle -->
-                    <div class="flex items-center bg-gray-100 dark:bg-gray-900 p-1 rounded-lg border border-gray-200 dark:border-gray-800">
+                    <div class="flex items-center bg-zinc-100 dark:bg-gray-900 p-1 rounded-lg border border-zinc-200 dark:border-gray-800">
                         <button id="theme-light" class="theme-btn px-2 py-1 text-[10px] font-semibold rounded-md transition-all">
                             <svg class="w-3 h-3 inline" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
@@ -430,7 +487,7 @@
                     </div>
 
                     <!-- Fullscreen Toggle -->
-                    <button @click="toggleFullscreen()" class="p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors" title="Fullscreen">
+                    <button @click="toggleFullscreen()" class="p-2 text-zinc-500 hover:text-zinc-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-zinc-100 dark:hover:bg-gray-900 transition-colors" title="Fullscreen">
                         <svg x-show="!fullscreen" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4" />
                         </svg>
@@ -441,40 +498,40 @@
 
                     <!-- Notifications -->
                     <div class="relative z-50" x-data="{ open: false }" @click.away="open = false">
-                        <button type="button" id="admin-notification-toggle" x-on:click.stop="open = !open" aria-expanded="false" :aria-expanded="open" aria-controls="admin-notification-panel" class="relative p-2 text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                        <button type="button" id="admin-notification-toggle" x-on:click.stop="open = !open" aria-expanded="false" :aria-expanded="open" aria-controls="admin-notification-panel" class="relative p-2 text-zinc-500 hover:text-zinc-700 dark:text-gray-400 dark:hover:text-gray-200 rounded-lg hover:bg-zinc-100 dark:hover:bg-gray-900 transition-colors">
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                             </svg>
                             @if(isset($unreadCount) && $unreadCount > 0)
-                                <span class="absolute top-1 right-1 w-1.5 h-1.5 bg-red-500 rounded-full ring-2 ring-white dark:ring-[#0a0a0a]"></span>
+                                <span class="absolute top-1 right-1 w-1.5 h-1.5 bg-[#0D1B2A] dark:bg-red-500 rounded-full ring-2 ring-white dark:ring-[#0a0a0a]"></span>
                             @endif
                         </button>
 
-                        <div id="admin-notification-panel" x-show="open" x-cloak class="absolute right-0 mt-2 w-[min(17rem,calc(100vw-1rem))] max-w-[calc(100vw-1rem)] sm:w-80 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
-                            <div class="flex items-center justify-between border-b border-gray-100 px-3 py-2.5 dark:border-gray-800 sm:px-4 sm:py-3">
-                                <h3 class="text-[10px] font-bold uppercase tracking-wider text-gray-900 dark:text-white sm:text-xs">Notifikasi</h3>
+                        <div id="admin-notification-panel" x-show="open" x-cloak class="absolute right-0 mt-2 w-[min(17rem,calc(100vw-1rem))] max-w-[calc(100vw-1rem)] sm:w-80 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-[0_8px_30px_rgba(13,27,42,0.08)] border border-zinc-200 dark:border-gray-800 z-50 overflow-hidden">
+                            <div class="flex items-center justify-between border-b border-zinc-100 px-3 py-2.5 dark:border-gray-800 sm:px-4 sm:py-3">
+                                <h3 class="text-[10px] font-bold uppercase tracking-wider text-zinc-900 dark:text-white sm:text-xs">Notifikasi</h3>
                                 @if(isset($unreadCount) && $unreadCount > 0)
-                                    <span class="text-[9px] font-semibold text-emerald-700 dark:text-emerald-400 sm:text-[10px]">{{ $unreadCount }} Belum Dibaca</span>
+                                    <span class="text-[9px] font-semibold text-zinc-700 dark:text-emerald-400 sm:text-[10px]">{{ $unreadCount }} Belum Dibaca</span>
                                 @endif
                             </div>
                             <div class="max-h-80 overflow-y-auto custom-scrollbar sm:max-h-96">
                                 @forelse($unreadNotifications ?? [] as $notif)
-                                    <a href="{{ route('admin.notifications.visit', $notif) }}" class="block border-b border-gray-100 px-3 py-2.5 transition hover:bg-gray-50 dark:border-gray-800 dark:hover:bg-gray-900/50 last:border-0 sm:px-4 sm:py-3">
-                                        <p class="text-[11px] font-semibold text-gray-900 dark:text-white sm:text-xs">{{ $notif->title ?? 'Notifikasi' }}</p>
-                                        <p class="mt-1 line-clamp-2 text-[9.5px] text-gray-500 dark:text-gray-500 sm:text-[10px]">{{ $notif->message ?? 'Tidak ada pesan' }}</p>
-                                        <p class="mt-1.5 text-[8.5px] text-gray-400 dark:text-gray-600 sm:text-[10px]">{{ isset($notif->created_at) ? $notif->created_at->diffForHumans() : 'Baru saja' }}</p>
+                                    <a href="{{ route('admin.notifications.visit', $notif) }}" class="block border-b border-zinc-100 px-3 py-2.5 transition hover:bg-zinc-50 dark:border-gray-800 dark:hover:bg-gray-900/50 last:border-0 sm:px-4 sm:py-3">
+                                        <p class="text-[11px] font-semibold text-zinc-900 dark:text-white sm:text-xs">{{ $notif->title ?? 'Notifikasi' }}</p>
+                                        <p class="mt-1 line-clamp-2 text-[9.5px] text-zinc-500 dark:text-gray-500 sm:text-[10px]">{{ $notif->message ?? 'Tidak ada pesan' }}</p>
+                                        <p class="mt-1.5 text-[8.5px] text-zinc-400 dark:text-gray-600 sm:text-[10px]">{{ isset($notif->created_at) ? $notif->created_at->diffForHumans() : 'Baru saja' }}</p>
                                     </a>
                                 @empty
                                     <div class="px-3 py-6 text-center sm:px-4 sm:py-8">
-                                        <svg class="mx-auto h-7 w-7 text-gray-300 dark:text-gray-700 sm:h-8 sm:w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg class="mx-auto h-7 w-7 text-zinc-300 dark:text-gray-700 sm:h-8 sm:w-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                                         </svg>
-                                        <p class="mt-2 text-[10px] font-medium text-gray-500 dark:text-gray-600 sm:text-xs">Tidak ada notifikasi</p>
+                                        <p class="mt-2 text-[10px] font-medium text-zinc-500 dark:text-gray-600 sm:text-xs">Tidak ada notifikasi</p>
                                     </div>
                                 @endforelse
                             </div>
-                            <div class="border-t border-gray-100 px-2 py-2 dark:border-gray-800 sm:px-3">
-                                <a href="{{ route('admin.notifications.index') }}" class="block rounded-lg px-2.5 py-2 text-center text-[9px] font-semibold text-slate-700 transition hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-900 sm:px-3 sm:text-[10px]">
+                            <div class="border-t border-zinc-100 px-2 py-2 dark:border-gray-800 sm:px-3">
+                                <a href="{{ route('admin.notifications.index') }}" class="block rounded-lg px-2.5 py-2 text-center text-[9px] font-semibold text-zinc-700 transition hover:bg-zinc-100 dark:text-slate-200 dark:hover:bg-slate-900 sm:px-3 sm:text-[10px]">
                                     Lihat semua notifikasi
                                 </a>
                             </div>
@@ -486,46 +543,46 @@
                         @php
                             $adminUser = auth()->user();
                             $adminInitials = $adminUser?->initials() ?: 'A';
-                            $adminAvatar = $adminUser?->profilePhotoUrl() ?: 'https://ui-avatars.com/api/?name=' . urlencode($adminUser?->name ?: 'Admin') . '&background=084d97&color=fff';
+                            $adminAvatar = $adminUser?->profilePhotoUrl() ?: 'https://ui-avatars.com/api/?name=' . urlencode($adminUser?->name ?: 'Admin') . '&background=0D1B2A&color=fff';
                         @endphp
-                        <button type="button" @click.stop="open = !open" :aria-expanded="open" class="flex items-center gap-2 pl-2 pr-1 py-1 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-900 transition-colors">
+                        <button type="button" @click.stop="open = !open" :aria-expanded="open" class="flex items-center gap-2 pl-2 pr-1 py-1 rounded-lg hover:bg-zinc-100 dark:hover:bg-gray-900 transition-colors">
                             <div class="relative">
                                 <img src="{{ $adminAvatar }}" alt="{{ $adminUser?->name ?? 'Admin' }}" class="h-8 w-8 rounded-full object-cover ring-2 ring-white dark:ring-[#0a0a0a] shadow-sm">
-                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-emerald-600 border-2 border-white dark:border-[#0a0a0a] rounded-full"></span>
+                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 bg-[#0D1B2A] dark:bg-emerald-600 border-2 border-white dark:border-[#0a0a0a] rounded-full"></span>
                             </div>
                             <div class="hidden md:block text-left">
-                                <p class="text-xs font-semibold text-gray-900 dark:text-white leading-tight">{{ $adminUser?->name ?? 'Administrator' }}</p>
-                                <p class="text-[10px] text-gray-500 dark:text-gray-500 leading-tight">{{ $adminUser?->jabatan ?? 'Super Admin' }}</p>
+                                <p class="text-xs font-semibold text-zinc-900 dark:text-white leading-tight">{{ $adminUser?->name ?? 'Administrator' }}</p>
+                                <p class="text-[10px] text-zinc-500 dark:text-gray-500 leading-tight">{{ $adminUser?->jabatan ?? 'Super Admin' }}</p>
                             </div>
-                            <svg class="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <svg class="w-3 h-3 text-zinc-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
 
-                        <div x-show="open" x-cloak class="absolute right-0 mt-2 w-[min(16rem,calc(100vw-1.5rem))] max-w-[calc(100vw-1.5rem)] sm:w-64 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 z-50 overflow-hidden">
-                            <div class="p-4 border-b border-gray-100 dark:border-gray-800 bg-gradient-to-br from-emerald-50 to-green-50 dark:from-emerald-950/30 dark:to-green-950/20">
+                        <div x-show="open" x-cloak class="absolute right-0 mt-2 w-[min(16rem,calc(100vw-1.5rem))] max-w-[calc(100vw-1.5rem)] sm:w-64 bg-white dark:bg-[#0a0a0a] rounded-xl shadow-[0_8px_30px_rgba(13,27,42,0.08)] border border-zinc-200 dark:border-gray-800 z-50 overflow-hidden">
+                            <div class="p-4 border-b border-zinc-100 dark:border-gray-800 bg-gradient-to-br from-zinc-50 to-zinc-50 dark:from-emerald-950/30 dark:to-green-950/20">
                                 <div class="flex items-center gap-3">
                                     <img src="{{ $adminAvatar }}" alt="{{ $adminUser?->name ?? 'Admin' }}" class="h-10 w-10 rounded-full object-cover ring-2 ring-white dark:ring-[#0a0a0a] shadow-md">
                                     <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-bold text-gray-900 dark:text-white truncate">{{ $adminUser?->name ?? 'Administrator' }}</p>
-                                        <p class="text-[10px] text-gray-500 dark:text-gray-400 truncate">{{ $adminUser?->email ?? 'admin@scoutmind.id' }}</p>
+                                        <p class="text-sm font-bold text-zinc-900 dark:text-white truncate">{{ $adminUser?->name ?? 'Administrator' }}</p>
+                                        <p class="text-[10px] text-zinc-500 dark:text-gray-400 truncate">{{ $adminUser?->email ?? 'admin@scoutmind.id' }}</p>
                                     </div>
                                 </div>
                             </div>
                             <div class="p-2 space-y-1">
-                                <a href="{{ route('admin.profile.edit') }}" wire:navigate class="flex items-center gap-2.5 px-2.5 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors">
-                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0"/></svg>
+                                <a href="{{ route('admin.profile.edit') }}" wire:navigate class="flex items-center gap-2.5 px-2.5 py-2 text-xs text-zinc-700 dark:text-gray-300 hover:bg-zinc-100 dark:hover:bg-gray-900 rounded-lg transition-colors">
+                                    <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.5 20.25a7.5 7.5 0 0115 0"/></svg>
                                     Edit Profil
                                 </a>
-                                <a href="{{ route('admin.settings') }}" wire:navigate class="flex items-center gap-2.5 px-2.5 py-2 text-xs text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-900 rounded-lg transition-colors">
-                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                                <a href="{{ route('admin.settings') }}" wire:navigate class="flex items-center gap-2.5 px-2.5 py-2 text-xs text-zinc-700 dark:text-gray-300 hover:bg-zinc-100 dark:hover:bg-gray-900 rounded-lg transition-colors">
+                                    <svg class="w-4 h-4 text-zinc-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
                                     Pengelola Perangkat
                                 </a>
                             </div>
-                            <div class="border-t border-gray-200 dark:border-gray-800 p-2">
+                            <div class="border-t border-zinc-200 dark:border-gray-800 p-2">
                                 <form method="POST" action="{{ route('logout') }}">
                                     @csrf
-                                    <button type="submit" class="w-full flex items-center gap-2.5 px-2.5 py-2 text-xs text-red-600 dark:text-red-400 hover:bg-red-50 dark:hover:bg-red-950/20 rounded-lg transition-colors">
+                                    <button type="submit" class="w-full flex items-center gap-2.5 px-2.5 py-2 text-xs text-zinc-700 dark:text-red-400 hover:bg-[#f4f4f5] dark:hover:bg-red-950/20 rounded-lg transition-colors">
                                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
                                         Keluar
                                     </button>
@@ -537,7 +594,7 @@
             </header>
 
             <!-- Page Content -->
-            <main class="flex-1 overflow-y-auto bg-gray-50 p-3 pt-20 sm:p-6 sm:pt-20 dark:bg-black">
+            <main class="flex-1 overflow-y-auto bg-[#F6F8FA] p-3 pt-20 sm:p-6 sm:pt-20 dark:bg-black">
                 <div class="mx-auto max-w-7xl">
                     @if(isset($slot) && is_object($slot) && method_exists($slot, 'isNotEmpty') && $slot->isNotEmpty())
                         {{ $slot }}
@@ -556,16 +613,16 @@
                x-transition:leave="transition ease-in duration-150"
                x-transition:leave-start="translate-x-0 opacity-100"
                x-transition:leave-end="-translate-x-full opacity-0"
-               class="fixed inset-y-0 left-0 z-40 w-72 max-w-[82vw] border-r border-gray-200 bg-white shadow-2xl dark:border-gray-800 dark:bg-[#0a0a0a] lg:hidden">
-            <div class="flex h-16 items-center justify-between border-b border-gray-200 px-4 dark:border-gray-800">
+               class="fixed inset-y-0 left-0 z-40 w-72 max-w-[82vw] border-r border-zinc-200 bg-white shadow-lg dark:border-gray-800 dark:bg-[#0a0a0a] lg:hidden">
+            <div class="flex h-16 items-center justify-between border-b border-zinc-200 px-4 dark:border-gray-800">
                 <div class="flex items-center space-x-2.5">
                     <img src="{{ asset('images/logos/smklogo.png') }}" alt="Logo SMK" class="h-8 w-8 object-contain rounded-md bg-white p-0.5 shadow-sm" />
                     <div>
-                        <p class="text-sm font-semibold text-gray-900 dark:text-white">Scoutmind</p>
-                        <p class="text-[10px] text-gray-500 dark:text-gray-500">Admin Panel</p>
+                        <p class="text-sm font-semibold text-zinc-900 dark:text-white">Scoutmind</p>
+                        <p class="text-[10px] text-zinc-500 dark:text-gray-500">Admin Panel</p>
                     </div>
                 </div>
-                <button type="button" @click="mobileSidebarOpen = false" class="rounded-lg p-2 text-gray-500 hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-900 dark:hover:text-gray-200">
+                <button type="button" @click="mobileSidebarOpen = false" class="rounded-lg p-2 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:hover:bg-gray-900 dark:hover:text-gray-200">
                     <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
                     </svg>
@@ -597,7 +654,7 @@
                     @foreach($mobileMenu as $item)
                         @if(isset($item['section']))
                             <li class="pt-4 pb-1.5">
-                                <p class="px-2.5 text-[10px] font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-600">
+                                <p class="px-2.5 text-[10px] font-semibold uppercase tracking-wider text-zinc-400 dark:text-gray-600">
                                     {{ $item['section'] }}
                                 </p>
                             </li>
@@ -612,8 +669,8 @@
                             @endphp
                             <li>
                                 <a href="{{ route($item['route']) }}" wire:navigate @click="mobileSidebarOpen = false"
-                                   class="group flex items-center rounded-md px-2.5 py-2 text-xs font-medium transition-all duration-150 {{ $active ? 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/30 dark:text-emerald-300 shadow-sm' : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-gray-200' }}">
-                                    <svg class="mr-2.5 h-4 w-4 flex-shrink-0 {{ $active ? 'text-emerald-700 dark:text-emerald-400' : 'text-gray-400 group-hover:text-gray-500 dark:group-hover:text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                   class="group flex items-center rounded-md px-2.5 py-2 text-xs font-medium transition-all duration-150 {{ $active ? 'bg-[#0D1B2A]/[0.06] text-[#0D1B2A] dark:bg-emerald-950/30 dark:text-emerald-300' : 'text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-gray-400 dark:hover:bg-gray-900 dark:hover:text-gray-200' }}">
+                                    <svg class="mr-2.5 h-4 w-4 flex-shrink-0 {{ $active ? 'text-[#0D1B2A] dark:text-emerald-400' : 'text-zinc-400 group-hover:text-zinc-500 dark:group-hover:text-gray-300' }}" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="{{ $item['icon'] }}"/>
                                     </svg>
                                     {{ $item['label'] }}
@@ -624,18 +681,18 @@
                 </ul>
             </nav>
 
-            <div class="border-t border-gray-200 px-3 py-3 dark:border-gray-800">
-                <div class="flex items-center space-x-2.5 rounded-xl bg-gray-50 p-2.5 dark:bg-gray-950/60">
-                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-gradient-to-br from-emerald-600 to-green-700 text-xs font-bold text-white shadow-sm">
+            <div class="border-t border-zinc-200 px-3 py-3 dark:border-gray-800">
+                <div class="flex items-center space-x-2.5 rounded-xl bg-zinc-50 p-2.5 dark:bg-gray-950/60">
+                    <div class="flex h-8 w-8 items-center justify-center rounded-full bg-[#0D1B2A] dark:bg-gradient-to-br dark:from-emerald-600 dark:to-green-700 text-xs font-bold text-white shadow-sm">
                         A
                     </div>
                     <div class="min-w-0 flex-1">
-                        <p class="truncate text-xs font-semibold text-gray-900 dark:text-white">Administrator</p>
-                        <p class="truncate text-[10px] text-gray-500 dark:text-gray-500">Super Admin</p>
+                        <p class="truncate text-xs font-semibold text-zinc-900 dark:text-white">Administrator</p>
+                        <p class="truncate text-[10px] text-zinc-500 dark:text-gray-500">Super Admin</p>
                     </div>
                     <form method="POST" action="{{ route('logout') }}">
                         @csrf
-                        <button type="submit" class="rounded-md p-1.5 text-gray-400 transition-colors hover:bg-red-50 hover:text-red-500 dark:hover:bg-red-950/20 dark:hover:text-red-400" title="Logout">
+                        <button type="submit" class="rounded-md p-1.5 text-zinc-400 transition-colors hover:bg-[#f4f4f5] hover:text-zinc-900 dark:hover:bg-red-950/20 dark:hover:text-red-400" title="Logout">
                             <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                             </svg>
@@ -651,20 +708,20 @@
          x-on:show-toast.window="show = true; title = $event.detail.title; message = $event.detail.message; setTimeout(() => show = false, 5000)"
          x-show="show" 
          x-transition
-         class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-white dark:bg-[#0a0a0a] rounded-xl shadow-2xl border border-gray-200 dark:border-gray-800 p-4 hidden">
+         class="fixed bottom-5 right-5 z-50 w-full max-w-sm bg-white dark:bg-[#0a0a0a] rounded-xl shadow-[0_8px_30px_rgba(13,27,42,0.08)] border border-zinc-200 dark:border-gray-800 p-4 hidden">
         <div class="flex items-start space-x-3">
             <div class="flex-shrink-0">
-                <div class="w-8 h-8 rounded-full bg-emerald-100 dark:bg-emerald-950/30 flex items-center justify-center">
-                    <svg class="w-4 h-4 text-emerald-700 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-8 h-8 rounded-full bg-[#f4f4f5] dark:bg-emerald-950/30 flex items-center justify-center">
+                    <svg class="w-4 h-4 text-zinc-900 dark:text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
                     </svg>
                 </div>
             </div>
             <div class="flex-1">
-                <h3 class="text-xs font-semibold text-gray-900 dark:text-white" x-text="title"></h3>
-                <p class="text-[10px] text-gray-500 dark:text-gray-500 mt-1" x-text="message"></p>
+                <h3 class="text-xs font-semibold text-zinc-900 dark:text-white" x-text="title"></h3>
+                <p class="text-[10px] text-zinc-500 dark:text-gray-500 mt-1" x-text="message"></p>
             </div>
-            <button @click="show = false" class="text-[10px] text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 font-medium px-2 py-1 rounded hover:bg-gray-100 dark:hover:bg-gray-900">Tutup</button>
+            <button @click="show = false" class="text-[10px] text-zinc-400 hover:text-zinc-600 dark:hover:text-gray-200 font-medium px-2 py-1 rounded hover:bg-zinc-100 dark:hover:bg-gray-900">Tutup</button>
         </div>
     </div>
 
