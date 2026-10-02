@@ -8,6 +8,10 @@ return new class extends Migration
 {
     public function up(): void
     {
+        if (Schema::hasTable('site_visits')) {
+            return;
+        }
+
         Schema::create('site_visits', function (Blueprint $table) {
             $table->id();
             $table->date('visit_date')->index();
