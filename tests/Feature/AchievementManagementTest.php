@@ -80,6 +80,25 @@ test('admin can upload a photo for an achievement', function () {
         ->and($stored['winner_social_link'] ?? '')->toBe('https://instagram.com/aisyah');
 });
 
+test('achievement detail link and publish status persist when an admin stores new data', function () {
+    AchievementStore::save([]);
+
+    $created = AchievementStore::add([
+        'title' => 'Prestasi baru',
+        'category' => 'Tingkat Nasional',
+        'year' => 2025,
+        'winner' => 'Nadya',
+        'description' => 'Konten valid untuk publikasi.',
+        'detail_url' => 'https://sipres.smkn1bangsri.sch.id/prestasi/999',
+        'is_published' => true,
+        'published_at' => '2025-09-26 10:00:00',
+    ]);
+
+    expect($created['detail_url'])->toBe('https://sipres.smkn1bangsri.sch.id/prestasi/999')
+        ->and($created['is_published'])->toBeTrue()
+        ->and($created['published_at'])->toBe('2025-09-26 10:00:00');
+});
+
 test('achievement admin form submits image uploads with multipart encoding', function () {
     $user = User::factory()->create([
         'is_admin' => true,
@@ -127,6 +146,40 @@ test('home achievement cards link to their matching level page', function () {
         ->assertSee(route('prestasi.cabang'))
         ->assertSee(route('prestasi.jateng'))
         ->assertSee(route('prestasi.nasional'));
+});
+
+test('only published achievements are shown publicly and imported data keeps the external detail link', function () {
+    AchievementStore::save([
+        [
+            'id' => 1,
+            'title' => 'Draft item',
+            'category' => 'Tingkat Cabang',
+            'year' => 2025,
+            'winner' => 'Siswa Draft',
+            'description' => 'Tidak boleh tampil publik.',
+            'image' => 'images/achievement/prestasi1.jpg',
+            'is_published' => false,
+            'detail_url' => 'https://sipres.smkn1bangsri.sch.id/prestasi/1',
+        ],
+        [
+            'id' => 2,
+            'title' => 'Published item',
+            'category' => 'Tingkat Nasional',
+            'year' => 2025,
+            'winner' => 'Siswa Publik',
+            'description' => 'Harus tampil di halaman prestasi.',
+            'image' => 'images/achievement/prestasi1.jpg',
+            'is_published' => true,
+            'detail_url' => 'https://sipres.smkn1bangsri.sch.id/prestasi/2',
+        ],
+    ]);
+
+    $response = $this->get(route('prestasi'));
+
+    $response->assertOk()
+        ->assertSee('Published item')
+        ->assertDontSee('Draft item')
+        ->assertSee('https://sipres.smkn1bangsri.sch.id/prestasi/2', false);
 });
 
 test('achievement route redirects to the home achievement section and home links to category pages', function () {

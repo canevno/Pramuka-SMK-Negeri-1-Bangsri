@@ -41,10 +41,40 @@ class AchievementStore
             return [];
         }
 
-        return Achievement::query()
+        $query = Achievement::query();
+
+        if (Schema::hasColumn('achievements', 'is_published')) {
+            $query->orderByDesc('is_published');
+        }
+
+        return $query
             ->orderByDesc('year')
             ->orderByDesc('id')
             ->get()
+            ->map(fn ($achievement) => self::normalize($achievement->toArray()))
+            ->toArray();
+    }
+
+    public static function published(?int $year = null): array
+    {
+        if (! Schema::hasTable('achievements')) {
+            return [];
+        }
+
+        $query = Achievement::query();
+
+        if (Schema::hasColumn('achievements', 'is_published')) {
+            $query->where('is_published', true);
+        }
+
+        $query->orderByDesc('year')
+            ->orderByDesc('id');
+
+        if ($year !== null) {
+            $query->where('year', $year);
+        }
+
+        return $query->get()
             ->map(fn ($achievement) => self::normalize($achievement->toArray()))
             ->toArray();
     }
@@ -54,7 +84,7 @@ class AchievementStore
         $normalizedLevel = strtolower(trim($level));
 
         return array_values(array_filter(
-            self::all(),
+            self::published(),
             fn (array $achievement) => self::matchesLevel((string) ($achievement['category'] ?? ''), $normalizedLevel)
         ));
     }
@@ -69,6 +99,49 @@ class AchievementStore
 
         foreach ($items as $item) {
             Achievement::query()->create(self::normalize($item));
+        }
+    }
+
+    public static function syncImported(array $items): void
+    {
+        if (! Schema::hasTable('achievements')) {
+            return;
+        }
+
+        foreach ($items as $item) {
+            $normalized = self::normalize($item);
+            $candidate = Achievement::query();
+
+            if (! empty($normalized['detail_url'])) {
+                $candidate = $candidate->where('detail_url', $normalized['detail_url']);
+            }
+
+            if (empty($normalized['detail_url'])) {
+                $candidate = $candidate->where('title', $normalized['title'])
+                    ->where('year', $normalized['year']);
+            }
+
+            $existing = $candidate->first();
+
+            if ($existing) {
+                $payload = $normalized;
+                $payload['is_published'] = (bool) ($existing->is_published ?? false);
+
+                if (empty($payload['published_at']) && $payload['is_published']) {
+                    $payload['published_at'] = now()->toDateTimeString();
+                }
+
+                $existing->fill($payload);
+                $existing->save();
+
+                continue;
+            }
+
+            Achievement::query()->create([
+                ...$normalized,
+                'is_published' => false,
+                'published_at' => null,
+            ]);
         }
     }
 
@@ -88,6 +161,9 @@ class AchievementStore
             'winner_social_link' => $input['winner_social_link'] ?? ($input['winner_link'] ?? ''),
             'description' => $input['description'] ?? '',
             'image' => $input['image'] ?? 'images/achievement/prestasi1.jpg',
+            'detail_url' => $input['detail_url'] ?? ($input['url'] ?? ($input['link'] ?? '')),
+            'is_published' => $input['is_published'] ?? false,
+            'published_at' => $input['published_at'] ?? null,
         ]));
 
         return self::normalize($achievement->toArray());
@@ -116,6 +192,9 @@ class AchievementStore
             'winner_social_link' => $input['winner_social_link'] ?? ($input['winner_link'] ?? $achievement->winner_social_link),
             'description' => $input['description'] ?? $achievement->description,
             'image' => $input['image'] ?? $achievement->image,
+            'detail_url' => $input['detail_url'] ?? ($input['url'] ?? ($input['link'] ?? $achievement->detail_url)),
+            'is_published' => $input['is_published'] ?? $achievement->is_published,
+            'published_at' => $input['published_at'] ?? $achievement->published_at,
         ]));
 
         $achievement->save();
@@ -156,6 +235,8 @@ class AchievementStore
     protected static function normalize(array $item): array
     {
         $winnerSocialLink = $item['winner_social_link'] ?? ($item['winner_link'] ?? '');
+        $detailUrl = $item['detail_url'] ?? ($item['url'] ?? ($item['link'] ?? ''));
+        $publishedAt = $item['published_at'] ?? null;
 
         return [
             'id' => (int) ($item['id'] ?? 0),
@@ -168,6 +249,9 @@ class AchievementStore
             'winner_social_link' => trim((string) $winnerSocialLink),
             'description' => trim((string) ($item['description'] ?? '')),
             'image' => trim((string) ($item['image'] ?? 'images/achievement/prestasi1.jpg')),
+            'detail_url' => trim((string) $detailUrl),
+            'is_published' => (bool) ($item['is_published'] ?? false),
+            'published_at' => $publishedAt ? trim((string) $publishedAt) : null,
         ];
     }
 

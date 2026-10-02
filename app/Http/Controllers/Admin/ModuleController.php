@@ -15,6 +15,7 @@ use App\Models\Pembina;
 use App\Models\Post;
 use App\Models\TimelineEvent;
 use App\Support\AchievementStore;
+use App\Support\SipresPrestasiSync;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
@@ -153,6 +154,26 @@ class ModuleController extends Controller
         ]);
     }
 
+    public function togglePrestasiStatus(Achievement $achievement)
+    {
+        $achievement->is_published = ! $achievement->is_published;
+        $achievement->published_at = $achievement->is_published ? ($achievement->published_at ?? now()) : null;
+        $achievement->save();
+
+        return redirect()->route('admin.prestasi')->with('success', $achievement->is_published ? 'Prestasi berhasil dipublikasikan.' : 'Prestasi berhasil diubah ke draft.');
+    }
+
+    public function syncPrestasiFromSipres()
+    {
+        try {
+            $result = SipresPrestasiSync::sync();
+
+            return redirect()->route('admin.prestasi')->with('success', 'Sinkronisasi prestasi SIPRES berhasil. '.$result['synced'].' data ditambahkan/diupdate.');
+        } catch (\Throwable $e) {
+            return redirect()->route('admin.prestasi')->with('error', 'Sinkronisasi gagal: '.$e->getMessage());
+        }
+    }
+
     public function storePrestasi(Request $request)
     {
         $validated = $request->validate([
@@ -163,9 +184,11 @@ class ModuleController extends Controller
             'location' => 'nullable|string|max:255',
             'winner' => 'required|string|max:255',
             'winner_social_link' => 'nullable|url|max:255',
+            'detail_url' => 'nullable|url|max:500',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
             'image_path' => 'nullable|string|max:255',
+            'is_published' => 'nullable|boolean',
         ]);
 
         $payload = [
@@ -176,8 +199,11 @@ class ModuleController extends Controller
             'location' => $validated['location'] ?? null,
             'winner' => $validated['winner'],
             'winner_social_link' => $validated['winner_social_link'] ?? '',
+            'detail_url' => $validated['detail_url'] ?? '',
             'description' => $validated['description'],
             'image' => $validated['image_path'] ?? 'images/achievement/prestasi1.jpg',
+            'is_published' => (bool) ($validated['is_published'] ?? false),
+            'published_at' => (bool) ($validated['is_published'] ?? false) ? now()->toDateTimeString() : null,
         ];
 
         if ($request->hasFile('image')) {
@@ -199,9 +225,11 @@ class ModuleController extends Controller
             'location' => 'nullable|string|max:255',
             'winner' => 'required|string|max:255',
             'winner_social_link' => 'nullable|url|max:255',
+            'detail_url' => 'nullable|url|max:500',
             'description' => 'required|string',
             'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:12288',
             'image_path' => 'nullable|string|max:255',
+            'is_published' => 'nullable|boolean',
         ]);
 
         $payload = [
@@ -212,8 +240,11 @@ class ModuleController extends Controller
             'location' => $validated['location'] ?? $achievement->location,
             'winner' => $validated['winner'],
             'winner_social_link' => $validated['winner_social_link'] ?? '',
+            'detail_url' => $validated['detail_url'] ?? ($achievement->detail_url ?? ''),
             'description' => $validated['description'],
             'image' => $validated['image_path'] ?? $achievement->image ?: 'images/achievement/prestasi1.jpg',
+            'is_published' => (bool) ($validated['is_published'] ?? $achievement->is_published),
+            'published_at' => (bool) ($validated['is_published'] ?? $achievement->is_published) ? ($achievement->published_at ?? now()) : null,
         ];
 
         if ($request->hasFile('image')) {

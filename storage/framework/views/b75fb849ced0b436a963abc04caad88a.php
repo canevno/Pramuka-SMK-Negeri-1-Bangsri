@@ -1,10 +1,10 @@
-@extends('admin.layouts.app')
 
-@section('title', $title)
-@section('page-heading', $title)
-@section('page-description', $description)
 
-@section('content')
+<?php $__env->startSection('title', $title); ?>
+<?php $__env->startSection('page-heading', $title); ?>
+<?php $__env->startSection('page-description', $description); ?>
+
+<?php $__env->startSection('content'); ?>
     <style>
         .prestasi-scrollbar-hidden {
             -ms-overflow-style: none;
@@ -16,7 +16,7 @@
         }
     </style>
 
-    @php
+    <?php
         $stats = [
             ['label' => 'Total Prestasi', 'value' => count($achievements ?? []), 'caption' => 'Data tersimpan', 'icon' => 'M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'],
             ['label' => 'Tahun Terbaru', 'value' => (count($achievements ?? []) > 0 ? (string) ($achievements[0]['year'] ?? now()->year) : '-'), 'caption' => 'Pencapaian terakhir', 'icon' => 'M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
@@ -27,29 +27,29 @@
         $labelClass = 'mb-1.5 block text-[11px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400';
         $inputClass = 'w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-base text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-slate-900 focus:ring-4 focus:ring-slate-900/10 sm:text-sm dark:border-slate-700 dark:bg-slate-800 dark:text-white dark:placeholder-slate-500 dark:focus:border-white dark:focus:ring-white/10';
         $mobileLabelClass = 'text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-400 md:hidden dark:text-slate-500';
-    @endphp
+    ?>
 
     <div class="space-y-5 sm:space-y-6">
 
-        {{-- Statistik --}}
+        
         <div class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4">
-            @foreach($stats as $stat)
+            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__currentLoopData = $stats; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $stat): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                 <div class="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-5 dark:border-slate-800 dark:bg-slate-900">
                     <div class="flex items-start justify-between gap-2">
-                        <p class="min-w-0 text-[10px] font-semibold uppercase leading-snug tracking-[0.14em] text-slate-500 sm:text-[11px] sm:tracking-[0.2em] dark:text-slate-400">{{ $stat['label'] }}</p>
+                        <p class="min-w-0 text-[10px] font-semibold uppercase leading-snug tracking-[0.14em] text-slate-500 sm:text-[11px] sm:tracking-[0.2em] dark:text-slate-400"><?php echo e($stat['label']); ?></p>
                         <div class="shrink-0 rounded-xl bg-slate-100 p-2 text-slate-600 sm:p-2.5 dark:bg-slate-800 dark:text-slate-300">
-                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $stat['icon'] }}"></path></svg>
+                            <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="<?php echo e($stat['icon']); ?>"></path></svg>
                         </div>
                     </div>
-                    <p class="mt-3 text-2xl font-bold text-slate-900 sm:mt-4 sm:text-3xl dark:text-white">{{ $stat['value'] }}</p>
-                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ $stat['caption'] }}</p>
+                    <p class="mt-3 text-2xl font-bold text-slate-900 sm:mt-4 sm:text-3xl dark:text-white"><?php echo e($stat['value']); ?></p>
+                    <p class="mt-1 text-xs text-slate-500 dark:text-slate-400"><?php echo e($stat['caption']); ?></p>
                 </div>
-            @endforeach
+            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
         </div>
 
         <div class="space-y-5 sm:space-y-6">
 
-            {{-- Daftar Prestasi --}}
+            
             <div class="min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-slate-800">
                     <div class="min-w-0">
@@ -57,14 +57,14 @@
                         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Kelola data pencapaian yang sudah masuk.</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <form method="POST" action="{{ route('admin.prestasi.sync-sipres') }}">
-                            @csrf
+                        <form method="POST" action="<?php echo e(route('admin.prestasi.sync-sipres')); ?>">
+                            <?php echo csrf_field(); ?>
                             <button type="submit" class="inline-flex items-center justify-center rounded-lg border border-slate-900 bg-slate-900 px-3 py-2 text-[11px] font-semibold text-white transition hover:border-slate-700 hover:bg-slate-700 dark:border-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
                                 Sinkron dari SIPRES
                             </button>
                         </form>
                         <span class="inline-flex shrink-0 items-center rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 dark:bg-slate-800 dark:text-slate-300">
-                            {{ count($achievements ?? []) }} Item
+                            <?php echo e(count($achievements ?? [])); ?> Item
                         </span>
                     </div>
                 </div>
@@ -81,69 +81,72 @@
                             </tr>
                         </thead>
                         <tbody class="block divide-y divide-slate-200 md:table-row-group dark:divide-slate-800">
-                            @forelse($achievements ?? [] as $achievement)
+                            <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php $__empty_1 = true; $__currentLoopData = $achievements ?? []; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $achievement): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); $__empty_1 = false; ?>
                                 <tr class="block px-4 py-4 align-top transition hover:bg-slate-50/70 md:table-row md:p-0 dark:hover:bg-slate-800/40">
                                     <td class="block pb-2 md:table-cell md:px-5 md:py-4">
-                                        <div class="font-semibold leading-snug text-slate-900 dark:text-white">{{ $achievement['title'] }}</div>
-                                        @if (! empty($achievement['detail_url']))
-                                            <a href="{{ $achievement['detail_url'] }}" target="_blank" rel="noopener noreferrer" class="mt-1 inline-flex text-[11px] font-medium text-slate-500 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
+                                        <div class="font-semibold leading-snug text-slate-900 dark:text-white"><?php echo e($achievement['title']); ?></div>
+                                        <?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if BLOCK]><![endif]--><?php endif; ?><?php if(! empty($achievement['detail_url'])): ?>
+                                            <a href="<?php echo e($achievement['detail_url']); ?>" target="_blank" rel="noopener noreferrer" class="mt-1 inline-flex text-[11px] font-medium text-slate-500 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
                                                 Lihat di SIPRES
                                             </a>
-                                        @endif
+                                        <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                                     </td>
                                     <td class="flex items-center justify-between gap-3 py-1.5 md:table-cell md:px-5 md:py-4">
-                                        <span class="{{ $mobileLabelClass }}">Kategori</span>
+                                        <span class="<?php echo e($mobileLabelClass); ?>">Kategori</span>
                                         <span class="inline-flex rounded-full bg-slate-100 px-2.5 py-1 text-xs font-medium text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                                            {{ $achievement['category'] }}
+                                            <?php echo e($achievement['category']); ?>
+
                                         </span>
                                     </td>
                                     <td class="flex items-center justify-between gap-3 py-1.5 md:table-cell md:whitespace-nowrap md:px-5 md:py-4">
-                                        <span class="{{ $mobileLabelClass }}">Tahun</span>
-                                        <span>{{ $achievement['year'] }}</span>
+                                        <span class="<?php echo e($mobileLabelClass); ?>">Tahun</span>
+                                        <span><?php echo e($achievement['year']); ?></span>
                                     </td>
                                     <td class="flex items-center justify-between gap-3 py-1.5 text-slate-700 md:table-cell md:px-5 md:py-4 dark:text-slate-300">
-                                        <span class="{{ $mobileLabelClass }}">Status</span>
-                                        <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] {{ ! empty($achievement['is_published']) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300' }}">
-                                            {{ ! empty($achievement['is_published']) ? 'Publik' : 'Draft' }}
+                                        <span class="<?php echo e($mobileLabelClass); ?>">Status</span>
+                                        <span class="inline-flex rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.12em] <?php echo e(! empty($achievement['is_published']) ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-300' : 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-300'); ?>">
+                                            <?php echo e(! empty($achievement['is_published']) ? 'Publik' : 'Draft'); ?>
+
                                         </span>
                                     </td>
                                     <td class="block pt-3 md:table-cell md:px-5 md:py-4 md:text-right">
                                         <div class="flex gap-2 md:justify-end">
-                                            <form method="POST" action="{{ route('admin.prestasi.toggle-status', $achievement['id']) }}" class="flex flex-1 md:flex-none">
-                                                @csrf
-                                                @method('PATCH')
+                                            <form method="POST" action="<?php echo e(route('admin.prestasi.toggle-status', $achievement['id'])); ?>" class="flex flex-1 md:flex-none">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('PATCH'); ?>
                                                 <button type="submit" title="Ubah status" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-[11px] font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-100 md:w-auto md:py-1.5 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
-                                                    {{ ! empty($achievement['is_published']) ? 'Jadikan Draft' : 'Publikasikan' }}
+                                                    <?php echo e(! empty($achievement['is_published']) ? 'Jadikan Draft' : 'Publikasikan'); ?>
+
                                                 </button>
                                             </form>
 
                                             <button type="button"
                                                 title="Edit"
-                                                data-edit-id="{{ $achievement['id'] }}"
-                                                data-edit-title="{{ $achievement['title'] }}"
-                                                data-edit-category="{{ $achievement['category'] }}"
-                                                data-edit-year="{{ $achievement['year'] }}"
-                                                data-edit-date="{{ $achievement['date'] ?? '' }}"
-                                                data-edit-location="{{ $achievement['location'] ?? '' }}"
-                                                data-edit-winner="{{ $achievement['winner'] }}"
-                                                data-edit-winner-link="{{ $achievement['winner_social_link'] ?? '' }}"
-                                                data-edit-description="{{ $achievement['description'] ?? '' }}"
+                                                data-edit-id="<?php echo e($achievement['id']); ?>"
+                                                data-edit-title="<?php echo e($achievement['title']); ?>"
+                                                data-edit-category="<?php echo e($achievement['category']); ?>"
+                                                data-edit-year="<?php echo e($achievement['year']); ?>"
+                                                data-edit-date="<?php echo e($achievement['date'] ?? ''); ?>"
+                                                data-edit-location="<?php echo e($achievement['location'] ?? ''); ?>"
+                                                data-edit-winner="<?php echo e($achievement['winner']); ?>"
+                                                data-edit-winner-link="<?php echo e($achievement['winner_social_link'] ?? ''); ?>"
+                                                data-edit-description="<?php echo e($achievement['description'] ?? ''); ?>"
                                                 class="js-edit-achievement inline-flex flex-1 items-center justify-center gap-1.5 rounded-lg border border-slate-900 bg-slate-900 px-2.5 py-2 text-[11px] font-medium text-white transition hover:border-slate-700 hover:bg-slate-700 md:flex-none md:py-1.5 dark:border-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
                                                 <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.5-9.5a2.121 2.121 0 113 3L12 15l-4 1 1-4 7.5-7.5z"></path></svg>
                                                 <span class="md:sr-only lg:not-sr-only">Edit</span>
                                             </button>
 
-                                            <form method="POST" action="{{ route('admin.prestasi.duplicate', $achievement['id']) }}" class="flex flex-1 md:flex-none">
-                                                @csrf
+                                            <form method="POST" action="<?php echo e(route('admin.prestasi.duplicate', $achievement['id'])); ?>" class="flex flex-1 md:flex-none">
+                                                <?php echo csrf_field(); ?>
                                                 <button type="submit" title="Duplikat" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-[11px] font-medium text-slate-700 transition hover:border-slate-400 hover:bg-slate-100 md:w-auto md:py-1.5 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200 dark:hover:bg-slate-800">
                                                     <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
                                                     <span class="md:sr-only lg:not-sr-only">Duplikat</span>
                                                 </button>
                                             </form>
 
-                                            <form method="POST" action="{{ route('admin.prestasi.delete', $achievement['id']) }}" onsubmit="return confirm('Apakah Anda yakin ingin menghapus prestasi ini? Tindakan ini tidak dapat dibatalkan.')" class="flex flex-1 md:flex-none">
-                                                @csrf
-                                                @method('DELETE')
+                                            <form method="POST" action="<?php echo e(route('admin.prestasi.delete', $achievement['id'])); ?>" onsubmit="return confirm('Apakah Anda yakin ingin menghapus prestasi ini? Tindakan ini tidak dapat dibatalkan.')" class="flex flex-1 md:flex-none">
+                                                <?php echo csrf_field(); ?>
+                                                <?php echo method_field('DELETE'); ?>
                                                 <button type="submit" title="Hapus" class="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-slate-300 bg-white px-2.5 py-2 text-[11px] font-medium text-slate-900 transition hover:border-slate-900 hover:bg-slate-900 hover:text-white md:w-auto md:py-1.5 dark:border-slate-700 dark:bg-slate-900 dark:text-slate-100 dark:hover:border-white dark:hover:bg-white dark:hover:text-slate-900">
                                                     <svg class="h-3.5 w-3.5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
                                                     <span class="md:sr-only lg:not-sr-only">Hapus</span>
@@ -152,7 +155,7 @@
                                         </div>
                                     </td>
                                 </tr>
-                            @empty
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); if ($__empty_1): ?>
                                 <tr class="block md:table-row">
                                     <td colspan="5" class="block px-6 py-12 text-center md:table-cell">
                                         <div class="mx-auto h-12 w-12 rounded-full bg-slate-100 p-3 dark:bg-slate-800">
@@ -162,32 +165,32 @@
                                         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Mulai tambahkan prestasi baru menggunakan formulir di bawah ini.</p>
                                     </td>
                                 </tr>
-                            @endforelse
+                            <?php endif; ?><?php if(\Livewire\Mechanisms\ExtendBlade\ExtendBlade::isRenderingLivewireComponent()): ?><!--[if ENDBLOCK]><![endif]--><?php endif; ?>
                         </tbody>
                     </table>
                 </div>
             </div>
 
-            {{-- Form Tambah / Edit Prestasi --}}
+            
             <div id="achievement-form-card" class="scroll-mt-24 min-w-0 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm dark:border-slate-800 dark:bg-slate-900">
                 <div class="border-b border-slate-200 px-4 py-4 sm:px-5 dark:border-slate-800">
                     <h3 class="text-base font-semibold text-slate-900 dark:text-white">Tambah Prestasi</h3>
                     <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Isi detail pencapaian baru.</p>
                 </div>
 
-                <form method="POST" action="{{ route('admin.prestasi.store') }}" enctype="multipart/form-data" class="grid gap-5 p-4 sm:p-5 lg:grid-cols-2 lg:gap-x-6" id="achievement-form">
-                    @csrf
+                <form method="POST" action="<?php echo e(route('admin.prestasi.store')); ?>" enctype="multipart/form-data" class="grid gap-5 p-4 sm:p-5 lg:grid-cols-2 lg:gap-x-6" id="achievement-form">
+                    <?php echo csrf_field(); ?>
                     <input type="hidden" name="edit_id" id="edit_id" value="">
 
                     <div class="lg:col-span-2">
-                        <label for="achievement_title" class="{{ $labelClass }}">Judul Prestasi <span class="text-slate-900 dark:text-white">*</span></label>
-                        <input id="achievement_title" type="text" name="title" required class="{{ $inputClass }}" placeholder="Contoh: Juara 1 Lomba Pionering" />
+                        <label for="achievement_title" class="<?php echo e($labelClass); ?>">Judul Prestasi <span class="text-slate-900 dark:text-white">*</span></label>
+                        <input id="achievement_title" type="text" name="title" required class="<?php echo e($inputClass); ?>" placeholder="Contoh: Juara 1 Lomba Pionering" />
                     </div>
 
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div>
-                            <label for="achievement_category" class="{{ $labelClass }}">Kategori <span class="text-slate-900 dark:text-white">*</span></label>
-                            <select id="achievement_category" name="category" required class="{{ $inputClass }}">
+                            <label for="achievement_category" class="<?php echo e($labelClass); ?>">Kategori <span class="text-slate-900 dark:text-white">*</span></label>
+                            <select id="achievement_category" name="category" required class="<?php echo e($inputClass); ?>">
                                 <option value="">Pilih tingkat prestasi</option>
                                 <option value="Tingkat Ranting">Tingkat Ranting</option>
                                 <option value="Tingkat Cabang">Tingkat Cabang</option>
@@ -196,54 +199,54 @@
                             </select>
                         </div>
                         <div>
-                            <label for="achievement_year" class="{{ $labelClass }}">Tahun <span class="text-slate-900 dark:text-white">*</span></label>
-                            <input id="achievement_year" type="number" name="year" value="{{ now()->year }}" required min="2000" max="2100" class="{{ $inputClass }}" />
+                            <label for="achievement_year" class="<?php echo e($labelClass); ?>">Tahun <span class="text-slate-900 dark:text-white">*</span></label>
+                            <input id="achievement_year" type="number" name="year" value="<?php echo e(now()->year); ?>" required min="2000" max="2100" class="<?php echo e($inputClass); ?>" />
                         </div>
                     </div>
 
                     <div class="grid gap-4 sm:grid-cols-2">
                         <div>
-                            <label for="achievement_date" class="{{ $labelClass }}">Tanggal <span class="text-slate-900 dark:text-white">*</span></label>
-                            <input id="achievement_date" type="date" name="date" required class="{{ $inputClass }}" />
+                            <label for="achievement_date" class="<?php echo e($labelClass); ?>">Tanggal <span class="text-slate-900 dark:text-white">*</span></label>
+                            <input id="achievement_date" type="date" name="date" required class="<?php echo e($inputClass); ?>" />
                         </div>
                         <div>
-                            <label for="achievement_location" class="{{ $labelClass }}">Lokasi <span class="text-slate-900 dark:text-white">*</span></label>
-                            <input id="achievement_location" type="text" name="location" required class="{{ $inputClass }}" placeholder="Contoh: Jepara, Semarang" />
+                            <label for="achievement_location" class="<?php echo e($labelClass); ?>">Lokasi <span class="text-slate-900 dark:text-white">*</span></label>
+                            <input id="achievement_location" type="text" name="location" required class="<?php echo e($inputClass); ?>" placeholder="Contoh: Jepara, Semarang" />
                         </div>
                     </div>
 
                     <div>
-                        <label for="achievement_winner" class="{{ $labelClass }}">Pemenang / Peserta <span class="text-slate-900 dark:text-white">*</span></label>
-                        <input id="achievement_winner" type="text" name="winner" required class="{{ $inputClass }}" placeholder="Nama anggota atau regu" />
+                        <label for="achievement_winner" class="<?php echo e($labelClass); ?>">Pemenang / Peserta <span class="text-slate-900 dark:text-white">*</span></label>
+                        <input id="achievement_winner" type="text" name="winner" required class="<?php echo e($inputClass); ?>" placeholder="Nama anggota atau regu" />
                     </div>
 
                     <div>
-                        <label for="achievement_winner_link" class="{{ $labelClass }}">Instagram / Link Media Sosial</label>
-                        <input id="achievement_winner_link" type="url" name="winner_social_link" class="{{ $inputClass }}" placeholder="https://instagram.com/username" />
+                        <label for="achievement_winner_link" class="<?php echo e($labelClass); ?>">Instagram / Link Media Sosial</label>
+                        <input id="achievement_winner_link" type="url" name="winner_social_link" class="<?php echo e($inputClass); ?>" placeholder="https://instagram.com/username" />
                         <p class="mt-1.5 text-[11px] text-slate-400">Kosongkan jika tidak ingin menampilkan instagram.</p>
                     </div>
 
                     <div>
-                        <label for="achievement_detail_url" class="{{ $labelClass }}">Link Detail SIPRES</label>
-                        <input id="achievement_detail_url" type="url" name="detail_url" class="{{ $inputClass }}" placeholder="https://sipres.smkn1bangsri.sch.id/prestasi/123" />
+                        <label for="achievement_detail_url" class="<?php echo e($labelClass); ?>">Link Detail SIPRES</label>
+                        <input id="achievement_detail_url" type="url" name="detail_url" class="<?php echo e($inputClass); ?>" placeholder="https://sipres.smkn1bangsri.sch.id/prestasi/123" />
                     </div>
 
                     <div>
-                        <label for="achievement_is_published" class="{{ $labelClass }}">Status Publikasi</label>
-                        <select id="achievement_is_published" name="is_published" class="{{ $inputClass }}">
+                        <label for="achievement_is_published" class="<?php echo e($labelClass); ?>">Status Publikasi</label>
+                        <select id="achievement_is_published" name="is_published" class="<?php echo e($inputClass); ?>">
                             <option value="0">Draft</option>
                             <option value="1">Publik</option>
                         </select>
                     </div>
 
                     <div class="flex flex-col">
-                        <label for="achievement_description" class="{{ $labelClass }}">Deskripsi <span class="text-slate-900 dark:text-white">*</span></label>
-                        <textarea id="achievement_description" rows="6" name="description" required class="{{ $inputClass }} resize-y lg:min-h-[10rem] lg:flex-1" placeholder="Tuliskan deskripsi singkat pencapaian..."></textarea>
+                        <label for="achievement_description" class="<?php echo e($labelClass); ?>">Deskripsi <span class="text-slate-900 dark:text-white">*</span></label>
+                        <textarea id="achievement_description" rows="6" name="description" required class="<?php echo e($inputClass); ?> resize-y lg:min-h-[10rem] lg:flex-1" placeholder="Tuliskan deskripsi singkat pencapaian..."></textarea>
                     </div>
 
                     <div>
                         <input type="hidden" name="image_path" value="images/achievement/prestasi1.jpg">
-                        <label class="{{ $labelClass }}">Gambar Prestasi</label>
+                        <label class="<?php echo e($labelClass); ?>">Gambar Prestasi</label>
 
                         <div id="prestasi-upload-box" class="group relative cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed border-slate-300 bg-slate-50 p-3 transition-all duration-200 hover:border-slate-500 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800/60 dark:hover:border-slate-400 dark:hover:bg-slate-800">
                             <div id="prestasi-empty-state" class="flex min-h-[170px] flex-col items-center justify-center gap-3 rounded-xl border border-slate-200/80 bg-white/70 px-4 py-5 text-center shadow-inner dark:border-slate-700 dark:bg-slate-950/30">
@@ -301,7 +304,7 @@
                 const id = button.dataset.editId;
                 const title = button.dataset.editTitle || '';
                 const category = button.dataset.editCategory || '';
-                const year = button.dataset.editYear || '{{ now()->year }}';
+                const year = button.dataset.editYear || '<?php echo e(now()->year); ?>';
                 const date = button.dataset.editDate || '';
                 const location = button.dataset.editLocation || '';
                 const winner = button.dataset.editWinner || '';
@@ -318,7 +321,7 @@
                 winnerLinkInput.value = winnerLink;
                 descriptionInput.value = description;
 
-                form.action = '{{ route('admin.prestasi.store') }}';
+                form.action = '<?php echo e(route('admin.prestasi.store')); ?>';
                 submitLabel.textContent = 'Perbarui Prestasi';
                 titleInput.focus({ preventScroll: true });
                 if (formCard) {
@@ -331,11 +334,11 @@
 
         form.addEventListener('submit', function () {
             if (!editId.value) {
-                form.action = '{{ route('admin.prestasi.store') }}';
+                form.action = '<?php echo e(route('admin.prestasi.store')); ?>';
                 return;
             }
 
-            form.action = '{{ route('admin.prestasi.store') }}';
+            form.action = '<?php echo e(route('admin.prestasi.store')); ?>';
         });
         const uploadBox = document.getElementById('prestasi-upload-box');
         const input = document.getElementById('prestasi-image-input');
@@ -408,4 +411,5 @@
         });
     });
 </script>
-@endsection
+<?php $__env->stopSection(); ?>
+<?php echo $__env->make('admin.layouts.app', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH C:\Users\Lenovo\Pramuka01\resources\views/admin/modules/prestasi.blade.php ENDPATH**/ ?>
