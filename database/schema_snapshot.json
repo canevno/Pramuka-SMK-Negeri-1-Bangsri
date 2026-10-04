@@ -1,0 +1,2162 @@
+{
+    "achievements": {
+        "create": "CREATE TABLE `achievements` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `year` smallint unsigned NOT NULL,\n  `date` date DEFAULT NULL,\n  `location` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `winner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `winner_social_link` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `description` text COLLATE utf8mb4_unicode_ci,\n  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `detail_url` text COLLATE utf8mb4_unicode_ci,\n  `is_published` tinyint(1) NOT NULL DEFAULT '0',\n  `published_at` timestamp NULL DEFAULT NULL,\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "title",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "category",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "year",
+                "type": "smallint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "date",
+                "type": "date",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "location",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "winner",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "winner_social_link",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "description",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "image",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "detail_url",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_published",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "published_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "alumni": {
+        "create": "CREATE TABLE `alumni` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `jabatan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `status` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `bio` text COLLATE utf8mb4_unicode_ci,\n  `photo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "jabatan",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "status",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "bio",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "photo_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "ambalan_profiles": {
+        "create": "CREATE TABLE `ambalan_profiles` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `subtitle` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `description` longtext COLLATE utf8mb4_unicode_ci,\n  `vision` longtext COLLATE utf8mb4_unicode_ci,\n  `mission` longtext COLLATE utf8mb4_unicode_ci,\n  `image_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `ambalan_profiles_slug_unique` (`slug`)\n) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "slug",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "subtitle",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "description",
+                "type": "longtext",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "vision",
+                "type": "longtext",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "mission",
+                "type": "longtext",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "image_path",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "attendance_records": {
+        "create": "CREATE TABLE `attendance_records` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `user_id` bigint unsigned DEFAULT NULL,\n  `participant_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `participant_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `participant_sangga` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `participant_kelas` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `participant_ambalan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `iuran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Tidak',\n  `iuran_amount` int NOT NULL DEFAULT '0',\n  `bulan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `tanggal` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `week_label` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `month_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `year_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `record_date` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `tahun` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `petugas_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `petugas_kelas` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `petugas_nta` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `unique_attendance_record` (`record_date`,`participant_name`(100),`participant_kelas`(50),`participant_ambalan`(30)),\n  KEY `attendance_records_user_id_foreign` (`user_id`),\n  KEY `attendance_records_bulan_tahun_participant_kelas_index` (`bulan`,`tahun`,`participant_kelas`),\n  CONSTRAINT `attendance_records_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL\n) ENGINE=InnoDB AUTO_INCREMENT=717 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "user_id",
+                "type": "bigint unsigned",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "participant_id",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "participant_name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "participant_sangga",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "participant_kelas",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "participant_ambalan",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "status",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "iuran",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "Tidak"
+            },
+            {
+                "name": "iuran_amount",
+                "type": "int",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "bulan",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "tanggal",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "week_label",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "month_key",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "year_key",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "record_date",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "tahun",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "petugas_name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "petugas_kelas",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "petugas_nta",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "attendances": {
+        "create": "CREATE TABLE `attendances` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `participant_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `participant_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `participant_kelas` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `participant_ambalan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `ambalan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `tanggal` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `bulan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `tahun` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `record_date` date DEFAULT NULL,\n  `month_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `year_key` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `week_label` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `iuran` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Tidak',\n  `petugas_name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `petugas_kelas` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `petugas_nta` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "participant_id",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "participant_name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "participant_kelas",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "participant_ambalan",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "ambalan",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "tanggal",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "bulan",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "tahun",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "record_date",
+                "type": "date",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "month_key",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "year_key",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "week_label",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "status",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "iuran",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "Tidak"
+            },
+            {
+                "name": "petugas_name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "petugas_kelas",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "petugas_nta",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "bantara_registrations": {
+        "create": "CREATE TABLE `bantara_registrations` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `kelas` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `jenis_kelamin` enum('L','P') COLLATE utf8mb4_unicode_ci NOT NULL,\n  `rt` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `rw` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `kecamatan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `kabupaten` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `tempat_tanggal_lahir` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `motivasi` text COLLATE utf8mb4_unicode_ci NOT NULL,\n  `whatsapp` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `nomor_orang_tua` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `surat_izin_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `status_verifikasi` enum('pending','disetujui','ditolak') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "nama",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "kelas",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "jenis_kelamin",
+                "type": "enum('L','P')",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "rt",
+                "type": "varchar(5)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "rw",
+                "type": "varchar(5)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "kecamatan",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "kabupaten",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "tempat_tanggal_lahir",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "motivasi",
+                "type": "text",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "whatsapp",
+                "type": "varchar(20)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "nomor_orang_tua",
+                "type": "varchar(20)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "surat_izin_path",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "status_verifikasi",
+                "type": "enum('pending','disetujui','ditolak')",
+                "null": false,
+                "default": "pending"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "cache": {
+        "create": "CREATE TABLE `cache` (\n  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `value` mediumtext COLLATE utf8mb4_unicode_ci NOT NULL,\n  `expiration` bigint NOT NULL,\n  PRIMARY KEY (`key`),\n  KEY `cache_expiration_index` (`expiration`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "key",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "value",
+                "type": "mediumtext",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "expiration",
+                "type": "bigint",
+                "null": false,
+                "default": null
+            }
+        ]
+    },
+    "cache_locks": {
+        "create": "CREATE TABLE `cache_locks` (\n  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `owner` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `expiration` bigint NOT NULL,\n  PRIMARY KEY (`key`),\n  KEY `cache_locks_expiration_index` (`expiration`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "key",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "owner",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "expiration",
+                "type": "bigint",
+                "null": false,
+                "default": null
+            }
+        ]
+    },
+    "dewan_ambalans": {
+        "create": "CREATE TABLE `dewan_ambalans` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `jabatan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Aktif',\n  `bio` text COLLATE utf8mb4_unicode_ci,\n  `photo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "jabatan",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "phone",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "email",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "status",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "Aktif"
+            },
+            {
+                "name": "bio",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "photo_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "dewan_kehormatans": {
+        "create": "CREATE TABLE `dewan_kehormatans` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `jabatan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Aktif',\n  `bio` text COLLATE utf8mb4_unicode_ci,\n  `photo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "jabatan",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "phone",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "email",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "status",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "Aktif"
+            },
+            {
+                "name": "bio",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "photo_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "failed_jobs": {
+        "create": "CREATE TABLE `failed_jobs` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `uuid` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `connection` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,\n  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,\n  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`),\n  KEY `failed_jobs_connection_queue_failed_at_index` (`connection`,`queue`,`failed_at`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "uuid",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "connection",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "queue",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "payload",
+                "type": "longtext",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "exception",
+                "type": "longtext",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "failed_at",
+                "type": "timestamp",
+                "null": false,
+                "default": "CURRENT_TIMESTAMP"
+            }
+        ]
+    },
+    "gallery_items": {
+        "create": "CREATE TABLE `gallery_items` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `category` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'kegiatan',\n  `group` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'umum',\n  `location` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `description` text COLLATE utf8mb4_unicode_ci,\n  `alt_text` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `published_at` date DEFAULT NULL,\n  `is_published` tinyint(1) NOT NULL DEFAULT '1',\n  `is_featured` tinyint(1) NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "title",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "category",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "kegiatan"
+            },
+            {
+                "name": "group",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "umum"
+            },
+            {
+                "name": "location",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "image",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "description",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "alt_text",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "published_at",
+                "type": "date",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_published",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "is_featured",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "hero_slides": {
+        "create": "CREATE TABLE `hero_slides` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `excerpt` text COLLATE utf8mb4_unicode_ci,\n  `href` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `image` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "title",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "excerpt",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "href",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "image",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "job_batches": {
+        "create": "CREATE TABLE `job_batches` (\n  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `total_jobs` int NOT NULL,\n  `pending_jobs` int NOT NULL,\n  `failed_jobs` int NOT NULL,\n  `failed_job_ids` longtext COLLATE utf8mb4_unicode_ci NOT NULL,\n  `options` mediumtext COLLATE utf8mb4_unicode_ci,\n  `cancelled_at` int DEFAULT NULL,\n  `created_at` int NOT NULL,\n  `finished_at` int DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "total_jobs",
+                "type": "int",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "pending_jobs",
+                "type": "int",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "failed_jobs",
+                "type": "int",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "failed_job_ids",
+                "type": "longtext",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "options",
+                "type": "mediumtext",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "cancelled_at",
+                "type": "int",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "int",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "finished_at",
+                "type": "int",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "jobs": {
+        "create": "CREATE TABLE `jobs` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `queue` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,\n  `attempts` smallint unsigned NOT NULL,\n  `reserved_at` int unsigned DEFAULT NULL,\n  `available_at` int unsigned NOT NULL,\n  `created_at` int unsigned NOT NULL,\n  PRIMARY KEY (`id`),\n  KEY `jobs_queue_index` (`queue`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "queue",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "payload",
+                "type": "longtext",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "attempts",
+                "type": "smallint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "reserved_at",
+                "type": "int unsigned",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "available_at",
+                "type": "int unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "int unsigned",
+                "null": false,
+                "default": null
+            }
+        ]
+    },
+    "laksana_registrations": {
+        "create": "CREATE TABLE `laksana_registrations` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `nta` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `kelas` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `jenis_kelamin` enum('L','P') COLLATE utf8mb4_unicode_ci NOT NULL,\n  `rt` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `rw` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `kecamatan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `kabupaten` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `tempat_tanggal_lahir` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `motivasi` text COLLATE utf8mb4_unicode_ci NOT NULL,\n  `whatsapp` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `nomor_orang_tua` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `surat_izin_path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `status_verifikasi` enum('pending','disetujui','ditolak') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'pending',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "nama",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "nta",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "kelas",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "jenis_kelamin",
+                "type": "enum('L','P')",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "rt",
+                "type": "varchar(5)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "rw",
+                "type": "varchar(5)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "kecamatan",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "kabupaten",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "tempat_tanggal_lahir",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "motivasi",
+                "type": "text",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "whatsapp",
+                "type": "varchar(20)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "nomor_orang_tua",
+                "type": "varchar(20)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "surat_izin_path",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "status_verifikasi",
+                "type": "enum('pending','disetujui','ditolak')",
+                "null": false,
+                "default": "pending"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "mitras": {
+        "create": "CREATE TABLE `mitras` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `jabatan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Aktif',\n  `bio` text COLLATE utf8mb4_unicode_ci,\n  `photo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "jabatan",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "phone",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "email",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "status",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "Aktif"
+            },
+            {
+                "name": "bio",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "photo_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "notifications": {
+        "create": "CREATE TABLE `notifications` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `message` text COLLATE utf8mb4_unicode_ci NOT NULL,\n  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'info',\n  `url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `data` json DEFAULT NULL,\n  `is_read` tinyint(1) NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "title",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "message",
+                "type": "text",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "type",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "info"
+            },
+            {
+                "name": "url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "data",
+                "type": "json",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_read",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "passkeys": {
+        "create": "CREATE TABLE `passkeys` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `user_id` bigint unsigned NOT NULL,\n  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `credential_id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `credential` json NOT NULL,\n  `last_used_at` timestamp NULL DEFAULT NULL,\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `passkeys_credential_id_unique` (`credential_id`),\n  KEY `passkeys_user_id_index` (`user_id`),\n  CONSTRAINT `passkeys_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "user_id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "credential_id",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "credential",
+                "type": "json",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "last_used_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "password_reset_tokens": {
+        "create": "CREATE TABLE `password_reset_tokens` (\n  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `created_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`email`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "email",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "token",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "pembinas": {
+        "create": "CREATE TABLE `pembinas` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `jabatan` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `email` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Aktif',\n  `bio` text COLLATE utf8mb4_unicode_ci,\n  `photo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "jabatan",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "phone",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "email",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "status",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "Aktif"
+            },
+            {
+                "name": "bio",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "photo_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "petugas_absensis": {
+        "create": "CREATE TABLE `petugas_absensis` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `nta` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `kelas_petugas` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `photo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `is_approved` tinyint(1) NOT NULL DEFAULT '0',\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `terakhir_melakukan` timestamp NULL DEFAULT NULL,\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  `jumlah_rekam` int NOT NULL DEFAULT '0',\n  `jenis_kelamin` enum('L','P') COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `petugas_absensis_nta_unique` (`nta`)\n) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "nama",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "nta",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "kelas_petugas",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "photo_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_approved",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "terakhir_melakukan",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "jumlah_rekam",
+                "type": "int",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "jenis_kelamin",
+                "type": "enum('L','P')",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "posts": {
+        "create": "CREATE TABLE `posts` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `user_id` bigint unsigned DEFAULT NULL,\n  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `slug` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `type` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'news',\n  `image_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `excerpt` text COLLATE utf8mb4_unicode_ci,\n  `content` longtext COLLATE utf8mb4_unicode_ci,\n  `published_at` timestamp NULL DEFAULT NULL,\n  `is_published` tinyint(1) NOT NULL DEFAULT '0',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `posts_slug_unique` (`slug`),\n  KEY `posts_user_id_foreign` (`user_id`),\n  KEY `posts_type_is_published_published_at_index` (`type`,`is_published`,`published_at`),\n  KEY `posts_is_published_sort_order_published_at_index` (`is_published`,`sort_order`,`published_at`),\n  CONSTRAINT `posts_user_id_foreign` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE SET NULL\n) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "user_id",
+                "type": "bigint unsigned",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "title",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "slug",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "type",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "news"
+            },
+            {
+                "name": "image_path",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "excerpt",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "content",
+                "type": "longtext",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "published_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_published",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "sessions": {
+        "create": "CREATE TABLE `sessions` (\n  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `user_id` bigint unsigned DEFAULT NULL,\n  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `user_agent` text COLLATE utf8mb4_unicode_ci,\n  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,\n  `last_activity` int NOT NULL,\n  PRIMARY KEY (`id`),\n  KEY `sessions_user_id_index` (`user_id`),\n  KEY `sessions_last_activity_index` (`last_activity`)\n) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "user_id",
+                "type": "bigint unsigned",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "ip_address",
+                "type": "varchar(45)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "user_agent",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "payload",
+                "type": "longtext",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "last_activity",
+                "type": "int",
+                "null": false,
+                "default": null
+            }
+        ]
+    },
+    "settings": {
+        "create": "CREATE TABLE `settings` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `key` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `value` longtext COLLATE utf8mb4_unicode_ci,\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `settings_key_unique` (`key`)\n) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "key",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "value",
+                "type": "longtext",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "site_visits": {
+        "create": "CREATE TABLE `site_visits` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `visit_date` date NOT NULL,\n  `visitor_hash` varchar(64) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `hits` int unsigned NOT NULL DEFAULT '1',\n  `last_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `site_visits_visit_date_visitor_hash_unique` (`visit_date`,`visitor_hash`),\n  KEY `site_visits_visit_date_index` (`visit_date`)\n) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "visit_date",
+                "type": "date",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "visitor_hash",
+                "type": "varchar(64)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "hits",
+                "type": "int unsigned",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "last_path",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "students": {
+        "create": "CREATE TABLE `students` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `kelas_asal` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `sangga` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `sub_sangga` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `ambalan` enum('PA','PI') COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `jabatan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'Aktif',\n  `bio` text COLLATE utf8mb4_unicode_ci,\n  `photo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=399 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "nama",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "kelas_asal",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "sangga",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "sub_sangga",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "ambalan",
+                "type": "enum('PA','PI')",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "jabatan",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "status",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "Aktif"
+            },
+            {
+                "name": "bio",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "photo_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "timeline_events": {
+        "create": "CREATE TABLE `timeline_events` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `date` date NOT NULL,\n  `time` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `location` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `location_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `latitude` decimal(10,7) DEFAULT NULL,\n  `longitude` decimal(10,7) DEFAULT NULL,\n  `guide_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `theme` text COLLATE utf8mb4_unicode_ci,\n  `description` text COLLATE utf8mb4_unicode_ci,\n  `logo_path` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `status` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'upcoming',\n  `is_active` tinyint(1) NOT NULL DEFAULT '1',\n  `sort_order` int unsigned NOT NULL DEFAULT '0',\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`)\n) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "title",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "date",
+                "type": "date",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "time",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "location",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "location_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "latitude",
+                "type": "decimal(10,7)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "longitude",
+                "type": "decimal(10,7)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "guide_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "theme",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "description",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "logo_path",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "status",
+                "type": "varchar(255)",
+                "null": false,
+                "default": "upcoming"
+            },
+            {
+                "name": "is_active",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "1"
+            },
+            {
+                "name": "sort_order",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "users": {
+        "create": "CREATE TABLE `users` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `nta` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `phone` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `jabatan` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `bio` text COLLATE utf8mb4_unicode_ci,\n  `photo_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `email_verified_at` timestamp NULL DEFAULT NULL,\n  `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `is_admin` tinyint(1) NOT NULL DEFAULT '0',\n  `two_factor_secret` text COLLATE utf8mb4_unicode_ci,\n  `two_factor_recovery_codes` text COLLATE utf8mb4_unicode_ci,\n  `two_factor_confirmed_at` timestamp NULL DEFAULT NULL,\n  `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `users_email_unique` (`email`)\n) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "name",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "email",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "nta",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "phone",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "jabatan",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "bio",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "photo_url",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "email_verified_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "password",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "is_admin",
+                "type": "tinyint(1)",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "two_factor_secret",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "two_factor_recovery_codes",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "two_factor_confirmed_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "remember_token",
+                "type": "varchar(100)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    },
+    "visitor_devices": {
+        "create": "CREATE TABLE `visitor_devices` (\n  `id` bigint unsigned NOT NULL AUTO_INCREMENT,\n  `fingerprint` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,\n  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `user_agent` text COLLATE utf8mb4_unicode_ci,\n  `browser` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `platform` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `device_label` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,\n  `visit_count` int unsigned NOT NULL DEFAULT '0',\n  `last_seen_at` timestamp NULL DEFAULT NULL,\n  `blocked_at` timestamp NULL DEFAULT NULL,\n  `created_at` timestamp NULL DEFAULT NULL,\n  `updated_at` timestamp NULL DEFAULT NULL,\n  PRIMARY KEY (`id`),\n  UNIQUE KEY `visitor_devices_fingerprint_unique` (`fingerprint`)\n) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci",
+        "columns": [
+            {
+                "name": "id",
+                "type": "bigint unsigned",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "fingerprint",
+                "type": "varchar(255)",
+                "null": false,
+                "default": null
+            },
+            {
+                "name": "ip_address",
+                "type": "varchar(45)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "user_agent",
+                "type": "text",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "browser",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "platform",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "device_label",
+                "type": "varchar(255)",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "visit_count",
+                "type": "int unsigned",
+                "null": false,
+                "default": "0"
+            },
+            {
+                "name": "last_seen_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "blocked_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "created_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            },
+            {
+                "name": "updated_at",
+                "type": "timestamp",
+                "null": true,
+                "default": null
+            }
+        ]
+    }
+}
