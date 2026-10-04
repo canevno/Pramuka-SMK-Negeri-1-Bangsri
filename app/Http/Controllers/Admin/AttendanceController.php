@@ -47,7 +47,7 @@ class AttendanceController extends Controller
             $petugasSummary = AttendanceRecord::query()
                 ->select('petugas_name', 'petugas_nta', 'petugas_kelas')
                 ->selectRaw('MAX(created_at) AS last_seen')
-                ->selectRaw('COUNT(DISTINCT record_date) AS total_records')
+                ->selectRaw("COUNT(DISTINCT CONCAT(COALESCE(record_date, ''), '|', COALESCE(participant_sangga, ''), '|', COALESCE(participant_ambalan, ''), '|', COALESCE(petugas_name, ''))) AS total_records")
                 ->groupBy('petugas_name', 'petugas_nta', 'petugas_kelas')
                 ->orderByDesc('last_seen')
                 ->get()
@@ -271,9 +271,12 @@ class AttendanceController extends Controller
         $sheet->setCellValue('H'.($headerRow + 1), 'S');
         $sheet->setCellValue('I'.($headerRow + 1), 'I');
 
-        $sheet->getStyle('A'.$headerRow.':I'.($headerRow + 1))->getFont()->setBold(true)->setName('Times New Roman');
-        $sheet->getStyle('A'.$headerRow.':I'.($headerRow + 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
-        $sheet->getStyle('A'.$headerRow.':I'.($headerRow + 1))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->mergeCells('J'.$headerRow.':J'.($headerRow + 1));
+        $sheet->setCellValue('J'.$headerRow, 'Rekap Iuran');
+
+        $sheet->getStyle('A'.$headerRow.':J'.($headerRow + 1))->getFont()->setBold(true)->setName('Times New Roman');
+        $sheet->getStyle('A'.$headerRow.':J'.($headerRow + 1))->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$headerRow.':J'.($headerRow + 1))->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
 
         $rows = $records->map(function ($record) {
             $status = strtoupper((string) ($record->status ?? ''));
@@ -301,6 +304,8 @@ class AttendanceController extends Controller
                 $weekCells[$weekIndex] = $weekValue;
             }
 
+            $iuranAmount = (int) ($record->iuran_amount ?? 0);
+
             return [
                 $record->participant_name,
                 $record->participant_kelas,
@@ -311,16 +316,17 @@ class AttendanceController extends Controller
                 $a,
                 $s,
                 $i,
+                $iuranAmount,
             ];
         })->toArray();
 
         if (empty($rows)) {
             $rows = [
-                ['Aldi Pratama', 'X-1', 'H', '', '', '', 2, 0, 1],
-                ['Bima Ardiansyah', 'X-2', '', 'A', '', '', 1, 1, 0],
-                ['Candra Wijaya', 'XI-1', '', '', 'I', '', 1, 0, 1],
-                ['Dewi Lestari', 'XI-2', '', '', '', 'H', 2, 0, 1],
-                ['Eko Saputra', 'XII-1', 'H', '', '', '', 1, 1, 1],
+                ['Aldi Pratama', 'X-1', 'H', '', '', '', 2, 0, 1, 5000],
+                ['Bima Ardiansyah', 'X-2', '', 'A', '', '', 1, 1, 0, 2000],
+                ['Candra Wijaya', 'XI-1', '', '', 'I', '', 1, 0, 1, 3000],
+                ['Dewi Lestari', 'XI-2', '', '', '', 'H', 2, 0, 1, 4000],
+                ['Eko Saputra', 'XII-1', 'H', '', '', '', 1, 1, 1, 2500],
             ];
         }
 
@@ -328,12 +334,13 @@ class AttendanceController extends Controller
         $sheet->fromArray($rows, null, 'A'.$dataRow);
 
         $lastRow = $dataRow + count($rows) - 1;
-        $sheet->getStyle('A'.$dataRow.':I'.$lastRow)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
-        $sheet->getStyle('A'.$dataRow.':I'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A'.$dataRow.':J'.$lastRow)->getBorders()->getAllBorders()->setBorderStyle(\PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN);
+        $sheet->getStyle('A'.$dataRow.':J'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
         $sheet->getStyle('A'.$dataRow.':A'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_LEFT);
         $sheet->getStyle('B'.$dataRow.':B'.$lastRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER);
+        $sheet->getStyle('J'.$dataRow.':J'.$lastRow)->getNumberFormat()->setFormatCode('"Rp "#,##0');
 
-        foreach (range('A', 'I') as $column) {
+        foreach (range('A', 'J') as $column) {
             $sheet->getColumnDimension($column)->setWidth(15);
         }
 
@@ -346,6 +353,16 @@ class AttendanceController extends Controller
         $sheet->getColumnDimension('G')->setWidth(10);
         $sheet->getColumnDimension('H')->setWidth(10);
         $sheet->getColumnDimension('I')->setWidth(10);
+        $sheet->getColumnDimension('J')->setWidth(18);
+
+        $totalIuran = collect($records)->sum(fn ($record) => (int) ($record->iuran_amount ?? 0));
+        $summaryRow = $lastRow + 2;
+        $sheet->mergeCells('A'.$summaryRow.':I'.$summaryRow);
+        $sheet->setCellValue('A'.$summaryRow, 'TOTAL IURAN');
+        $sheet->setCellValue('J'.$summaryRow, $totalIuran);
+        $sheet->getStyle('A'.$summaryRow.':J'.$summaryRow)->getFont()->setBold(true)->setName('Times New Roman');
+        $sheet->getStyle('A'.$summaryRow.':J'.$summaryRow)->getAlignment()->setHorizontal(\PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER)->setVertical(\PhpOffice\PhpSpreadsheet\Style\Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('J'.$summaryRow)->getNumberFormat()->setFormatCode('"Rp "#,##0');
 
         $filename = sprintf('detail-absensi-%s-%s-%s.xlsx', $recordDate, str_replace([' ', '/'], ['-', '-'], $participantAmbalan), preg_replace('/[^A-Za-z0-9]/', '-', strtolower($petugasName)));
 

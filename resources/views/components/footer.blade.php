@@ -43,7 +43,7 @@
                     </a>
 
                     <a
-                        href="https://wa.me/6281234567890"
+                        href="https://wa.me/6285290909164"
                         target="_blank"
                         aria-label="WhatsApp"
                         class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-700/60 text-slate-300 transition-all duration-200 sm:h-9 sm:w-9"
@@ -67,7 +67,7 @@
                     </a>
 
                     <a
-                        href="https://youtube.com/scouteskasaba6141"
+                        href="https://youtube.com/scouteskasaba"
                         target="_blank"
                         aria-label="YouTube"
                         class="flex h-8 w-8 items-center justify-center rounded-full bg-slate-700/60 text-slate-300 transition-all duration-200 sm:h-9 sm:w-9"
@@ -201,8 +201,8 @@
                             <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1C10.61 21 3 13.39 3 4c0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/>
                         </svg>
 
-                        <a href="https://wa.me/6287874254445" target="_blank" rel="noopener noreferrer" class="text-slate-400 no-underline">
-                            087874254445
+                        <a href="https://wa.me/6285290909164" target="_blank" rel="noopener noreferrer" class="text-slate-400 no-underline">
+                            085290909164
                         </a>
                     </li>
 

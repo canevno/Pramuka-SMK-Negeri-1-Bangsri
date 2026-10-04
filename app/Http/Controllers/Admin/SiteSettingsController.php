@@ -22,7 +22,20 @@ class SiteSettingsController extends Controller
         $visitorDevices = VisitorDevice::query()
             ->orderByDesc('last_seen_at')
             ->orderByDesc('visit_count')
-            ->get();
+            ->get()
+            ->sort(function ($a, $b) {
+                $statusOrder = fn ($device) => $device->is_blocked ? 0 : ($device->is_active ? 2 : 1);
+
+                $priorityA = $statusOrder($a);
+                $priorityB = $statusOrder($b);
+
+                if ($priorityA !== $priorityB) {
+                    return $priorityB <=> $priorityA;
+                }
+
+                return ($b->last_seen_at ?? now()) <=> ($a->last_seen_at ?? now());
+            })
+            ->values();
 
         return view('admin.settings.index', compact('settings', 'visitorDevices'));
     }

@@ -327,7 +327,6 @@ Route::middleware(['auth', \App\Http\Middleware\EnsureUserIsAdmin::class])->grou
     Route::get('/admin/absensi/detail/export/pdf', [\App\Http\Controllers\Admin\AttendanceController::class, 'exportPdf'])->name('admin.absensi.export.pdf');
 
     Route::get('/admin/prestasi', [ModuleController::class, 'prestasi'])->name('admin.prestasi');
-    Route::post('/admin/prestasi/sync-sipres', [ModuleController::class, 'syncPrestasiFromSipres'])->name('admin.prestasi.sync-sipres');
     Route::patch('/admin/prestasi/{achievement}/toggle-status', [ModuleController::class, 'togglePrestasiStatus'])->name('admin.prestasi.toggle-status');
     Route::post('/admin/prestasi/store', [ModuleController::class, 'storePrestasi'])->name('admin.prestasi.store');
     Route::put('/admin/prestasi/{achievement}/update', [ModuleController::class, 'updatePrestasi'])->name('admin.prestasi.update');

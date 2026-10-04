@@ -8,6 +8,8 @@
 
     @include('sections.home.news')
 
+    @include('sections.home.achievement')
+
     @include('sections.home.cta')
 
     @include('sections.home.sambutan')

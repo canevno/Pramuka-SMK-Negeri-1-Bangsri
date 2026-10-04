@@ -14,10 +14,23 @@ class VisitorDevice extends Model
         'visit_count' => 'integer',
     ];
 
-    protected $appends = ['is_blocked'];
+    protected $appends = ['is_blocked', 'is_active'];
 
     public function getIsBlockedAttribute(): bool
     {
         return ! empty($this->blocked_at);
+    }
+
+    public function getIsActiveAttribute(): bool
+    {
+        if ($this->is_blocked) {
+            return false;
+        }
+
+        if (! $this->last_seen_at) {
+            return false;
+        }
+
+        return $this->last_seen_at->greaterThanOrEqualTo(now()->subMinutes(5));
     }
 }

@@ -92,9 +92,12 @@
                             <polyline points="{{ $linePoints }}" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"/>
                         </svg>
 
-                        {{-- Titik data --}}
+                        {{-- Titik data dan jumlah pengunjung --}}
                         @foreach ($thisPts as $i => $p)
                             <span class="pointer-events-none absolute -translate-x-1/2 translate-y-1/2 rounded-full bg-zinc-900 ring-2 ring-white dark:bg-slate-100 dark:ring-slate-900 {{ $i === $lastIndex ? 'h-2 w-2' : 'h-1.5 w-1.5' }}" style="left: {{ round($p['x'], 2) }}%; bottom: {{ round($p['v'], 2) }}%"></span>
+                            <span class="pointer-events-none absolute -translate-x-1/2 -translate-y-full whitespace-nowrap rounded-full border border-zinc-200 bg-white px-1.5 py-0.5 text-[8px] font-semibold text-zinc-700 shadow-sm dark:border-slate-700 dark:bg-slate-900 dark:text-slate-200" style="left: {{ round($p['x'], 2) }}%; bottom: {{ min(96, round($p['v'], 2) + 8) }}%">
+                                {{ number_format($p['stat']['count']) }}
+                            </span>
                         @endforeach
 
                         {{-- Area hover / tooltip --}}

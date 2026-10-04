@@ -32,7 +32,7 @@ class DashboardController extends Controller
         $attendanceStats = AttendanceRecord::query()
             ->select('petugas_name', 'petugas_nta', 'petugas_kelas')
             ->selectRaw('MAX(created_at) as last_seen')
-            ->selectRaw('COUNT(DISTINCT record_date) as total_records')
+            ->selectRaw("COUNT(DISTINCT CONCAT(COALESCE(record_date, ''), '|', COALESCE(participant_sangga, ''), '|', COALESCE(participant_ambalan, ''), '|', COALESCE(petugas_name, ''))) as total_records")
             ->groupBy('petugas_name', 'petugas_nta', 'petugas_kelas')
             ->get();
 
@@ -164,7 +164,7 @@ class DashboardController extends Controller
 
         $visitsByDate = SiteVisit::query()
             ->where('visit_date', '>=', $prevStart->toDateString())
-            ->selectRaw('visit_date, COUNT(*) as total')
+            ->selectRaw('visit_date, SUM(hits) as total')
             ->groupBy('visit_date')
             ->pluck('total', 'visit_date')
             ->mapWithKeys(fn ($total, $date) => [Carbon::parse($date)->toDateString() => (int) $total]);
@@ -226,18 +226,28 @@ class DashboardController extends Controller
             return asset('images/logokegiatan1.png');
         }
 
-        if (filter_var($imagePath, FILTER_VALIDATE_URL)) {
-            return $imagePath;
+        $normalized = ltrim((string) $imagePath, '/');
+        $normalized = preg_replace('#^public/?#i', '', $normalized, 1) ?? $normalized;
+        $normalized = preg_replace('#^storage/?#i', '', $normalized, 1) ?? $normalized;
+        $normalized = preg_replace('#^storage/?#i', '', $normalized, 1) ?? $normalized;
+        $normalized = ltrim($normalized, '/');
+
+        if ($normalized === '') {
+            return asset('images/logokegiatan1.png');
         }
 
-        if (str_starts_with($imagePath, 'storage/')) {
-            return asset($imagePath);
+        if (filter_var($normalized, FILTER_VALIDATE_URL)) {
+            return $normalized;
         }
 
-        if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
-            return $imagePath;
+        if (str_starts_with($normalized, 'storage/')) {
+            return asset($normalized);
         }
 
-        return asset('storage/' . ltrim($imagePath, '/'));
+        if (str_starts_with($normalized, 'images/')) {
+            return asset($normalized);
+        }
+
+        return asset('storage/' . ltrim($normalized, '/'));
     }
 }

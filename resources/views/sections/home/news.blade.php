@@ -30,7 +30,7 @@
 
 <section class="bg-white py-10 dark:bg-slate-950 transition-colors duration-200">
     <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div class="mb-6 border-b border-slate-200 pb-4 text-center dark:border-slate-800 sm:text-left">
+        <div class="mb-6 pb-4 text-center sm:text-left">
             <h2 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
                 Berita &amp; Pengumuman Terkini
             </h2>
@@ -66,14 +66,14 @@
                                     </h3>
                                 </a>
 
-                                <p class="mt-2 text-[11px] leading-relaxed text-slate-500 line-clamp-3 dark:text-slate-400">
+                                <p class="mt-2 text-[12px] leading-relaxed text-slate-600 line-clamp-3 dark:text-slate-300 sm:text-[13px]">
                                     {{ $news['description'] }}
                                 </p>
                             </div>
 
-                            <div class="mt-4 flex items-center justify-between gap-2 border-t border-slate-300 pt-2 text-[10px] text-slate-500 dark:border-slate-600 dark:text-slate-400">
+                            <div class="mt-4 flex items-center justify-between gap-2 text-[11px] text-slate-600 dark:text-slate-300 sm:text-[12px]">
                                 <div class="flex items-center gap-1.5">
-                                    <svg class="h-3.5 w-3.5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <svg class="h-3.5 w-3.5 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                         <rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect>
                                         <line x1="16" y1="2" x2="16" y2="6"></line>
                                         <line x1="8" y1="2" x2="8" y2="6"></line>

@@ -57,12 +57,6 @@
                         <p class="mt-1 text-sm text-slate-500 dark:text-slate-400">Kelola data pencapaian yang sudah masuk.</p>
                     </div>
                     <div class="flex items-center gap-2">
-                        <form method="POST" action="{{ route('admin.prestasi.sync-sipres') }}">
-                            @csrf
-                            <button type="submit" class="inline-flex items-center justify-center rounded-lg border border-slate-900 bg-slate-900 px-3 py-2 text-[11px] font-semibold text-white transition hover:border-slate-700 hover:bg-slate-700 dark:border-white dark:bg-white dark:text-slate-900 dark:hover:bg-slate-200">
-                                Sinkron dari SIPRES
-                            </button>
-                        </form>
                         <span class="inline-flex shrink-0 items-center rounded-full bg-slate-100 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-600 dark:bg-slate-800 dark:text-slate-300">
                             {{ count($achievements ?? []) }} Item
                         </span>
@@ -85,11 +79,6 @@
                                 <tr class="block px-4 py-4 align-top transition hover:bg-slate-50/70 md:table-row md:p-0 dark:hover:bg-slate-800/40">
                                     <td class="block pb-2 md:table-cell md:px-5 md:py-4">
                                         <div class="font-semibold leading-snug text-slate-900 dark:text-white">{{ $achievement['title'] }}</div>
-                                        @if (! empty($achievement['detail_url']))
-                                            <a href="{{ $achievement['detail_url'] }}" target="_blank" rel="noopener noreferrer" class="mt-1 inline-flex text-[11px] font-medium text-slate-500 underline underline-offset-2 hover:text-slate-900 dark:text-slate-400 dark:hover:text-white">
-                                                Lihat di SIPRES
-                                            </a>
-                                        @endif
                                     </td>
                                     <td class="flex items-center justify-between gap-3 py-1.5 md:table-cell md:px-5 md:py-4">
                                         <span class="{{ $mobileLabelClass }}">Kategori</span>
@@ -177,6 +166,7 @@
 
                 <form method="POST" action="{{ route('admin.prestasi.store') }}" enctype="multipart/form-data" class="grid gap-5 p-4 sm:p-5 lg:grid-cols-2 lg:gap-x-6" id="achievement-form">
                     @csrf
+                    <input type="hidden" name="_method" id="achievement_method" value="POST">
                     <input type="hidden" name="edit_id" id="edit_id" value="">
 
                     <div class="lg:col-span-2">
@@ -221,11 +211,6 @@
                         <label for="achievement_winner_link" class="{{ $labelClass }}">Instagram / Link Media Sosial</label>
                         <input id="achievement_winner_link" type="url" name="winner_social_link" class="{{ $inputClass }}" placeholder="https://instagram.com/username" />
                         <p class="mt-1.5 text-[11px] text-slate-400">Kosongkan jika tidak ingin menampilkan instagram.</p>
-                    </div>
-
-                    <div>
-                        <label for="achievement_detail_url" class="{{ $labelClass }}">Link Detail SIPRES</label>
-                        <input id="achievement_detail_url" type="url" name="detail_url" class="{{ $inputClass }}" placeholder="https://sipres.smkn1bangsri.sch.id/prestasi/123" />
                     </div>
 
                     <div>
@@ -284,6 +269,7 @@
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         const form = document.getElementById('achievement-form');
+        const methodInput = document.getElementById('achievement_method');
         const formCard = document.getElementById('achievement-form-card');
         const submitLabel = document.getElementById('achievement-submit-label');
         const editId = document.getElementById('edit_id');
@@ -295,6 +281,15 @@
         const winnerInput = document.getElementById('achievement_winner');
         const winnerLinkInput = document.getElementById('achievement_winner_link');
         const descriptionInput = document.getElementById('achievement_description');
+        const storeRoute = '{{ route('admin.prestasi.store') }}';
+        const updateRouteTemplate = '{{ route('admin.prestasi.update', ['achievement' => ':id']) }}';
+
+        const resetFormState = function () {
+            methodInput.value = 'POST';
+            form.action = storeRoute;
+            editId.value = '';
+            submitLabel.textContent = 'Simpan Prestasi';
+        };
 
         document.querySelectorAll('.js-edit-achievement').forEach(function (button) {
             button.addEventListener('click', function () {
@@ -318,7 +313,8 @@
                 winnerLinkInput.value = winnerLink;
                 descriptionInput.value = description;
 
-                form.action = '{{ route('admin.prestasi.store') }}';
+                methodInput.value = 'PUT';
+                form.action = updateRouteTemplate.replace(':id', id);
                 submitLabel.textContent = 'Perbarui Prestasi';
                 titleInput.focus({ preventScroll: true });
                 if (formCard) {
@@ -331,11 +327,12 @@
 
         form.addEventListener('submit', function () {
             if (!editId.value) {
-                form.action = '{{ route('admin.prestasi.store') }}';
+                resetFormState();
                 return;
             }
 
-            form.action = '{{ route('admin.prestasi.store') }}';
+            methodInput.value = 'PUT';
+            form.action = updateRouteTemplate.replace(':id', editId.value);
         });
         const uploadBox = document.getElementById('prestasi-upload-box');
         const input = document.getElementById('prestasi-image-input');

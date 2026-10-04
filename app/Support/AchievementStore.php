@@ -237,22 +237,59 @@ class AchievementStore
         $winnerSocialLink = $item['winner_social_link'] ?? ($item['winner_link'] ?? '');
         $detailUrl = $item['detail_url'] ?? ($item['url'] ?? ($item['link'] ?? ''));
         $publishedAt = $item['published_at'] ?? null;
+        $date = trim((string) ($item['date'] ?? ''));
+        $location = trim((string) ($item['location'] ?? ''));
+        $image = self::normalizeImagePath((string) ($item['image'] ?? 'images/achievement/prestasi1.jpg'));
 
         return [
             'id' => (int) ($item['id'] ?? 0),
             'title' => trim((string) ($item['title'] ?? 'Prestasi Baru')),
             'category' => trim((string) ($item['category'] ?? 'Umum')),
             'year' => (int) ($item['year'] ?? now()->year),
-            'date' => trim((string) ($item['date'] ?? '')),
-            'location' => trim((string) ($item['location'] ?? '')),
+            'date' => $date !== '' ? $date : null,
+            'location' => $location !== '' ? $location : null,
             'winner' => trim((string) ($item['winner'] ?? 'Anggota')),
             'winner_social_link' => trim((string) $winnerSocialLink),
             'description' => trim((string) ($item['description'] ?? '')),
-            'image' => trim((string) ($item['image'] ?? 'images/achievement/prestasi1.jpg')),
+            'image' => $image,
             'detail_url' => trim((string) $detailUrl),
             'is_published' => (bool) ($item['is_published'] ?? false),
             'published_at' => $publishedAt ? trim((string) $publishedAt) : null,
         ];
+    }
+
+    protected static function normalizeImagePath(string $image): string
+    {
+        $candidate = trim($image);
+
+        if ($candidate === '') {
+            return 'images/achievement/prestasi1.jpg';
+        }
+
+        if (filter_var($candidate, FILTER_VALIDATE_URL)) {
+            return $candidate;
+        }
+
+        $candidate = ltrim($candidate, '/');
+
+        if (str_starts_with($candidate, 'images/')) {
+            return $candidate;
+        }
+
+        $candidate = preg_replace('#^public/?#i', '', $candidate, 1) ?? $candidate;
+        $candidate = preg_replace('#^storage/?#i', '', $candidate, 1) ?? $candidate;
+        $candidate = preg_replace('#^storage/?#i', '', $candidate, 1) ?? $candidate;
+        $candidate = ltrim($candidate, '/');
+
+        if (str_starts_with($candidate, 'storage/')) {
+            return $candidate;
+        }
+
+        if (str_starts_with($candidate, 'images/')) {
+            return $candidate;
+        }
+
+        return 'storage/' . ltrim($candidate, '/');
     }
 
     protected static function matchesLevel(string $category, string $level): bool

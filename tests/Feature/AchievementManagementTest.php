@@ -27,6 +27,37 @@ test('public achievement page redirects to the home achievement section', functi
         ->assertRedirect(url('/#prestasi'));
 });
 
+test('prestasi pages no longer show sipres-specific content', function () {
+    $user = User::factory()->create([
+        'is_admin' => true,
+        'email_verified_at' => now(),
+    ]);
+    $this->actingAs($user);
+
+    AchievementStore::save([
+        [
+            'id' => 1,
+            'title' => 'Juara 1 Lomba Kewirausahaan',
+            'category' => 'Tingkat Nasional',
+            'year' => 2025,
+            'winner' => 'Nara',
+            'description' => 'Prestasi nasional yang dipublikasikan.',
+            'image' => 'images/achievement/prestasi1.jpg',
+            'is_published' => true,
+            'detail_url' => 'https://example.com/prestasi/1',
+        ],
+    ]);
+
+    $this->get(route('admin.prestasi'))
+        ->assertOk()
+        ->assertDontSee('SIPRES')
+        ->assertDontSee('Sinkron dari SIPRES');
+
+    $this->get(route('prestasi'))
+        ->assertOk()
+        ->assertDontSee('Lihat Detail SIPRES');
+});
+
 test('admin can create a new achievement', function () {
     $user = User::factory()->create([
         'is_admin' => true,
@@ -193,4 +224,18 @@ test('achievement route redirects to the home achievement section and home links
         ->assertSee(route('prestasi.cabang'))
         ->assertSee(route('prestasi.jateng'))
         ->assertSee(route('prestasi.nasional'));
+});
+
+test('achievement image paths remove duplicated storage prefixes', function () {
+    $normalized = AchievementStore::add([
+        'title' => 'Prestasi dengan path duplikat',
+        'category' => 'Tingkat Cabang',
+        'year' => 2026,
+        'winner' => 'Dika',
+        'description' => 'Harus membersihkan path duplikat storage.',
+        'image' => 'public/storage/storage/achievement/dupe.png',
+        'is_published' => true,
+    ]);
+
+    expect($normalized['image'])->toBe('storage/achievement/dupe.png');
 });

@@ -13,18 +13,13 @@ class PrestasiController extends Controller
             ? (int) $request->tahun
             : null;
 
-        $page = max((int) $request->get('page', 1), 1);
         $items = AchievementStore::published($tahun);
-        $perPage = 12;
-        $total = count($items);
-        $offset = ($page - 1) * $perPage;
-        $paginated = array_slice($items, $offset, $perPage);
 
         return view('pages.prestasi.index', [
-            'prestasi' => $paginated,
+            'prestasi' => $items,
             'pagination' => [
-                'current_page' => $page,
-                'last_page' => max(1, (int) ceil($total / $perPage)),
+                'current_page' => 1,
+                'last_page' => 1,
             ],
             'success' => true,
             'message' => null,

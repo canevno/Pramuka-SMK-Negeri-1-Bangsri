@@ -55,6 +55,44 @@ test('dashboard visitor statistics use real session data from the website', func
         });
 });
 
+test('dashboard visitor statistics sum site hits from tracked public visits', function () {
+    $user = User::factory()->create([
+        'is_admin' => true,
+    ]);
+
+    \App\Models\SiteVisit::query()->create([
+        'visit_date' => now()->toDateString(),
+        'visitor_hash' => hash('sha256', '127.0.0.1|Mozilla/5.0|test-1'),
+        'hits' => 5,
+        'last_path' => '/',
+        'created_at' => now(),
+        'updated_at' => now(),
+    ]);
+
+    \App\Models\SiteVisit::query()->create([
+        'visit_date' => now()->subDay()->toDateString(),
+        'visitor_hash' => hash('sha256', '127.0.0.2|Mozilla/5.0|test-2'),
+        'hits' => 2,
+        'last_path' => '/news',
+        'created_at' => now()->subDay(),
+        'updated_at' => now()->subDay(),
+    ]);
+
+    $response = $this->actingAs($user)->get(route('dashboard'));
+
+    $response->assertOk()
+        ->assertViewHas('visitorStats', function ($stats) {
+            $today = now()->format('d');
+            $yesterday = now()->subDay()->format('d');
+            $dayStats = collect($stats)->keyBy('day');
+
+            return isset($dayStats[$today])
+                && (int) $dayStats[$today]['count'] === 5
+                && isset($dayStats[$yesterday])
+                && (int) $dayStats[$yesterday]['count'] === 2;
+        });
+});
+
 test('dashboard petugas teraktif is based on registered absensi petugas', function () {
     $user = User::factory()->create([
         'is_admin' => true,
@@ -100,6 +138,52 @@ test('dashboard petugas teraktif is based on registered absensi petugas', functi
         ->assertSee('Petugas Alpha')
         ->assertSee('Petugas Beta')
         ->assertSee(asset('storage/petugas/petugas-alpha.jpg'));
+});
+
+test('dashboard petugas teraktif counts attendance batches, not participant rows', function () {
+    $user = User::factory()->create([
+        'is_admin' => true,
+    ]);
+
+    \App\Models\PetugasAbsensi::query()->create([
+        'nama' => 'Petugas Alpha',
+        'nta' => 'NTA-ALPHA',
+        'kelas_petugas' => 'XI RPL 1',
+        'is_active' => true,
+        'is_approved' => true,
+    ]);
+
+    foreach ([
+        ['Peserta A', 'Pencoba'],
+        ['Peserta B', 'Pencoba'],
+        ['Peserta C', 'Penyuluh'],
+    ] as [$participantName, $subSangga]) {
+        \App\Models\AttendanceRecord::query()->create([
+            'participant_name' => $participantName,
+            'participant_kelas' => 'XI RPL 1',
+            'participant_ambalan' => 'Sangga 1',
+            'participant_sangga' => $subSangga,
+            'status' => 'Hadir',
+            'bulan' => 'September',
+            'tanggal' => '15',
+            'tahun' => '2026',
+            'petugas_name' => 'Petugas Alpha',
+            'petugas_nta' => 'NTA-ALPHA',
+            'petugas_kelas' => 'XI RPL 1',
+            'record_date' => '2026-09-15',
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+    }
+
+    $this->actingAs($user)
+        ->get(route('dashboard'))
+        ->assertOk()
+        ->assertViewHas('petugasTeraktif', function ($petugasTeraktif) {
+            $petugas = collect($petugasTeraktif)->firstWhere('name', 'Petugas Alpha');
+
+            return $petugas !== null && (int) $petugas['total_records'] === 2;
+        });
 });
 
 test('dashboard shows an absensi card under the latest registrations', function () {

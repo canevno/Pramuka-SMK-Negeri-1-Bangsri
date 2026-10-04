@@ -26,7 +26,7 @@ class PetugasController extends Controller
         $petugas = AttendanceRecord::query()
             ->select('petugas_name', 'petugas_nta', 'petugas_kelas')
             ->selectRaw('MAX(created_at) as last_seen')
-            ->selectRaw('COUNT(*) as total_records')
+            ->selectRaw("COUNT(DISTINCT CONCAT(COALESCE(record_date, ''), '|', COALESCE(participant_sangga, ''), '|', COALESCE(participant_ambalan, ''), '|', COALESCE(petugas_name, ''))) as total_records")
             ->groupBy('petugas_name', 'petugas_nta', 'petugas_kelas')
             ->orderByDesc('last_seen')
             ->get()
