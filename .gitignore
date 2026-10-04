@@ -1,26 +1,58 @@
-/.phpunit.cache
+# Dependensi
 /node_modules
-/public/build
-/public/fonts-manifest.dev.json
+/vendor
+
+# Hasil build Vite: sengaja TIDAK diabaikan karena server tidak punya Node.
+# Wajib jalankan "npm run build" sebelum commit. Jangan sampai public/hot ikut.
 /public/hot
+/public/fonts-manifest.dev.json
 /public/storage
+
+# Storage Laravel (isi diabaikan, folder dipertahankan lewat .gitkeep)
 /storage/*.key
 /storage/pail
-/storage/framework/cache/
-/storage/framework/views/
-/vendor
+/storage/framework/cache/*
+!/storage/framework/cache/.gitkeep
+/storage/framework/views/*
+!/storage/framework/views/.gitkeep
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitkeep
+/storage/logs/*
+!/storage/logs/.gitkeep
+
+# Rahasia dan konfigurasi lokal
 .env
 .env.backup
 .env.production
-.phpactor.json
+/auth.json
+
+# Cache tools
+/.phpunit.cache
 .phpunit.result.cache
-Homestead.json
-Homestead.yaml
+.phpactor.json
+
+# Log tools
 npm-debug.log
 yarn-error.log
-/auth.json
+
+# Homestead
+Homestead.json
+Homestead.yaml
+
+# Editor
 /.fleet
 /.idea
 /.nova
 /.vscode
 /.zed
+
+# File debug dan sampah di root
+/debug_console.php
+/tmp_dump_*.php
+/out.html
+/out.txt
+/test_output.txt
+/test_admin_attendance.txt
+/junit-admin-attendance.xml
+/project-file-list-generated.txt
+/routes-all.txt
