@@ -19,7 +19,6 @@
 
         @if($upcoming->isNotEmpty())
             <div class="mb-8">
-                <h2 class="mb-4 text-xl font-bold text-slate-900 dark:text-white">Upcoming Events</h2>
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach($upcoming as $event)
                         <article class="group overflow-hidden rounded-2xl border border-slate-300 bg-white transition hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
@@ -54,33 +53,30 @@
 
         @if($past->isNotEmpty())
             <div class="mt-10">
-                <h2 class="mb-4 text-xl font-bold text-slate-900 dark:text-white">Past events</h2>
                 <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     @foreach($past as $event)
-                        <article class="overflow-hidden rounded-lg border border-slate-300 bg-white dark:border-slate-800 dark:bg-slate-900">
-                            <div class="p-3">
-                                <div class="flex items-center justify-between">
-                                    <div class="min-w-0">
-                                        <h4 class="text-sm font-semibold text-slate-900 dark:text-white">{{ $event->title }}</h4>
-                                        <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">{{ \Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y') }}</p>
-                                        <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ \Illuminate\Support\Str::limit($event->description ?? $event->excerpt ?? $event->theme ?? '', 120) }}</p>
-                                    </div>
-                                    <div class="w-32 h-32 sm:w-32 sm:h-32 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden ml-4">
+                        <article class="group overflow-hidden rounded-2xl border border-slate-300 bg-white transition hover:shadow-lg dark:border-slate-800 dark:bg-slate-900">
+                            <div class="flex items-center justify-center bg-transparent py-6">
+                                <div class="w-32 h-32 sm:w-32 sm:h-32 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden p-1">
+                                    @php
+                                        $eventLogo = $event->logo_path ?? $event->image ?? null;
+                                    @endphp
+                                    @if(! empty($eventLogo))
                                         @php
-                                            $eventLogo = $event->logo_path ?? $event->image ?? null;
+                                            $logoSrc = preg_match('/^https?:\/\//', $eventLogo) ? $eventLogo : asset('storage/' . ltrim($eventLogo, '/'));
                                         @endphp
-                                        @if(! empty($eventLogo))
-                                            @php
-                                                $logoSrc = preg_match('/^https?:\/\//', $eventLogo) ? $eventLogo : asset('storage/' . ltrim($eventLogo, '/'));
-                                            @endphp
-                                            <img src="{{ $logoSrc }}" alt="Logo Kegiatan" class="w-full h-full object-contain" onerror="this.style.display='none'" />
-                                        @else
-                                            <img src="{{ asset('images/logokegiatan2.png') }}" alt="Logo Kegiatan" class="w-full h-full object-contain" onerror="this.style.display='none'" />
-                                        @endif
-                                    </div>
+                                        <img src="{{ $logoSrc }}" alt="Logo Kegiatan" class="w-full h-full object-contain" onerror="this.style.display='none'" />
+                                    @else
+                                        <img src="{{ asset('images/logokegiatan2.png') }}" alt="Logo Kegiatan" class="w-full h-full object-contain" onerror="this.style.display='none'" />
+                                    @endif
                                 </div>
-                                <div class="mt-3 text-xs text-slate-600 dark:text-slate-400 flex gap-2">
-                                    <a href="{{ route('event.show', ['id' => $event->id]) }}" class="inline-flex items-center gap-2 rounded-md bg-[#0D1B2A] px-3 py-1 text-xs font-semibold text-white hover:bg-[#162b45]">[Informasi Lengkap]</a>
+                            </div>
+                            <div class="p-4">
+                                <h3 class="text-sm font-bold text-slate-900 dark:text-white">{{ $event->title }}</h3>
+                                <p class="mt-2 text-sm text-slate-600 dark:text-slate-400">{{ \Illuminate\Support\Str::limit($event->description ?? $event->excerpt ?? $event->theme ?? '', 120) }}</p>
+                                <p class="mt-2 text-xs text-slate-500 dark:text-slate-400">{{ \Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y') }} • {{ $event->time ?? 'Waktu' }}</p>
+                                <div class="mt-3 flex items-center gap-2">
+                                    <a href="{{ route('event.show', ['id' => $event->id]) }}" class="inline-flex items-center gap-2 rounded-md bg-[#0D1B2A] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162b45]">[Informasi Lengkap]</a>
                                 </div>
                             </div>
                         </article>
@@ -91,4 +87,3 @@
     </div>
 </section>
 @endsection
-

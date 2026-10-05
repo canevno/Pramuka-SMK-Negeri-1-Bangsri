@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Achievement;
 use App\Models\DewanAmbalan;
 use App\Models\DewanKehormatan;
 use App\Models\GalleryItem;
@@ -355,6 +356,145 @@ class ModuleController extends Controller
         return 'storage/' . $path;
     }
 
+    public function prestasi()
+    {
+        $achievements = Achievement::query()
+            ->orderByDesc('year')
+            ->orderByDesc('id')
+            ->get()
+            ->map(function (Achievement $achievement) {
+                return [
+                    'id' => $achievement->id,
+                    'title' => $achievement->title,
+                    'category' => $achievement->category,
+                    'year' => (int) ($achievement->year ?? now()->year),
+                    'date' => $achievement->date,
+                    'location' => $achievement->location,
+                    'winner' => $achievement->winner,
+                    'winner_social_link' => $achievement->winner_social_link,
+                    'description' => $achievement->description,
+                    'image' => $achievement->image,
+                    'is_published' => (bool) $achievement->is_published,
+                    'published_at' => $achievement->published_at?->toDateTimeString(),
+                ];
+            })
+            ->all();
+
+        return view('admin.modules.prestasi', [
+            'title' => 'Kelola Prestasi',
+            'description' => 'Tambah, edit, dan kelola data prestasi siswa yang akan ditampilkan di halaman publik.',
+            'publicRoute' => route('prestasi'),
+            'publicLabel' => 'Lihat Halaman Prestasi',
+            'achievements' => $achievements,
+        ]);
+    }
+
+    public function togglePrestasiStatus(Achievement $achievement)
+    {
+        $achievement->is_published = ! $achievement->is_published;
+        $achievement->published_at = $achievement->is_published ? ($achievement->published_at ?? now()) : null;
+        $achievement->save();
+
+        return redirect()->route('admin.prestasi')->with('success', 'Status prestasi berhasil diperbarui.');
+    }
+
+    public function storePrestasi(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'year' => 'required|integer|min:2000|max:2100',
+            'date' => 'required|date',
+            'location' => 'required|string|max:255',
+            'winner' => 'required|string|max:255',
+            'winner_social_link' => 'nullable|url|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'is_published' => 'nullable|boolean',
+        ]);
+
+        $imagePath = null;
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $imagePath = $request->file('image')->store('achievement', 'public');
+        }
+
+        Achievement::query()->create([
+            'title' => trim($validated['title']),
+            'category' => trim($validated['category']),
+            'year' => (int) $validated['year'],
+            'date' => $validated['date'],
+            'location' => trim($validated['location']),
+            'winner' => trim($validated['winner']),
+            'winner_social_link' => $validated['winner_social_link'] ?? '',
+            'description' => trim($validated['description']),
+            'image' => $imagePath ? 'storage/' . $imagePath : 'images/achievement/prestasi1.jpg',
+            'detail_url' => '',
+            'is_published' => (bool) ($validated['is_published'] ?? true),
+            'published_at' => (bool) ($validated['is_published'] ?? true) ? now() : null,
+        ]);
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil ditambahkan.');
+    }
+
+    public function updatePrestasi(Request $request, Achievement $achievement)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:255',
+            'category' => 'required|string|max:100',
+            'year' => 'required|integer|min:2000|max:2100',
+            'date' => 'required|date',
+            'location' => 'required|string|max:255',
+            'winner' => 'required|string|max:255',
+            'winner_social_link' => 'nullable|url|max:255',
+            'description' => 'required|string',
+            'image' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:5120',
+            'is_published' => 'nullable|boolean',
+        ]);
+
+        $imagePath = $achievement->image;
+
+        if ($request->hasFile('image') && $request->file('image')->isValid()) {
+            $imagePath = 'storage/' . $request->file('image')->store('achievement', 'public');
+        }
+
+        $achievement->fill([
+            'title' => trim($validated['title']),
+            'category' => trim($validated['category']),
+            'year' => (int) $validated['year'],
+            'date' => $validated['date'],
+            'location' => trim($validated['location']),
+            'winner' => trim($validated['winner']),
+            'winner_social_link' => $validated['winner_social_link'] ?? '',
+            'description' => trim($validated['description']),
+            'image' => $imagePath,
+            'is_published' => (bool) ($validated['is_published'] ?? $achievement->is_published),
+            'published_at' => (bool) ($validated['is_published'] ?? $achievement->is_published) ? ($achievement->published_at ?? now()) : null,
+        ]);
+
+        $achievement->save();
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diperbarui.');
+    }
+
+    public function duplicatePrestasi(Achievement $achievement)
+    {
+        $duplicate = $achievement->replicate();
+        $duplicate->title = trim($achievement->title . ' (Duplikat)');
+        $duplicate->is_published = false;
+        $duplicate->published_at = null;
+        $duplicate->save();
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil diduplikasi.');
+    }
+
+    public function deletePrestasi(Achievement $achievement)
+    {
+        $achievement->delete();
+
+        return redirect()->route('admin.prestasi')->with('success', 'Prestasi berhasil dihapus.');
+    }
+
     public function gallery()
     {
         $items = GalleryItem::query()
@@ -624,6 +764,12 @@ class ModuleController extends Controller
         return redirect()->route('admin.sejarah')->with('success', 'Profil sejarah berhasil diperbarui.');
     }
 
+    /* ─────────────────────────────────────────────────────────────
+     |  TIMELINE KEGIATAN
+     |  - latitude/longitude diganti satu kolom "location_url" (Link Lokasi)
+     |  - upload panduan PDF & logo divalidasi, file lama dibersihkan
+     ───────────────────────────────────────────────────────────── */
+
     public function timeline()
     {
         $events = Schema::hasTable('timeline_events')
@@ -650,51 +796,18 @@ class ModuleController extends Controller
 
     public function storeTimeline(Request $request)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'date' => 'required|date',
-            'time' => 'nullable|string|max:20',
-            'location' => 'required|string|max:255',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'guide_url' => 'nullable|url|max:255',
-            'theme' => 'nullable|string',
-            'description' => 'nullable|string',
-            'status' => 'nullable|string|in:upcoming,ongoing,completed',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp',
-        ]);
+        $this->normalizeTimelineInput($request);
+        $validated = $request->validate($this->timelineRules());
 
-        $logoPath = null;
-        if ($request->hasFile('logo')) {
-            $logoPath = $request->file('logo')->store('timeline', 'public');
-        }
+        $payload = $this->timelinePayload($validated, $request);
 
-        // handle guide PDF upload
-        if ($request->hasFile('guide_pdf') && $request->file('guide_pdf')->isValid()) {
-            $pdfPath = $request->file('guide_pdf')->store('timeline/guides', 'public');
-            $payload['guide_url'] = asset('storage/' . ltrim($pdfPath, '/'));
-        }
+        $payload['logo_path'] = $request->hasFile('logo')
+            ? $request->file('logo')->store('timeline', 'public')
+            : null;
 
-        $payload = [
-            'title' => trim($validated['title']),
-            'date' => $validated['date'],
-            'time' => $validated['time'] ?? null,
-            'location' => trim($validated['location']),
-            'latitude' => $validated['latitude'] ?? null,
-            'longitude' => $validated['longitude'] ?? null,
-            'guide_url' => $validated['guide_url'] ?? null,
-            'theme' => $validated['theme'] ?? null,
-            'logo_path' => $logoPath,
-            'status' => $validated['status'] ?? 'upcoming',
-            'is_active' => (bool) ($validated['is_active'] ?? true),
-            'sort_order' => (int) ($validated['sort_order'] ?? 0),
-        ];
-
-        if (Schema::hasColumn('timeline_events', 'description')) {
-            $payload['description'] = $validated['description'] ?? null;
-        }
+        $payload['guide_url'] = $request->hasFile('guide_pdf')
+            ? '/storage/' . $request->file('guide_pdf')->store('timeline/guides', 'public')
+            : null;
 
         TimelineEvent::query()->create($payload);
 
@@ -703,70 +816,35 @@ class ModuleController extends Controller
 
     public function updateTimeline(Request $request, TimelineEvent $timelineEvent)
     {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'date' => 'required|date',
-            'time' => 'nullable|string|max:20',
-            'location' => 'required|string|max:255',
-            'latitude' => 'nullable|numeric',
-            'longitude' => 'nullable|numeric',
-            'guide_url' => 'nullable|url|max:255',
-            'theme' => 'nullable|string',
-            'description' => 'nullable|string',
-            'status' => 'nullable|string|in:upcoming,ongoing,completed',
-            'is_active' => 'nullable|boolean',
-            'sort_order' => 'nullable|integer|min:0',
-            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp',
-        ]);
+        $this->normalizeTimelineInput($request);
+        $validated = $request->validate($this->timelineRules());
 
-        $logoPath = $timelineEvent->logo_path;
+        $payload = $this->timelinePayload($validated, $request);
+        $payload['status'] = $validated['status'] ?? $timelineEvent->status;
+
+        // Logo: ganti, hapus, atau biarkan.
+        $payload['logo_path'] = $timelineEvent->logo_path;
+
         if ($request->hasFile('logo')) {
-            if ($timelineEvent->logo_path && Storage::disk('public')->exists($timelineEvent->logo_path)) {
-                Storage::disk('public')->delete($timelineEvent->logo_path);
-            }
-
-            $logoPath = $request->file('logo')->store('timeline', 'public');
+            $this->deleteTimelineFile($timelineEvent->logo_path);
+            $payload['logo_path'] = $request->file('logo')->store('timeline', 'public');
+        } elseif ($request->boolean('remove_logo')) {
+            $this->deleteTimelineFile($timelineEvent->logo_path);
+            $payload['logo_path'] = null;
         }
 
-        $payload = [
-            'title' => trim($validated['title']),
-            'date' => $validated['date'],
-            'time' => $validated['time'] ?? $timelineEvent->time,
-            'location' => trim($validated['location']),
-            'latitude' => $validated['latitude'] ?? $timelineEvent->latitude,
-            'longitude' => $validated['longitude'] ?? $timelineEvent->longitude,
-            'guide_url' => $validated['guide_url'] ?? $timelineEvent->guide_url,
-            'theme' => $validated['theme'] ?? $timelineEvent->theme,
-            'logo_path' => $logoPath,
-            'status' => $validated['status'] ?? $timelineEvent->status,
-            'is_active' => (bool) ($validated['is_active'] ?? $timelineEvent->is_active),
-            'sort_order' => (int) ($validated['sort_order'] ?? $timelineEvent->sort_order ?? 0),
-        ];
+        // Panduan PDF: ganti, hapus, atau biarkan.
+        $payload['guide_url'] = $timelineEvent->guide_url;
 
-        if ($request->hasFile('guide_pdf') && $request->file('guide_pdf')->isValid()) {
-            if (! empty($timelineEvent->guide_url)) {
-                // attempt to delete old file if stored under storage
-                try {
-                    $oldPath = preg_replace('#^' . preg_quote(asset('storage/'), '#') . '#', '', $timelineEvent->guide_url);
-                    if ($oldPath && Storage::disk('public')->exists($oldPath)) {
-                        Storage::disk('public')->delete($oldPath);
-                    }
-                } catch (\Throwable $e) {
-                    // ignore deletion errors
-                }
-
-            }
-
-            $pdfPath = $request->file('guide_pdf')->store('timeline/guides', 'public');
-            $payload['guide_url'] = asset('storage/' . ltrim($pdfPath, '/'));
-        }
-
-        if (Schema::hasColumn('timeline_events', 'description')) {
-            $payload['description'] = $validated['description'] ?? $timelineEvent->description;
+        if ($request->hasFile('guide_pdf')) {
+            $this->deleteTimelineFile($timelineEvent->guide_url);
+            $payload['guide_url'] = '/storage/' . $request->file('guide_pdf')->store('timeline/guides', 'public');
+        } elseif ($request->boolean('remove_guide')) {
+            $this->deleteTimelineFile($timelineEvent->guide_url);
+            $payload['guide_url'] = null;
         }
 
         $timelineEvent->fill($payload);
-
         $timelineEvent->save();
 
         return redirect()->route('admin.timeline')->with('success', 'Timeline kegiatan berhasil diperbarui.');
@@ -782,6 +860,9 @@ class ModuleController extends Controller
 
     public function deleteTimeline(TimelineEvent $timelineEvent)
     {
+        $this->deleteTimelineFile($timelineEvent->logo_path);
+        $this->deleteTimelineFile($timelineEvent->guide_url);
+
         $timelineEvent->delete();
 
         return redirect()->route('admin.timeline')->with('success', 'Timeline kegiatan berhasil dihapus.');
@@ -789,9 +870,99 @@ class ModuleController extends Controller
 
     public function showTimelineEvent($id)
     {
-        $event = Schema::hasTable('timeline_events') ? TimelineEvent::query()->findOrFail($id) : abort(404);
+        abort_unless(Schema::hasTable('timeline_events'), 404);
+
+        $event = TimelineEvent::query()->findOrFail($id);
+
+        // Kegiatan yang disembunyikan hanya boleh dilihat admin yang sedang login (untuk pratinjau).
+        if (! $event->is_active && ! auth()->check()) {
+            abort(404);
+        }
 
         return view('pages.event-detail', compact('event'));
+    }
+
+    protected function timelineRules(): array
+    {
+        return [
+            'title' => 'required|string|max:255',
+            'date' => 'required|date',
+            'time' => 'nullable|date_format:H:i,H:i:s',
+            'location' => 'required|string|max:255',
+            'location_url' => 'nullable|url|max:500',
+            'theme' => 'nullable|string|max:500',
+            'description' => 'nullable|string',
+            'status' => 'nullable|string|in:upcoming,ongoing,completed',
+            'is_active' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer|min:0',
+            'logo' => 'nullable|image|mimes:jpg,jpeg,png,webp|max:4096',
+            'remove_logo' => 'nullable|boolean',
+            'guide_pdf' => 'nullable|file|mimes:pdf|max:10240',
+            'remove_guide' => 'nullable|boolean',
+        ];
+    }
+
+    /**
+     * Rapikan input sebelum validasi: link tanpa skema (maps.app.goo.gl/xxx)
+     * otomatis diberi https:// agar lolos aturan "url".
+     */
+    protected function normalizeTimelineInput(Request $request): void
+    {
+        $url = trim((string) $request->input('location_url', ''));
+
+        if ($url !== '' && ! preg_match('#^https?://#i', $url)) {
+            $url = 'https://' . $url;
+        }
+
+        $request->merge(['location_url' => $url === '' ? null : $url]);
+    }
+
+    protected function timelinePayload(array $validated, Request $request): array
+    {
+        $payload = [
+            'title' => trim($validated['title']),
+            'date' => $validated['date'],
+            'time' => $validated['time'] ?? null,
+            'location' => trim($validated['location']),
+            'theme' => $validated['theme'] ?? null,
+            'status' => $validated['status'] ?? 'upcoming',
+            'is_active' => $request->boolean('is_active', true),
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+        ];
+
+        // Dijaga agar aplikasi tidak error bila migrasi location_url belum dijalankan.
+        if (Schema::hasColumn('timeline_events', 'location_url')) {
+            $payload['location_url'] = $validated['location_url'] ?? null;
+        }
+
+        if (Schema::hasColumn('timeline_events', 'description')) {
+            $payload['description'] = $validated['description'] ?? null;
+        }
+
+        return $payload;
+    }
+
+    /**
+     * Terima path disk publik ("timeline/abc.png"), "/storage/timeline/abc.png",
+     * maupun URL absolut yang mengandung "/storage/". URL eksternal diabaikan.
+     */
+    protected function deleteTimelineFile(?string $value): void
+    {
+        if (empty($value)) {
+            return;
+        }
+
+        if (preg_match('#^https?://#i', $value) && ! Str::contains($value, '/storage/')) {
+            return;
+        }
+
+        $path = Str::contains($value, '/storage/')
+            ? Str::after($value, '/storage/')
+            : preg_replace('#^/?storage/#', '', ltrim($value, '/'));
+
+        if ($path !== '' && Storage::disk('public')->exists($path)) {
+            Storage::disk('public')->delete($path);
+        }
     }
 
     public function pendaftaranLaksana()

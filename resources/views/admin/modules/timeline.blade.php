@@ -4,6 +4,20 @@
 @section('page-heading', $title ?? 'Kelola Timeline Kegiatan')
 @section('page-description', $description ?? 'Kelola jadwal dan kegiatan yang tampil di homepage.')
 
+@php
+    $statusLabels = [
+        'upcoming' => 'Akan datang',
+        'ongoing' => 'Berlangsung',
+        'completed' => 'Selesai',
+    ];
+    $statusClasses = [
+        'upcoming' => 'bg-sky-100 text-sky-700 dark:bg-sky-500/10 dark:text-sky-300',
+        'ongoing' => 'bg-amber-100 text-amber-700 dark:bg-amber-500/10 dark:text-amber-300',
+        'completed' => 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200',
+    ];
+    $openEditId = (str_starts_with((string) old('_form'), 'edit-')) ? substr(old('_form'), 5) : null;
+@endphp
+
 @section('content')
 <div class="space-y-4 rounded-[1.5rem] border border-slate-200 bg-white p-3 shadow-sm sm:space-y-6 sm:rounded-[2rem] sm:p-6 dark:border-slate-800 dark:bg-slate-900">
     <div class="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
@@ -13,22 +27,28 @@
             <p class="mt-1 text-xs text-slate-500 dark:text-slate-400 sm:text-sm">{{ $description ?? 'Kelola jadwal dan kegiatan yang tampil di homepage.' }}</p>
         </div>
 
-        @if(! empty($publicRoute) && ! empty($publicLabel))
-            <a href="{{ $publicRoute }}" class="inline-flex items-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20">
-                {{ $publicLabel }}
+        <div class="flex flex-wrap gap-2">
+            <a href="#form-tambah" class="inline-flex items-center rounded-xl bg-emerald-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-emerald-500">
+                Tambah kegiatan
             </a>
-        @endif
+            @if(! empty($publicRoute) && ! empty($publicLabel))
+                <a href="{{ $publicRoute }}" target="_blank" rel="noopener" class="inline-flex items-center rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-2 text-sm font-semibold text-emerald-700 transition hover:bg-emerald-100 dark:border-emerald-500/20 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20">
+                    {{ $publicLabel }}
+                </a>
+            @endif
+        </div>
     </div>
 
     @if(session('success'))
         <div class="flex items-start justify-between gap-3 rounded-xl border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700 dark:border-emerald-500/30 dark:bg-emerald-500/10 dark:text-emerald-300">
             <p>{{ session('success') }}</p>
-            <button type="button" onclick="this.closest('div').remove()" class="text-lg leading-none opacity-70 transition hover:opacity-100" aria-label="Tutup notifikasi">&times;</button>
+            <button type="button" onclick="this.parentElement.remove()" class="text-lg leading-none opacity-70 transition hover:opacity-100" aria-label="Tutup notifikasi">&times;</button>
         </div>
     @endif
 
     @if($errors->any())
-        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
+            <p class="mb-1 font-semibold">Data belum tersimpan. Periksa bagian berikut:</p>
             <ul class="list-disc pl-5">
                 @foreach($errors->all() as $err)
                     <li>{{ $err }}</li>
@@ -38,84 +58,94 @@
     @endif
 
     @if(session('error'))
-        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700">
+        <div class="rounded-xl border border-rose-200 bg-rose-50 px-4 py-3 text-sm text-rose-700 dark:border-rose-500/30 dark:bg-rose-500/10 dark:text-rose-300">
             {{ session('error') }}
         </div>
     @endif
 
+    {{-- ───────── Statistik ───────── --}}
     <div class="grid grid-cols-2 gap-3 sm:gap-4 xl:grid-cols-4">
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40 sm:p-4">
-            <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Total Kegiatan</p>
-            <p class="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">{{ $stats['total'] ?? 0 }}</p>
-            <p class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Semua data</p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40 sm:p-4">
-            <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Akan Datang</p>
-            <p class="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">{{ $stats['upcoming'] ?? 0 }}</p>
-            <p class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Menunggu tanggal</p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40 sm:p-4">
-            <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Sedang Aktif</p>
-            <p class="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">{{ $stats['active'] ?? 0 }}</p>
-            <p class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Dipublikasikan</p>
-        </div>
-        <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40 sm:p-4">
-            <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">Selesai</p>
-            <p class="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">{{ $stats['completed'] ?? 0 }}</p>
-            <p class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 sm:text-[11px]">Terlewati</p>
-        </div>
+        @foreach([
+            ['Total kegiatan', $stats['total'] ?? 0, 'Semua data'],
+            ['Akan datang', $stats['upcoming'] ?? 0, 'Menunggu tanggal'],
+            ['Tampil di publik', $stats['active'] ?? 0, 'Status aktif'],
+            ['Selesai', $stats['completed'] ?? 0, 'Sudah terlaksana'],
+        ] as [$statLabel, $statValue, $statCaption])
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 p-3 dark:border-slate-800 dark:bg-slate-800/40 sm:p-4">
+                <p class="text-[9px] font-semibold uppercase tracking-[0.16em] text-slate-500 dark:text-slate-400 sm:text-[10px]">{{ $statLabel }}</p>
+                <p class="mt-2 text-xl font-bold text-slate-900 dark:text-white sm:text-2xl">{{ $statValue }}</p>
+                <p class="mt-1 text-[10px] text-slate-500 dark:text-slate-400 sm:text-[11px]">{{ $statCaption }}</p>
+            </div>
+        @endforeach
     </div>
 
+    {{-- ───────── Daftar (mobile: kartu) ───────── --}}
     <div class="space-y-3 md:hidden">
         @forelse($events ?? [] as $event)
             <article class="rounded-2xl border border-slate-200 bg-white p-3 shadow-sm dark:border-slate-700 dark:bg-slate-900">
                 <div class="mb-3 flex items-start justify-between gap-2">
                     <div class="min-w-0 flex-1">
-                        <h4 class="truncate text-sm font-bold text-slate-900 dark:text-white">{{ $event->title }}</h4>
-                        <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">{{ \Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y') }}</p>
+                        <h4 class="text-sm font-bold text-slate-900 dark:text-white">{{ $event->title }}</h4>
+                        <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">
+                            {{ \Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y') }}
+                            @if($event->time) &middot; {{ substr($event->time, 0, 5) }} @endif
+                        </p>
                     </div>
-                    <span class="inline-flex shrink-0 rounded-full px-2 py-0.5 text-[9px] font-semibold {{ $event->is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200' }}">
-                        {{ $event->status }}
-                    </span>
+                    <div class="flex shrink-0 flex-col items-end gap-1">
+                        <span class="inline-flex rounded-full px-2 py-0.5 text-[9px] font-semibold {{ $statusClasses[$event->status] ?? $statusClasses['upcoming'] }}">
+                            {{ $statusLabels[$event->status] ?? $event->status }}
+                        </span>
+                        @unless($event->is_active)
+                            <span class="inline-flex rounded-full bg-rose-100 px-2 py-0.5 text-[9px] font-semibold text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">Disembunyikan</span>
+                        @endunless
+                    </div>
                 </div>
 
                 <div class="space-y-1 text-[11px] text-slate-600 dark:text-slate-300">
-                    <p><span class="font-semibold text-slate-500 dark:text-slate-400">Lokasi:</span> {{ $event->location }}</p>
-                    <p><span class="font-semibold text-slate-500 dark:text-slate-400">Waktu:</span> {{ $event->time ?? 'Waktu belum diatur' }}</p>
+                    <p>
+                        <span class="font-semibold text-slate-500 dark:text-slate-400">Lokasi:</span>
+                        @if(! empty($event->location_url))
+                            <a href="{{ $event->location_url }}" target="_blank" rel="noopener" class="text-emerald-600 hover:underline dark:text-emerald-400">{{ $event->location }}</a>
+                        @else
+                            {{ $event->location }}
+                        @endif
+                    </p>
+                    <p><span class="font-semibold text-slate-500 dark:text-slate-400">Waktu:</span> {{ $event->time ? substr($event->time, 0, 5) : 'Belum diatur' }}</p>
                 </div>
 
                 <div class="mt-3 grid grid-cols-2 gap-2">
                     <form action="{{ route('admin.timeline.toggle', $event) }}" method="POST" class="w-full">
                         @csrf
                         <button type="submit" class="w-full rounded-lg border border-amber-200 bg-amber-50 px-2 py-1.5 text-[10px] font-semibold text-amber-700 dark:border-amber-700/50 dark:bg-amber-500/10 dark:text-amber-300">
-                            {{ $event->is_active ? 'Non-aktifkan' : 'Aktifkan' }}
+                            {{ $event->is_active ? 'Sembunyikan' : 'Tampilkan' }}
                         </button>
                     </form>
 
-                    <button type="button" onclick="document.getElementById('edit-timeline-{{ $event->id }}').classList.toggle('hidden')" class="w-full rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1.5 text-[10px] font-semibold text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300">
+                    <button type="button" data-modal-open="edit-timeline-{{ $event->id }}" class="w-full rounded-lg border border-emerald-200 bg-emerald-50 px-2 py-1.5 text-[10px] font-semibold text-emerald-700 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300">
                         Edit
                     </button>
 
-                    <form action="{{ route('admin.timeline.delete', $event) }}" method="POST" onsubmit="return confirm('Hapus kegiatan ini?');" class="w-full">
+                    <a href="{{ route('event.show', $event->id) }}" target="_blank" rel="noopener" class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-center text-[10px] font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
+                        Lihat detail
+                    </a>
+
+                    <form action="{{ route('admin.timeline.delete', $event) }}" method="POST" data-confirm="Hapus kegiatan &quot;{{ $event->title }}&quot;? Tindakan ini tidak bisa dibatalkan." class="w-full">
                         @csrf
                         @method('DELETE')
                         <button type="submit" class="w-full rounded-lg border border-rose-200 bg-rose-50 px-2 py-1.5 text-[10px] font-semibold text-rose-700 dark:border-rose-500/40 dark:bg-rose-500/10 dark:text-rose-300">
                             Hapus
                         </button>
                     </form>
-
-                    <button type="button" class="w-full rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-[10px] font-semibold text-slate-700 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200">
-                        Detail
-                    </button>
                 </div>
             </article>
         @empty
             <div class="rounded-xl border border-slate-200 bg-slate-50 p-4 text-center text-sm text-slate-500 dark:border-slate-700 dark:bg-slate-800/60 dark:text-slate-400">
-                Belum ada data timeline kegiatan.
+                Belum ada kegiatan. Tambahkan kegiatan pertama lewat formulir di bawah.
             </div>
         @endforelse
     </div>
 
+    {{-- ───────── Daftar (desktop: tabel) ───────── --}}
     <div class="hidden overflow-hidden rounded-2xl border border-slate-200 md:block dark:border-slate-800">
         <div class="overflow-x-auto">
             <table class="min-w-full text-left text-sm text-slate-600 dark:text-slate-300">
@@ -131,32 +161,54 @@
                 <tbody class="divide-y divide-slate-200 bg-white dark:divide-slate-700 dark:bg-slate-950">
                     @forelse($events ?? [] as $event)
                         <tr class="transition hover:bg-slate-50 dark:hover:bg-slate-800/50">
-                            <td class="px-4 py-3 font-medium text-slate-900 dark:text-white">{{ $event->title }}</td>
+                            <td class="px-4 py-3 font-medium text-slate-900 dark:text-white">
+                                <div class="flex items-center gap-3">
+                                    @if(! empty($event->logo_path))
+                                        <img src="{{ preg_match('/^https?:\/\//', $event->logo_path) ? $event->logo_path : asset('storage/' . ltrim($event->logo_path, '/')) }}" alt="" class="h-10 w-10 shrink-0 rounded-lg border border-slate-200 bg-white object-contain dark:border-slate-700">
+                                    @endif
+                                    <span>{{ $event->title }}</span>
+                                </div>
+                            </td>
                             <td class="px-4 py-3 dark:text-slate-300">
                                 {{ \Illuminate\Support\Carbon::parse($event->date)->translatedFormat('d F Y') }}
                                 <br>
-                                <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ $event->time ?? 'Waktu belum diatur' }}</span>
+                                <span class="text-[11px] text-slate-500 dark:text-slate-400">{{ $event->time ? substr($event->time, 0, 5) : 'Waktu belum diatur' }}</span>
                             </td>
-                            <td class="px-4 py-3 dark:text-slate-300">{{ $event->location }}</td>
+                            <td class="px-4 py-3 dark:text-slate-300">
+                                @if(! empty($event->location_url))
+                                    <a href="{{ $event->location_url }}" target="_blank" rel="noopener" class="text-emerald-600 hover:underline dark:text-emerald-400">{{ $event->location }}</a>
+                                @else
+                                    {{ $event->location }}
+                                @endif
+                            </td>
                             <td class="px-4 py-3">
-                                <span class="rounded-full px-2.5 py-1 text-[10px] font-semibold {{ $event->is_active ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300' : 'bg-slate-200 text-slate-700 dark:bg-slate-700 dark:text-slate-200' }}">
-                                    {{ $event->status }}
-                                </span>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="rounded-full px-2.5 py-1 text-[10px] font-semibold {{ $statusClasses[$event->status] ?? $statusClasses['upcoming'] }}">
+                                        {{ $statusLabels[$event->status] ?? $event->status }}
+                                    </span>
+                                    @unless($event->is_active)
+                                        <span class="rounded-full bg-rose-100 px-2.5 py-1 text-[10px] font-semibold text-rose-700 dark:bg-rose-500/10 dark:text-rose-300">Disembunyikan</span>
+                                    @endunless
+                                </div>
                             </td>
                             <td class="px-4 py-3">
                                 <div class="flex flex-wrap items-center gap-2">
                                     <form action="{{ route('admin.timeline.toggle', $event) }}" method="POST">
                                         @csrf
                                         <button type="submit" class="rounded-lg border border-amber-200 bg-amber-50 px-2.5 py-1.5 text-[10px] font-semibold text-amber-700 hover:bg-amber-100 dark:border-amber-700/50 dark:bg-amber-500/10 dark:text-amber-300 dark:hover:bg-amber-500/20">
-                                            {{ $event->is_active ? 'Non-aktifkan' : 'Aktifkan' }}
+                                            {{ $event->is_active ? 'Sembunyikan' : 'Tampilkan' }}
                                         </button>
                                     </form>
 
-                                    <button type="button" onclick="document.getElementById('edit-timeline-{{ $event->id }}').classList.toggle('hidden')" class="rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[10px] font-semibold text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20">
+                                    <button type="button" data-modal-open="edit-timeline-{{ $event->id }}" class="rounded-lg border border-emerald-200 bg-emerald-50 px-2.5 py-1.5 text-[10px] font-semibold text-emerald-700 hover:bg-emerald-100 dark:border-emerald-500/40 dark:bg-emerald-500/10 dark:text-emerald-300 dark:hover:bg-emerald-500/20">
                                         Edit
                                     </button>
 
-                                    <form action="{{ route('admin.timeline.delete', $event) }}" method="POST" onsubmit="return confirm('Hapus kegiatan ini?');">
+                                    <a href="{{ route('event.show', $event->id) }}" target="_blank" rel="noopener" class="rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-[10px] font-semibold text-slate-700 hover:bg-slate-100 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700">
+                                        Lihat
+                                    </a>
+
+                                    <form action="{{ route('admin.timeline.delete', $event) }}" method="POST" data-confirm="Hapus kegiatan &quot;{{ $event->title }}&quot;? Tindakan ini tidak bisa dibatalkan.">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="rounded-lg border border-rose-200 bg-rose-50 px-2.5 py-1.5 text-[10px] font-semibold text-rose-700 hover:bg-rose-100 dark:border-rose-500/40 dark:bg-rose-500/10 dark:text-rose-300 dark:hover:bg-rose-500/20">
@@ -166,64 +218,9 @@
                                 </div>
                             </td>
                         </tr>
-
-                        <tr id="edit-timeline-{{ $event->id }}" class="hidden bg-slate-50 dark:bg-slate-800/50">
-                            <td colspan="5" class="px-4 py-4">
-                                <form action="{{ route('admin.timeline.update', $event) }}" method="POST" enctype="multipart/form-data" class="grid gap-3 md:grid-cols-2">
-                                    @csrf
-                                    @method('PUT')
-
-                                    <input type="text" name="title" value="{{ old('title', $event->title) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500" placeholder="Judul kegiatan" required>
-                                    <input type="date" name="date" value="{{ old('date', $event->date?->format('Y-m-d') ?? $event->date) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white" required>
-                                    <input type="time" name="time" value="{{ old('time', $event->time) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                                    <input type="text" name="location" value="{{ old('location', $event->location) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500" placeholder="Lokasi" required>
-
-                                    <input type="text" name="latitude" value="{{ old('latitude', $event->latitude) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Latitude (e.g. -6.200000)">
-                                    <input type="text" name="longitude" value="{{ old('longitude', $event->longitude) }}" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white" placeholder="Longitude (e.g. 106.816666)">
-
-                                    <div class="md:col-span-2">
-                                        <label class="block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Panduan kegiatan (PDF, opsional)</label>
-                                        <div class="mt-2 flex items-center gap-3">
-                                            <input type="file" name="guide_pdf" accept="application/pdf" class="block w-full text-sm text-slate-600">
-                                            @if(! empty($event->guide_url))
-                                                <a href="{{ $event->guide_url }}" target="_blank" rel="noopener" class="text-emerald-600 hover:underline text-sm">Lihat file saat ini</a>
-                                            @endif
-                                        </div>
-                                    </div>
-                                    <input type="number" name="sort_order" value="{{ old('sort_order', $event->sort_order ?? 0) }}" min="0" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500">
-                                    <select name="status" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                                        <option value="upcoming" {{ old('status', $event->status) === 'upcoming' ? 'selected' : '' }}>Akan datang</option>
-                                        <option value="ongoing" {{ old('status', $event->status) === 'ongoing' ? 'selected' : '' }}>Sedang berlangsung</option>
-                                        <option value="completed" {{ old('status', $event->status) === 'completed' ? 'selected' : '' }}>Selesai</option>
-                                    </select>
-                                    <textarea name="description" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 md:col-span-2" placeholder="Deskripsi singkat kegiatan (maks 500 karakter)">{{ old('description', $event->description) }}</textarea>
-                                    <textarea name="theme" rows="3" class="rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-400 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder-slate-500 md:col-span-2" placeholder="Tema kegiatan">{{ old('theme', $event->theme) }}</textarea>
-
-                                    <div class="md:col-span-2">
-                                        <label class="block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Logo kegiatan</label>
-                                        <div class="mt-2 flex items-center gap-3 rounded-2xl border border-dashed border-slate-300 bg-white p-3 file-drop-zone dark:border-slate-700 dark:bg-slate-900">
-                                            <input type="file" name="logo" accept="image/*" class="block w-full text-sm text-slate-600 file:mr-3 file:rounded-lg file:border-0 file:bg-emerald-600 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white dark:text-slate-300">
-                                            @if(! empty($event->logo_path))
-                                                <img src="{{ asset('storage/' . $event->logo_path) }}" alt="Logo kegiatan" class="h-12 w-12 rounded-xl object-cover border border-slate-200 dark:border-slate-700">
-                                            @endif
-                                        </div>
-                                    </div>
-
-                                    <label class="inline-flex items-center gap-2 text-sm text-slate-600 dark:text-slate-300 md:col-span-2">
-                                        <input type="checkbox" name="is_active" value="1" {{ old('is_active', $event->is_active) ? 'checked' : '' }}>
-                                        Tampilkan di homepage
-                                    </label>
-                                    <div class="flex justify-end gap-2 md:col-span-2">
-                                        <button type="submit" class="rounded-xl bg-emerald-600 px-4 py-2 text-xs font-semibold text-white hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400">
-                                            Simpan Perubahan
-                                        </button>
-                                    </div>
-                                </form>
-                            </td>
-                        </tr>
                     @empty
                         <tr>
-                            <td colspan="5" class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada data timeline kegiatan.</td>
+                            <td colspan="5" class="px-4 py-6 text-center text-sm text-slate-500 dark:text-slate-400">Belum ada kegiatan. Tambahkan kegiatan pertama lewat formulir di bawah.</td>
                         </tr>
                     @endforelse
                 </tbody>
@@ -231,167 +228,232 @@
         </div>
     </div>
 
-    <div class="rounded-2xl border border-slate-200 bg-slate-50 p-5 dark:border-slate-700 dark:bg-slate-800/80">
-        <div class="mb-4 flex items-center justify-between">
-            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Formulir Timeline</h3>
-            <span class="rounded-full bg-emerald-50 px-2 py-1 text-[10px] font-semibold text-emerald-700 dark:bg-emerald-500/10 dark:text-emerald-300">Siap diproses</span>
+    {{-- ───────── Formulir tambah ───────── --}}
+    <div id="form-tambah" class="scroll-mt-24 rounded-2xl border border-slate-200 bg-slate-50 p-4 sm:p-5 dark:border-slate-700 dark:bg-slate-800/80">
+        <div class="mb-4">
+            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Tambah kegiatan</h3>
+            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Kegiatan terdekat yang berstatus tampil akan muncul di kartu hitung mundur homepage.</p>
         </div>
 
-        <form action="{{ route('admin.timeline.store') }}" method="POST" enctype="multipart/form-data" class="grid gap-4 md:grid-cols-2">
-            @csrf
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Judul kegiatan</span>
-                <input type="text" name="title" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Masukkan judul acara" required>
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Tanggal</span>
-                <input type="date" name="date" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white" required>
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Waktu</span>
-                <input type="time" name="time" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Urutan</span>
-                <input type="number" name="sort_order" value="0" min="0" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Lokasi</span>
-                <input type="text" name="location" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Masukkan lokasi kegiatan" required>
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Koordinat (Latitude)</span>
-                <input type="text" name="latitude" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="-6.200000" />
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Koordinat (Longitude)</span>
-                <input type="text" name="longitude" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="106.816666" />
-            </label>
-
-            <label class="block">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Status</span>
-                <select name="status" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                    <option value="upcoming">Akan datang</option>
-                    <option value="ongoing">Sedang berlangsung</option>
-                    <option value="completed">Selesai</option>
-                </select>
-            </label>
-
-            <label class="block md:col-span-2">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Deskripsi singkat</span>
-                <textarea name="description" rows="3" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Deskripsi singkat kegiatan (maks 500 karakter)"></textarea>
-            </label>
-
-            <label class="block md:col-span-2">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Tema kegiatan</span>
-                <textarea name="theme" rows="4" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400" placeholder="Tuliskan tema atau motto kegiatan"></textarea>
-            </label>
-
-            <label class="block md:col-span-2">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Panduan kegiatan (PDF, opsional)</span>
-                <input type="file" name="guide_pdf" accept="application/pdf" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white dark:placeholder:text-slate-400">
-                <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Unggah file PDF panduan kegiatan (opsional). Sistem akan menyimpan file di penyimpanan publik.</p>
-            </label>
-
-            <label class="block md:col-span-2">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Tampilkan di homepage</span>
-                <select name="is_active" class="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-900 outline-none transition focus:border-emerald-500 dark:border-slate-700 dark:bg-slate-900 dark:text-white">
-                    <option value="1">Ya, tampilkan di homepage</option>
-                    <option value="0">Tidak tampilkan</option>
-                </select>
-            </label>
-
-            <div class="md:col-span-2">
-                <span class="mb-1.5 block text-xs font-semibold uppercase tracking-[0.12em] text-slate-500 dark:text-slate-400">Logo kegiatan</span>
-                <div class="mt-2 rounded-2xl border-2 border-dashed border-slate-300 bg-white p-4 transition hover:border-emerald-400 dark:border-slate-700 dark:bg-slate-900">
-                    <label class="file-drop-zone flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-slate-200 bg-slate-50 px-6 py-8 text-center dark:border-slate-700 dark:bg-slate-800">
-                        <svg class="h-10 w-10 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                            <path d="M12 16V4m0 0l-4 4m4-4l4 4M5 18.5A2.5 2.5 0 007.5 21h9A2.5 2.5 0 0019 18.5" stroke-linecap="round" stroke-linejoin="round"/>
-                        </svg>
-                        <div>
-                            <p class="text-sm font-semibold text-slate-800 dark:text-slate-100">Seret & lepas logo di sini</p>
-                            <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">PNG, JPG, WEBP</p>
-                        </div>
-                        <input type="file" name="logo" accept="image/*" class="hidden">
-                    </label>
-                </div>
-            </div>
-
-            <div class="md:col-span-2 flex justify-end">
-                <button type="submit" class="inline-flex items-center justify-center rounded-xl bg-emerald-600 px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400">
-                    Simpan Timeline
-                </button>
-            </div>
-        </form>
+        @include('admin.modules.partials.timeline-form', ['action' => route('admin.timeline.store')])
     </div>
 </div>
+
+{{-- ───────── Modal edit (satu per kegiatan; bekerja di mobile & desktop) ───────── --}}
+@foreach($events ?? [] as $event)
+    <div id="edit-timeline-{{ $event->id }}" data-modal class="fixed inset-0 z-[70] hidden items-start justify-center overflow-y-auto p-3 sm:p-6" role="dialog" aria-modal="true" aria-labelledby="edit-title-{{ $event->id }}">
+        <div class="fixed inset-0 bg-slate-900/60" data-modal-close></div>
+        <div class="relative my-4 w-full max-w-3xl rounded-2xl bg-white p-4 shadow-2xl sm:p-6 dark:bg-slate-900">
+            <div class="mb-4 flex items-start justify-between gap-3">
+                <div class="min-w-0">
+                    <h3 id="edit-title-{{ $event->id }}" class="text-lg font-semibold text-slate-900 dark:text-white">Edit kegiatan</h3>
+                    <p class="truncate text-xs text-slate-500 dark:text-slate-400">{{ $event->title }}</p>
+                </div>
+                <button type="button" data-modal-close class="rounded-lg p-1.5 text-slate-500 transition hover:bg-slate-100 dark:text-slate-400 dark:hover:bg-slate-800" aria-label="Tutup">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke-linecap="round"/></svg>
+                </button>
+            </div>
+
+            @include('admin.modules.partials.timeline-form', [
+                'action' => route('admin.timeline.update', $event),
+                'event' => $event,
+            ])
+        </div>
+    </div>
+@endforeach
 @endsection
 
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.file-drop-zone').forEach(function (zone) {
-        var input = zone.querySelector('input[type=file]');
-        if (! input) return;
+    /* ───────── Konfirmasi hapus ───────── */
+    document.querySelectorAll('form[data-confirm]').forEach(function (form) {
+        form.addEventListener('submit', function (e) {
+            if (! window.confirm(form.getAttribute('data-confirm'))) {
+                e.preventDefault();
+            }
+        });
+    });
 
-        zone.addEventListener('dragover', function (e) {
-            e.preventDefault();
-            zone.classList.add('ring-2', 'ring-indigo-300');
+    /* ───────── Modal edit ───────── */
+    function openModal(id) {
+        var modal = document.getElementById(id);
+        if (! modal) return;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        document.body.classList.add('overflow-hidden');
+    }
+
+    function closeModal(modal) {
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        if (! document.querySelector('[data-modal].flex')) {
+            document.body.classList.remove('overflow-hidden');
+        }
+    }
+
+    document.querySelectorAll('[data-modal-open]').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            openModal(btn.getAttribute('data-modal-open'));
+        });
+    });
+
+    document.querySelectorAll('[data-modal]').forEach(function (modal) {
+        modal.querySelectorAll('[data-modal-close]').forEach(function (el) {
+            el.addEventListener('click', function () { closeModal(modal); });
+        });
+    });
+
+    document.addEventListener('keydown', function (e) {
+        if (e.key !== 'Escape') return;
+        document.querySelectorAll('[data-modal].flex').forEach(closeModal);
+    });
+
+    @if($openEditId)
+        // Validasi gagal saat edit: buka kembali modal yang bersangkutan
+        openModal('edit-timeline-{{ $openEditId }}');
+    @endif
+
+    /* ───────── Cegah browser membuka file yang dijatuhkan di luar dropzone ───────── */
+    ['dragover', 'drop'].forEach(function (evt) {
+        window.addEventListener(evt, function (e) {
+            if (! e.target.closest || ! e.target.closest('[data-logo-zone]')) e.preventDefault();
+        });
+    });
+
+    /* ───────── Dropzone logo + preview ───────── */
+    var MAX_BYTES = 4 * 1024 * 1024;
+    var ALLOWED = ['image/png', 'image/jpeg', 'image/webp'];
+
+    function formatSize(bytes) {
+        if (bytes >= 1024 * 1024) return (bytes / 1024 / 1024).toFixed(2) + ' MB';
+        return Math.max(1, Math.round(bytes / 1024)) + ' KB';
+    }
+
+    document.querySelectorAll('[data-logo-zone]').forEach(function (zone) {
+        var input = zone.querySelector('[data-input]');
+        var removeFlag = zone.querySelector('[data-remove]');
+        var emptyBox = zone.querySelector('[data-empty]');
+        var filledBox = zone.querySelector('[data-filled]');
+        var preview = zone.querySelector('[data-preview]');
+        var nameEl = zone.querySelector('[data-name]');
+        var metaEl = zone.querySelector('[data-meta]');
+        var badge = zone.querySelector('[data-badge]');
+        var errorEl = zone.querySelector('[data-error]');
+        var clearBtn = zone.querySelector('[data-clear]');
+        var currentUrl = zone.getAttribute('data-current') || '';
+        var objectUrl = null;
+
+        function showError(msg) {
+            errorEl.textContent = msg;
+            errorEl.classList.toggle('hidden', ! msg);
+        }
+
+        function showEmpty() {
+            emptyBox.classList.remove('hidden');
+            filledBox.classList.add('hidden');
+            preview.removeAttribute('src');
+        }
+
+        function showFilled(src, name, meta, isNew) {
+            preview.src = src;
+            nameEl.textContent = name;
+            metaEl.textContent = meta;
+            badge.textContent = isNew ? 'Baru' : 'Logo saat ini';
+            emptyBox.classList.add('hidden');
+            filledBox.classList.remove('hidden');
+        }
+
+        function releaseObjectUrl() {
+            if (objectUrl) {
+                URL.revokeObjectURL(objectUrl);
+                objectUrl = null;
+            }
+        }
+
+        function handleFile(file) {
+            showError('');
+
+            if (ALLOWED.indexOf(file.type) === -1) {
+                input.value = '';
+                showError('Format tidak didukung. Gunakan PNG, JPG, atau WEBP.');
+                return;
+            }
+
+            if (file.size > MAX_BYTES) {
+                input.value = '';
+                showError('Ukuran file ' + formatSize(file.size) + ' melebihi batas 4 MB.');
+                return;
+            }
+
+            releaseObjectUrl();
+            objectUrl = URL.createObjectURL(file);
+            removeFlag.value = '0';
+
+            var img = new Image();
+            img.onload = function () {
+                showFilled(objectUrl, file.name, img.naturalWidth + ' × ' + img.naturalHeight + ' px · ' + formatSize(file.size), true);
+            };
+            img.onerror = function () {
+                input.value = '';
+                releaseObjectUrl();
+                showError('File tidak dapat dibaca sebagai gambar.');
+                if (currentUrl) {
+                    showFilled(currentUrl, 'Logo saat ini', '', false);
+                } else {
+                    showEmpty();
+                }
+            };
+            img.src = objectUrl;
+        }
+
+        // Keadaan awal: tampilkan logo yang sudah tersimpan (mode edit)
+        if (currentUrl) {
+            showFilled(currentUrl, 'Logo saat ini', 'Pilih file baru untuk menggantinya', false);
+        }
+
+        input.addEventListener('change', function () {
+            if (input.files && input.files[0]) {
+                handleFile(input.files[0]);
+            }
+        });
+
+        clearBtn.addEventListener('click', function () {
+            input.value = '';
+            releaseObjectUrl();
+            showError('');
+
+            // Bila yang dihapus adalah logo tersimpan, minta server menghapusnya saat disimpan.
+            removeFlag.value = currentUrl ? '1' : '0';
+            showEmpty();
+        });
+
+        ['dragenter', 'dragover'].forEach(function (evt) {
+            zone.addEventListener(evt, function (e) {
+                e.preventDefault();
+                zone.classList.add('ring-2', 'ring-emerald-400');
+            });
         });
 
         ['dragleave', 'dragend', 'drop'].forEach(function (evt) {
             zone.addEventListener(evt, function (e) {
                 e.preventDefault();
-                zone.classList.remove('ring-2', 'ring-indigo-300');
+                zone.classList.remove('ring-2', 'ring-emerald-400');
             });
         });
 
         zone.addEventListener('drop', function (e) {
-            e.preventDefault();
-            var files = e.dataTransfer.files;
+            var files = e.dataTransfer && e.dataTransfer.files;
             if (! files || files.length === 0) return;
+
             try {
                 var dt = new DataTransfer();
-                for (var i = 0; i < files.length; i++) {
-                    dt.items.add(files[i]);
-                }
+                dt.items.add(files[0]);
                 input.files = dt.files;
-
-                var ev = new Event('change', { bubbles: true });
-                input.dispatchEvent(ev);
-
-                var file = input.files[0];
-                if (file) {
-                    var img = zone.querySelector('img');
-                    if (! img) {
-                        img = document.createElement('img');
-                        img.className = 'mt-3 h-12 w-12 rounded-xl object-contain border border-slate-200 dark:border-slate-700';
-                        zone.appendChild(img);
-                    }
-                    img.src = URL.createObjectURL(file);
-                }
+                handleFile(files[0]);
             } catch (err) {
-                console.warn('Could not set dropped files on input', err);
+                showError('Browser Anda tidak mendukung seret & lepas. Klik area ini untuk memilih file.');
             }
-        });
-
-        input.addEventListener('change', function () {
-            var f = input.files && input.files[0];
-            if (! f) return;
-            var img = zone.querySelector('img');
-            if (! img) {
-                img = document.createElement('img');
-                img.className = 'mt-3 h-12 w-12 rounded-xl object-contain border border-slate-200 dark:border-slate-700';
-                zone.appendChild(img);
-            }
-            img.src = URL.createObjectURL(f);
         });
     });
 });
