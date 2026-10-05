@@ -10,6 +10,9 @@
         $inputClass = 'w-full rounded-lg border border-zinc-200 bg-white px-3 py-2.5 text-sm text-zinc-900 outline-none transition placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-0 dark:border-slate-700 dark:bg-slate-950 dark:text-slate-100 dark:placeholder:text-slate-500 dark:focus:border-slate-300';
         $labelClass = 'mb-1.5 block text-[10px] font-semibold uppercase tracking-[0.14em] text-zinc-500 dark:text-slate-400 sm:text-[11px]';
         $btnOutline = 'inline-flex items-center justify-center rounded-lg border border-zinc-200 bg-white px-2 py-1.5 text-[10px] font-semibold text-zinc-700 transition hover:border-zinc-900 hover:text-zinc-900 dark:border-slate-700 dark:bg-transparent dark:text-slate-200 dark:hover:border-slate-300 dark:hover:text-slate-100';
+
+        // Urutan tampil default: urutan terbesar + 1 (atau 0 bila belum ada berita)
+        $nextSortOrder = ($posts->max('sort_order') ?? -1) + 1;
     @endphp
 
     <div class="space-y-3 sm:space-y-4">
@@ -91,7 +94,8 @@
 
                     <label class="block">
                         <span class="{{ $labelClass }}">Konten utama</span>
-                        <textarea id="news-content" name="content" rows="6" required class="{{ $inputClass }} resize-y lg:min-h-[16rem]" placeholder="Tulis isi berita..."></textarea>
+                        <textarea id="news-content" name="content" rows="12" required class="{{ $inputClass }} resize-y lg:min-h-[20rem]" placeholder="Tulis isi berita lengkap di sini..."></textarea>
+                        <span class="mt-1.5 block text-[11px] text-zinc-500 dark:text-slate-400">Tekan Enter untuk membuat paragraf baru. Setiap baris akan tampil sebagai satu paragraf di halaman berita.</span>
                     </label>
                 </div>
 
@@ -118,7 +122,7 @@
 
                         <label class="block min-w-0">
                             <span class="{{ $labelClass }}">Urutan tampil</span>
-                            <input id="news-sort-order" type="number" name="sort_order" min="0" value="{{ $posts->max('sort_order') + 1 ?? 0 }}" class="{{ $inputClass }}" />
+                            <input id="news-sort-order" type="number" name="sort_order" min="0" value="{{ $nextSortOrder }}" class="{{ $inputClass }}" />
                         </label>
 
                         <label class="block min-w-0 sm:col-span-2 lg:col-span-1">
@@ -254,7 +258,7 @@
                 cancelBtn.classList.add('hidden');
                 cancelBtn.classList.remove('inline-flex');
                 form.reset();
-                sortInput.value = '{{ $posts->max('sort_order') + 1 ?? 0 }}';
+                sortInput.value = '{{ $nextSortOrder }}';
                 statusInput.value = '1';
             };
 
@@ -291,10 +295,6 @@
 
                     window.scrollTo({ top: 0, behavior: 'smooth' });
                 });
-            });
-
-            form.addEventListener('submit', function () {
-                methodInput.value = methodInput.value || 'POST';
             });
         });
     </script>

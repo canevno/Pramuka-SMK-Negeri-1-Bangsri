@@ -13,10 +13,9 @@ class PrestasiController extends Controller
             ? (int) $request->tahun
             : null;
 
-        $items = AchievementStore::published($tahun);
-
+        // Prestasi yang dipilih (?id=) ditentukan di view, jadi urutan data tidak diubah di sini.
         return view('pages.prestasi.index', [
-            'prestasi' => $items,
+            'prestasi' => AchievementStore::published($tahun),
             'pagination' => [
                 'current_page' => 1,
                 'last_page' => 1,

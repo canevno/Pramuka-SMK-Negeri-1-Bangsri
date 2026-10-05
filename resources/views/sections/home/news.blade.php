@@ -17,6 +17,7 @@
         }
 
         return [
+            'slug' => $post->slug,
             'category' => $post->type ?: 'Berita',
             'title' => $post->title,
             'date' => $date,
@@ -43,8 +44,15 @@
         @else
             <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-4">
                 @foreach($newsItems as $news)
+                    @php
+                        // Tautan membawa slug supaya halaman berita langsung menampilkan berita yang dipilih
+                        $newsUrl = ! empty($news['slug'])
+                            ? route('news', ['slug' => $news['slug']])
+                            : route('news');
+                    @endphp
+
                     <article class="flex flex-col overflow-hidden rounded-lg border border-slate-400 bg-white transition duration-200 shadow-sm dark:border-slate-600 dark:bg-slate-900">
-                        <a href="{{ route('berita.show', ['slug' => $news['slug'] ?? Str::slug($news['title'])]) }}" class="block">
+                        <a href="{{ $newsUrl }}" class="block">
                             <div class="relative aspect-[16/11] w-full overflow-hidden rounded-t-lg bg-slate-100 dark:bg-slate-800">
                                 <div class="absolute left-3 top-3 z-10 rounded bg-[#0D1B2A] px-2 py-1 text-[10px] font-black uppercase tracking-wider text-white">
                                     {{ $news['badge'] }}
@@ -60,7 +68,7 @@
                                     {{ $news['category'] }}
                                 </p>
 
-                                <a href="{{ route('berita.show', ['slug' => $news['slug'] ?? Str::slug($news['title'])]) }}" class="block">
+                                <a href="{{ $newsUrl }}" class="block">
                                     <h3 class="mt-2 text-sm font-bold leading-snug text-slate-900 line-clamp-2 dark:text-white sm:text-[0.96rem]">
                                         {{ $news['title'] }}
                                     </h3>
@@ -82,7 +90,7 @@
                                     <span>{{ $news['date'] }}</span>
                                 </div>
 
-                                <a href="{{ route('berita.show', ['slug' => $news['slug'] ?? Str::slug($news['title'])]) }}" class="flex items-center font-bold text-[#0D1B2A] transition hover:text-slate-700 dark:text-white dark:hover:text-[#b9d6ff]">
+                                <a href="{{ $newsUrl }}" class="flex items-center font-bold text-[#0D1B2A] transition hover:text-slate-700 dark:text-white dark:hover:text-[#b9d6ff]">
                                     Baca <span class="ml-1 text-xs leading-none">&rsaquo;</span>
                                 </a>
                             </div>

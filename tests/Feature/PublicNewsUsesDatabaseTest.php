@@ -37,3 +37,19 @@ it('public users can open a published news detail route', function () {
         ->assertOk()
         ->assertSee('Survival Pramuka 2026');
 });
+
+it('news detail content uses justified text alignment', function () {
+    $post = Post::query()->create([
+        'title' => 'Rapat Persiapan Kegiatan 2026',
+        'slug' => 'rapat-persiapan-kegiatan-2026',
+        'type' => 'Kegiatan',
+        'excerpt' => 'Rapat persiapan kegiatan pramuka.',
+        'content' => 'Dalam rapat ini dibahas penyusunan agenda kegiatan dan pembagian tugas.',
+        'published_at' => now(),
+        'is_published' => true,
+    ]);
+
+    $this->get(route('berita.show', ['slug' => $post->slug]))
+        ->assertOk()
+        ->assertSee('style="text-align: justify; text-justify: inter-word;"', false);
+});

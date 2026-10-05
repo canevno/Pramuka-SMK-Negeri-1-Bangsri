@@ -41,7 +41,7 @@
 
                         $location  = $achievement['location'] ?? null;
                         $instagram = $achievement['winner_social_link'] ?? null;
-                        $detailUrl = route('prestasi');
+                        $detailUrl = route('prestasi', ['id' => $achievement['id'] ?? null]);
                     @endphp
 
                     <article class="group flex cursor-default flex-col overflow-hidden rounded-lg border border-slate-400 bg-white shadow-sm dark:border-slate-600 dark:bg-slate-900">

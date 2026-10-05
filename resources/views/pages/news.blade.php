@@ -1,7 +1,7 @@
-﻿@extends('layouts.frontend')
+﻿﻿@extends('layouts.frontend')
 
 @section('content')
-<section class="bg-white py-8 sm:py-10">
+<section class="bg-white py-4 sm:py-10">
     <div class="mx-auto max-w-[1280px] px-4 sm:px-4 lg:px-5">
         @if(empty($newsItems))
             <div class="rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-6 py-10 text-center text-slate-500">
@@ -9,21 +9,59 @@
             </div>
         @else
             @php
-                $featured = $newsItems[0];
-                $related = array_slice($newsItems, 1);
+                // Pecah teks menjadi paragraf: satu baris (Enter) = satu paragraf.
+                // Tag </p> dan <br> diubah dulu menjadi baris baru agar paragraf tidak menyatu.
+                $splitParagraphs = function ($text) {
+                    $text = preg_replace('/<\/p>|<br\s*\/?>/i', "\n", (string) $text);
+
+                    return collect(preg_split('/\R+/', trim($text)))
+                        ->map(fn ($p) => trim(strip_tags((string) $p)))
+                        ->filter(fn ($p) => $p !== '')
+                        ->values()
+                        ->all();
+                };
+
+                // Isi lengkap berita: pakai content, kalau kosong baru description.
+                $fullText = function ($item) {
+                    $content = trim((string) ($item['content'] ?? ''));
+
+                    return $content !== '' ? $content : trim((string) ($item['description'] ?? ''));
+                };
+
+                $slugOf = fn ($item) => $item['slug'] ?? Str::slug($item['title']);
+
+                $newsItems = array_values($newsItems);
+
+                // Berita utama dipilih dari ?slug= (mis. dari beranda atau setelah refresh).
+                // Bila tidak ada / tidak cocok, pakai berita pertama.
+                $requestedSlug = strtolower(trim((string) request('slug', '')));
+                $featuredIndex = 0;
+
+                if ($requestedSlug !== '') {
+                    foreach ($newsItems as $i => $n) {
+                        if (strtolower((string) $slugOf($n)) === $requestedSlug) {
+                            $featuredIndex = $i;
+                            break;
+                        }
+                    }
+                }
+
+                $featured = $newsItems[$featuredIndex];
+                $featuredParagraphs = $splitParagraphs($fullText($featured));
+
                 $newsData = collect($newsItems)->map(fn ($n) => [
+                    'slug' => $slugOf($n),
                     'category' => $n['category'],
                     'date' => $n['date'],
                     'title' => $n['title'],
                     'image' => $n['image'],
                     'alt' => $n['alt'],
-                    'description' => $n['description'],
-                    'url' => route('berita.show', ['slug' => $n['slug'] ?? Str::slug($n['title'])]),
+                    'description' => $fullText($n),
                 ])->values();
             @endphp
 
             <div class="mx-auto grid max-w-[1180px] gap-8 lg:grid-cols-[minmax(0,1.2fr)_420px]">
-                <article class="max-w-[760px]">
+                <article class="min-w-0 max-w-[760px]">
                     <div class="mb-3 flex items-center justify-between gap-3">
                         <div id="featured-category" class="text-[11px] font-medium text-slate-600">
                             {{ $featured['category'] }}
@@ -40,33 +78,32 @@
                         </div>
                     </div>
 
-                    <a href="{{ route('berita.show', ['slug' => $featured['slug'] ?? Str::slug($featured['title'])]) }}" class="block" data-featured-link>
-                        <h1 id="featured-title" class="mb-5 text-2xl font-bold leading-[1.1] text-slate-900 sm:text-[2.5rem]">{{ $featured['title'] }}</h1>
-                    </a>
+                    <h1 id="featured-title" class="mb-5 text-2xl font-bold leading-[1.1] text-slate-900 sm:text-[2.5rem]">{{ $featured['title'] }}</h1>
 
-                    <a href="{{ route('berita.show', ['slug' => $featured['slug'] ?? Str::slug($featured['title'])]) }}" class="block" data-featured-link>
-                        <div class="mt-5 overflow-hidden rounded-xl bg-slate-100">
-                            <img id="featured-image" src="{{ $featured['image'] }}" alt="{{ $featured['alt'] }}" class="h-[220px] w-full object-cover sm:h-[330px]">
+                    <div class="mt-5 overflow-hidden rounded-xl bg-slate-100">
+                        <img id="featured-image" src="{{ $featured['image'] }}" alt="{{ $featured['alt'] }}" class="h-[220px] w-full object-cover sm:h-[330px]">
+                    </div>
+
+                    <div class="mt-4 lg:mt-6" id="description-card-wrapper">
+                        <div id="description-wrapper" class="border-0 bg-transparent px-0 py-4">
+                            <div id="featured-description" class="desc-scroll space-y-4 text-justify lg:max-h-[320px] lg:overflow-y-auto text-base leading-7 text-slate-700">
+                                @foreach ($featuredParagraphs as $paragraph)
+                                    <p class="break-words text-justify [hyphens:auto]">{{ $paragraph }}</p>
+                                @endforeach
+                            </div>
                         </div>
-                    </a>
-
-                    <div class="mt-6 space-y-6 text-base leading-6 text-slate-700">
-                        <p id="featured-description" class="text-justify sm:text-left">
-                            {{ $featured['description'] }}
-                        </p>
-                        <p class="text-justify sm:text-left">
-                            Berita ini menampilkan kegiatan, prestasi, dan dinamika terbaru yang sedang berkembang di lingkungan sekolah dan organisasi Pramuka. Informasi ini menjadi referensi penting bagi siswa, orang tua, dan pemangku kepentingan dalam mengikuti kegiatan yang telah berlangsung.
-                        </p>
                     </div>
                 </article>
 
-                <aside class="space-y-6">
-                    <div class="rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-xl sm:border sm:border-slate-200 sm:bg-white sm:p-4 sm:shadow-sm">
-                        <h3 class="text-center text-lg font-semibold text-slate-900 sm:text-left">Berita Lainnya</h3>
+                <aside class="relative">
+                    <div class="flex flex-col rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-xl sm:border sm:border-slate-200 sm:bg-white sm:p-4 sm:shadow-sm lg:absolute lg:inset-0">
+                        <h3 class="shrink-0 text-center text-lg font-semibold text-slate-900 sm:text-left">Berita Lainnya</h3>
 
-                        <div class="related-scroll mt-4 space-y-4 lg:max-h-[600px] lg:overflow-y-auto lg:pr-2">
-                            @foreach($related as $item)
-                                <a href="{{ route('berita.show', ['slug' => $item['slug'] ?? Str::slug($item['title'])]) }}" data-news-index="{{ $loop->index + 1 }}" class="flex items-center gap-3 overflow-hidden rounded-lg border-0 bg-transparent p-0 transition hover:bg-slate-50 sm:border sm:border-slate-100 sm:bg-white sm:p-1.5">
+                        <div class="related-scroll mt-4 flex flex-col gap-4 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-2">
+                            @foreach($newsItems as $item)
+                                {{-- href ke halaman ini sendiri (?slug=) sebagai cadangan bila JS tidak jalan --}}
+                                @php $isActive = $loop->index === $featuredIndex; @endphp
+                                <a href="{{ route('news', ['slug' => $slugOf($item)]) }}" data-news-index="{{ $loop->index }}" class="{{ $isActive ? 'hidden' : 'flex' }} shrink-0 items-center gap-3 overflow-hidden rounded-lg border-0 bg-transparent p-0 transition hover:bg-slate-50 sm:border sm:border-slate-100 sm:bg-white sm:p-1.5">
                                     <div class="flex h-[92px] w-[128px] shrink-0 items-center justify-center overflow-hidden rounded-md bg-slate-100">
                                         <img src="{{ $item['image'] }}" alt="{{ $item['alt'] }}" class="h-full w-full object-cover object-center">
                                     </div>
@@ -77,7 +114,7 @@
                                             <p class="text-[9px] font-medium text-slate-400">{{ $item['date'] }}</p>
                                         </div>
                                         <h4 class="mt-1.5 text-left text-[0.95rem] font-semibold leading-5 text-slate-900 line-clamp-2">{{ $item['title'] }}</h4>
-                                        <p class="mt-1 text-left text-[11px] leading-5 text-slate-600 line-clamp-2">{{ $item['description'] }}</p>
+                                        <p class="mt-1 text-left text-[11px] leading-5 text-slate-600 line-clamp-2">{{ $item['description'] ?? '' }}</p>
                                     </div>
                                 </a>
                             @endforeach
@@ -85,58 +122,121 @@
                     </div>
                 </aside>
             </div>
-        @endif
 
-        <script>
-            (() => {
-                const news = @json($newsData);
-                const $ = (id) => document.getElementById(id);
+            <script>
+                (() => {
+                    const news = @json($newsData);
+                    const $ = (id) => document.getElementById(id);
 
-                const showFeatured = (item) => {
-                    $('featured-category').textContent = item.category;
-                    $('featured-date').textContent = item.date;
-                    $('featured-title').textContent = item.title;
-                    $('featured-description').textContent = item.description;
+                    const links = Array.from(document.querySelectorAll('[data-news-index]'));
 
-                    const img = $('featured-image');
-                    img.src = item.image;
-                    img.alt = item.alt;
+                    // Sembunyikan berita yang sedang tampil dari daftar "Berita Lainnya"
+                    const markActive = (index) => {
+                        links.forEach((link) => {
+                            const active = Number(link.dataset.newsIndex) === index;
+                            link.classList.toggle('hidden', active);
+                            link.classList.toggle('flex', !active);
+                        });
+                    };
 
-                    document.querySelectorAll('[data-featured-link]').forEach((a) => {
-                        a.href = item.url;
-                    });
-                };
+                    // Simpan pilihan di URL supaya tetap sama setelah refresh
+                    const setUrlSlug = (slug) => {
+                        const url = new URL(window.location.href);
+                        url.searchParams.set('slug', slug);
+                        window.history.replaceState({}, '', url);
+                    };
 
-                document.querySelectorAll('[data-news-index]').forEach((link) => {
-                    link.addEventListener('click', (e) => {
-                        const item = news[Number(link.dataset.newsIndex)];
-                        if (!item) {
-                            return;
-                        }
+                    // Bangun ulang paragraf (satu baris = satu paragraf), class sama seperti Blade
+                    const renderDescription = (text) => {
+                        const box = $('featured-description');
+                        if (!box) return;
 
-                        e.preventDefault();
-                        showFeatured(item);
+                        box.innerHTML = '';
+                        String(text || '')
+                            .replace(/<\/p>|<br\s*\/?>/gi, '\n')
+                            .split(/\r\n|\n|\r/)
+                            .map((p) => p.replace(/<[^>]*>/g, '').trim())
+                            .filter(Boolean)
+                            .forEach((p) => {
+                                const el = document.createElement('p');
+                                el.className = 'break-words text-justify [hyphens:auto]';
+                                el.textContent = p;
+                                box.appendChild(el);
+                            });
 
-                        // Di mobile, naik ke artikel utama supaya perubahannya terlihat
-                        if (window.innerWidth < 1024) {
+                        box.scrollTop = 0;
+                    };
+
+                    const showFeatured = (item) => {
+                        $('featured-category').textContent = item.category;
+                        $('featured-date').textContent = item.date;
+                        $('featured-title').textContent = item.title;
+                        renderDescription(item.description);
+
+                        const img = $('featured-image');
+                        img.src = item.image;
+                        img.alt = item.alt;
+                    };
+
+                    links.forEach((link) => {
+                        link.addEventListener('click', (e) => {
+                            const index = Number(link.dataset.newsIndex);
+                            const item = news[index];
+                            if (!item) {
+                                return;
+                            }
+
+                            e.preventDefault();
+                            showFeatured(item);
+                            markActive(index);
+                            setUrlSlug(item.slug);
+
                             $('featured-title').scrollIntoView({ behavior: 'smooth', block: 'center' });
-                        }
+                        });
                     });
-                });
-            })();
-        </script>
+                })();
+            </script>
 
-        <style>
-            @media (min-width: 1024px) {
-                .related-scroll {
-                    scrollbar-width: none;
-                    -ms-overflow-style: none;
+            <style>
+                .desc-scroll {
+                    scroll-behavior: smooth;
+                    overscroll-behavior: contain;
+                    scrollbar-width: thin;
+                    scrollbar-color: transparent transparent;
                 }
-                .related-scroll::-webkit-scrollbar {
-                    display: none;
+                .desc-scroll:hover {
+                    scrollbar-color: #94a3b8 transparent;
                 }
-            }
-        </style>
+                .desc-scroll::-webkit-scrollbar {
+                    width: 6px;
+                }
+                .desc-scroll::-webkit-scrollbar-thumb {
+                    background: transparent;
+                    border-radius: 9999px;
+                }
+                .desc-scroll:hover::-webkit-scrollbar-thumb {
+                    background: #94a3b8;
+                }
+                @media (hover: none) {
+                    .desc-scroll {
+                        scrollbar-color: #94a3b8 transparent;
+                    }
+                    .desc-scroll::-webkit-scrollbar-thumb {
+                        background: #94a3b8;
+                    }
+                }
+
+                @media (min-width: 1024px) {
+                    .related-scroll {
+                        scrollbar-width: none;
+                        -ms-overflow-style: none;
+                    }
+                    .related-scroll::-webkit-scrollbar {
+                        display: none;
+                    }
+                }
+            </style>
+        @endif
     </div>
 </section>
 @endsection
