@@ -104,7 +104,10 @@ if ($nextEvent === null && $latestEvent !== null) {
     ═══════════════════════════════════════════════════ --}}
     <div class="w-full bg-white dark:bg-gray-950 border-0 rounded-lg shadow-sm px-4 md:px-8 py-4 md:py-6">
 
-        <div class="flex flex-col gap-6 md:flex-row md:items-center md:justify-between md:text-left">
+        {{-- ═══════════════════════════════════════════════════
+             DESKTOP LAYOUT (tidak diubah) — disembunyikan di mobile
+        ═══════════════════════════════════════════════════ --}}
+        <div class="hidden gap-6 md:flex md:flex-row md:items-center md:justify-between md:text-left">
 
             {{-- ── LEFT: Title + Meta ── --}}
             <div class="order-1 flex-1 min-w-0 w-full md:w-auto">
@@ -239,6 +242,95 @@ if ($nextEvent === null && $latestEvent !== null) {
             </div>
 
         </div>
+        {{-- ═════════════ END DESKTOP LAYOUT ═════════════ --}}
+
+
+        {{-- ═══════════════════════════════════════════════════
+             MOBILE CARD (baru) — hanya tampil di bawah breakpoint md
+             Countdown dalam kotak terpisah, meta berupa daftar vertikal
+        ═══════════════════════════════════════════════════ --}}
+        @php
+            $mTitle      = is_array($nextEvent) ? ($nextEvent['title'] ?? 'Kegiatan') : ($nextEvent->title ?? 'Kegiatan');
+            $mLocation   = is_array($nextEvent) ? ($nextEvent['location'] ?? '-') : ($nextEvent->location ?? '-');
+            $mDate       = is_array($nextEvent) ? ($nextEvent['date_formatted'] ?? '-') : ($nextEvent->date_formatted ?? '-');
+            $mGuideUrl   = is_array($nextEvent) ? ($nextEvent['guide_url'] ?? null) : ($nextEvent->guide_url ?? null);
+            $mTheme      = is_array($nextEvent) ? ($nextEvent['theme'] ?? '') : ($nextEvent->theme ?? '');
+            $mLogoPath   = is_array($nextEvent) ? ($nextEvent['logo_path'] ?? null) : ($nextEvent->logo_path ?? null);
+            $mLocationHref = $locationHref ?? null;
+        @endphp
+
+        <div class="md:hidden">
+
+            {{-- Logo + Label + Judul --}}
+            <div class="flex items-center gap-3">
+                <div class="flex h-12 w-12 flex-shrink-0 items-center justify-center overflow-hidden rounded-lg">
+                    @if($mLogoPath)
+                        <img src="{{ asset('storage/' . $mLogoPath) }}" alt="Logo Kegiatan" class="h-full w-full object-cover" onerror="this.style.display='none'" />
+                    @else
+                        <img src="{{ asset('images/logokegiatan2.png') }}" alt="Logo Kegiatan" class="h-full w-full object-contain" onerror="this.style.display='none'" />
+                    @endif
+                </div>
+                <div class="min-w-0">
+                    <p class="text-[11px] font-bold uppercase tracking-wider text-gray-500 dark:text-gray-400">Kegiatan Mendatang</p>
+                    <h2 class="text-base font-semibold leading-snug tracking-tight text-slate-900 dark:text-white">{{ $mTitle }}</h2>
+                </div>
+            </div>
+
+            {{-- Countdown: satu kotak per satuan, tanpa pembungkus tambahan --}}
+            <div class="mt-3 grid grid-cols-4 gap-1.5 text-center">
+                @foreach ([['days', 'Hari'], ['hours', 'Jam'], ['minutes', 'Menit'], ['seconds', 'Detik']] as [$cdKey, $cdLabel])
+                    <div class="rounded-lg bg-[#f1f5f9] py-1.5 dark:bg-gray-800">
+                        <span id="cd-m-{{ $cdKey }}" class="block font-mono text-xl font-bold leading-none tabular-nums text-slate-900 dark:text-white">00</span>
+                        <span class="mt-1 block text-[10px] font-semibold uppercase leading-none tracking-wide text-slate-500 dark:text-gray-400">{{ $cdLabel }}</span>
+                    </div>
+                @endforeach
+            </div>
+
+            {{-- Tema --}}
+            @if (! empty($mTheme))
+                <p class="mt-2.5 text-center text-xs font-extrabold leading-tight text-gray-700 dark:text-gray-300">
+                    {!! $mTheme !!}
+                </p>
+            @endif
+
+            {{-- Meta: lokasi + tanggal sejajar, Panduan Kegiatan di bawah tepat di tengah --}}
+            <div class="mt-3 flex flex-col items-center text-[13px] text-gray-700 dark:text-gray-300" style="row-gap: 0.875rem;">
+                <div class="flex flex-wrap items-center justify-center" style="column-gap: 1.75rem; row-gap: 0.25rem;">
+                    <div class="flex items-center gap-1.5">
+                        <svg class="h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        @if (! empty($mLocationHref))
+                            <a href="{{ $mLocationHref }}" target="_blank" rel="noopener" class="font-medium text-slate-900 hover:underline dark:text-white">{{ $mLocation }}</a>
+                        @else
+                            <span class="font-medium text-slate-900 dark:text-white">{{ $mLocation }}</span>
+                        @endif
+                    </div>
+
+                    <div class="flex items-center gap-1.5">
+                        <svg class="h-4 w-4 flex-shrink-0 text-gray-600 dark:text-gray-400" fill="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"></line>
+                            <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"></line>
+                            <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"></line>
+                        </svg>
+                        <span class="font-medium">{{ $mDate }}</span>
+                    </div>
+                </div>
+
+                @if (! empty($mGuideUrl))
+                    <a href="{{ $mGuideUrl }}" class="flex items-center gap-1.5 transition-colors hover:text-gray-900 dark:hover:text-white">
+                        <span class="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border-2 border-slate-300 dark:border-slate-500">
+                            <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400">?</span>
+                        </span>
+                        <span class="font-medium">Panduan Kegiatan</span>
+                    </a>
+                @endif
+            </div>
+        </div>
+        {{-- ═════════════ END MOBILE CARD ═════════════ --}}
+
     </div>
 
     {{-- ── JS: real-time countdown tick (no page reload) ── --}}
@@ -256,7 +348,10 @@ if ($nextEvent === null && $latestEvent !== null) {
                 const minutes = Math.floor((diff % 3600000)  / 60000);
                 const seconds = Math.floor((diff % 60000)    / 1000);
 
+                // Desktop: tanpa nol di depan (perilaku asli)
                 const pad = n => String(n).padStart(1, '0');
+                // Mobile: dua digit agar kotak countdown rapi
+                const pad2 = n => String(n).padStart(2, '0');
 
                 const d = document.getElementById('cd-days');
                 const h = document.getElementById('cd-hours');
@@ -267,11 +362,21 @@ if ($nextEvent === null && $latestEvent !== null) {
                 if (h) h.textContent = pad(hours);
                 if (m) m.textContent = pad(minutes);
                 if (s) s.textContent = pad(seconds);
+
+                const md = document.getElementById('cd-m-days');
+                const mh = document.getElementById('cd-m-hours');
+                const mm = document.getElementById('cd-m-minutes');
+                const ms = document.getElementById('cd-m-seconds');
+
+                if (md) md.textContent = pad2(days);
+                if (mh) mh.textContent = pad2(hours);
+                if (mm) mm.textContent = pad2(minutes);
+                if (ms) ms.textContent = pad2(seconds);
             }
 
             tick();
             setInterval(tick, 1000);
         })();
     </script>
-
+</div>
 @endif

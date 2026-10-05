@@ -1,6 +1,6 @@
 <nav style="font-family: 'Inter', 'Segoe UI', 'Helvetica Neue', Arial, sans-serif; visibility: visible;"
     x-cloak
-    class="fixed inset-x-0 top-0 z-50 border-b border-slate-200 bg-white text-slate-900 shadow-sm transition-colors duration-200"
+    class="sticky inset-x-0 top-0 z-50 border-b border-slate-200 bg-white text-slate-900 shadow-sm transition-colors duration-200"
     x-data="{
         activeNav: 'home',
         mobileMenuOpen: false,

@@ -43,7 +43,7 @@
 
     @include('components.navbar')
 
-    <main class="pt-12 sm:pt-16">
+    <main class="pt-0 sm:pt-0">
         @hasSection('content')
             @yield('content')
         @else
