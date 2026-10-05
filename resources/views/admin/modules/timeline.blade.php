@@ -235,7 +235,12 @@
             <p class="mt-1 text-xs text-slate-500 dark:text-slate-400">Kegiatan terdekat yang berstatus tampil akan muncul di kartu hitung mundur homepage.</p>
         </div>
 
-        @include('admin.modules.partials.timeline-form', ['action' => route('admin.timeline.store')])
+        {{-- PERBAIKAN: 'event' => null wajib dikirim agar $event dari perulangan di atas tidak bocor ke partial --}}
+        @include('admin.modules.partials.timeline-form', [
+            'action' => route('admin.timeline.store'),
+            'event' => null,
+            'timelineEvent' => null,
+        ])
     </div>
 </div>
 
@@ -257,6 +262,7 @@
             @include('admin.modules.partials.timeline-form', [
                 'action' => route('admin.timeline.update', $event),
                 'event' => $event,
+                'timelineEvent' => $event,
             ])
         </div>
     </div>

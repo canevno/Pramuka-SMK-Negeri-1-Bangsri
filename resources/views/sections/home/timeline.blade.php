@@ -37,7 +37,6 @@ $events = \Illuminate\Support\Facades\Schema::hasTable('timeline_events')
             'date' => '2026-06-24',
             'time' => '08:00',
             'location' => 'Jl. KH. Achmad Fauzan, Krasak, Jepara',
-            'guide_url' => '#',
             'status' => 'upcoming',
             'theme' => 'Satya Muda Penjaga Dharma,<br/>Wujud Nyata Praja Muda<br/>Karana',
             'date_formatted' => '24 Juni 2026',
@@ -49,7 +48,6 @@ $events = \Illuminate\Support\Facades\Schema::hasTable('timeline_events')
             'date' => '2026-07-24',
             'time' => '07:00',
             'location' => 'SMK Negeri 1 Bangsri',
-            'guide_url' => '#',
             'status' => 'upcoming',
             'theme' => 'Satya Muda Penjaga Dharma,<br/>Wujud Nyata Praja Muda',
             'date_formatted' => '24 Juli 2026',
@@ -138,7 +136,7 @@ if ($nextEvent === null && $latestEvent !== null) {
                     }
                 @endphp
 
-                {{-- Mobile-only metadata row: location, date, and guide side-by-side --}}
+                {{-- Mobile-only metadata row: location and date --}}
                 <div class="flex flex-row flex-wrap items-center justify-center gap-2.5 text-center md:hidden">
                     <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
@@ -162,14 +160,6 @@ if ($nextEvent === null && $latestEvent !== null) {
                         <span class="font-medium">{{ is_array($nextEvent) ? ($nextEvent['date_formatted'] ?? '-') : ($nextEvent->date_formatted ?? '-') }}</span>
                     </div>
 
-                    @if (is_array($nextEvent) ? ! empty($nextEvent['guide_url']) : ! empty($nextEvent->guide_url))
-                        <a href="{{ is_array($nextEvent) ? ($nextEvent['guide_url'] ?? '#') : ($nextEvent->guide_url ?? '#') }}" class="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-                            <div class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-500 flex items-center justify-center flex-shrink-0">
-                                <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400">?</span>
-                            </div>
-                            <span class="font-medium">Panduan Kegiatan</span>
-                        </a>
-                    @endif
                 </div>
 
                 {{-- Desktop metadata row remains unchanged --}}
@@ -196,14 +186,6 @@ if ($nextEvent === null && $latestEvent !== null) {
                         <span class="font-medium">{{ is_array($nextEvent) ? ($nextEvent['date_formatted'] ?? '-') : ($nextEvent->date_formatted ?? '-') }}</span>
                     </div>
 
-                    @if (is_array($nextEvent) ? ! empty($nextEvent['guide_url']) : ! empty($nextEvent->guide_url))
-                        <a href="{{ is_array($nextEvent) ? ($nextEvent['guide_url'] ?? '#') : ($nextEvent->guide_url ?? '#') }}" class="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
-                            <div class="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-500 flex items-center justify-center flex-shrink-0">
-                                <span class="text-xs font-bold text-gray-600 dark:text-gray-400">?</span>
-                            </div>
-                            <span class="font-medium">Panduan Kegiatan</span>
-                        </a>
-                    @endif
                 </div>
             </div>
 
@@ -253,7 +235,6 @@ if ($nextEvent === null && $latestEvent !== null) {
             $mTitle      = is_array($nextEvent) ? ($nextEvent['title'] ?? 'Kegiatan') : ($nextEvent->title ?? 'Kegiatan');
             $mLocation   = is_array($nextEvent) ? ($nextEvent['location'] ?? '-') : ($nextEvent->location ?? '-');
             $mDate       = is_array($nextEvent) ? ($nextEvent['date_formatted'] ?? '-') : ($nextEvent->date_formatted ?? '-');
-            $mGuideUrl   = is_array($nextEvent) ? ($nextEvent['guide_url'] ?? null) : ($nextEvent->guide_url ?? null);
             $mTheme      = is_array($nextEvent) ? ($nextEvent['theme'] ?? '') : ($nextEvent->theme ?? '');
             $mLogoPath   = is_array($nextEvent) ? ($nextEvent['logo_path'] ?? null) : ($nextEvent->logo_path ?? null);
             $mLocationHref = $locationHref ?? null;
@@ -293,7 +274,7 @@ if ($nextEvent === null && $latestEvent !== null) {
                 </p>
             @endif
 
-            {{-- Meta: lokasi + tanggal sejajar, Panduan Kegiatan di bawah tepat di tengah --}}
+            {{-- Meta: lokasi + tanggal --}}
             <div class="mt-3 flex flex-col items-center text-[13px] text-gray-700 dark:text-gray-300" style="row-gap: 0.875rem;">
                 <div class="flex flex-wrap items-center justify-center" style="column-gap: 1.75rem; row-gap: 0.25rem;">
                     <div class="flex items-center gap-1.5">
@@ -318,15 +299,6 @@ if ($nextEvent === null && $latestEvent !== null) {
                         <span class="font-medium">{{ $mDate }}</span>
                     </div>
                 </div>
-
-                @if (! empty($mGuideUrl))
-                    <a href="{{ $mGuideUrl }}" class="flex items-center gap-1.5 transition-colors hover:text-gray-900 dark:hover:text-white">
-                        <span class="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full border-2 border-slate-300 dark:border-slate-500">
-                            <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400">?</span>
-                        </span>
-                        <span class="font-medium">Panduan Kegiatan</span>
-                    </a>
-                @endif
             </div>
         </div>
         {{-- ═════════════ END MOBILE CARD ═════════════ --}}

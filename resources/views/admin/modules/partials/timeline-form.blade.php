@@ -1,10 +1,10 @@
 @php
-    $timelineEvent = $event ?? null;
-    $isEdit = ! empty($timelineEvent);
+    $timelineEvent = $timelineEvent ?? $event ?? null;
+    $isEdit = ! empty($timelineEvent) && is_object($timelineEvent);
     $formKey = $isEdit ? 'edit-' . $timelineEvent->id : 'new';
 
-    // Hanya form yang baru dikirim yang boleh memakai old(); form lain tetap memakai data aslinya.
-    $useOld = old('_form') === $formKey;
+    $oldFormKey = (string) old('_form');
+    $useOld = $oldFormKey === $formKey || ($isEdit && $oldFormKey === 'edit-' . $timelineEvent->id);
     $val = fn (string $key, $default = '') => $useOld ? old($key, $default) : $default;
 
     $rawDate = $timelineEvent?->date;
@@ -16,7 +16,6 @@
     $existingTime = $val('time', $defaultTime);
     $existingLocation = $val('location', $timelineEvent?->location ?? '');
     $existingLocationUrl = $val('location_url', $timelineEvent?->location_url ?? '');
-    $existingGuideUrl = $val('guide_url', $timelineEvent?->guide_url ?? '');
     $existingTheme = $val('theme', $timelineEvent?->theme ?? '');
     $existingDescription = $val('description', $timelineEvent?->description ?? '');
     $existingStatus = $val('status', $timelineEvent?->status ?? 'upcoming');
@@ -42,13 +41,11 @@
     @endif
     <input type="hidden" name="_form" value="{{ $formKey }}">
 
-    {{-- Judul --}}
     <div class="md:col-span-2">
         <label for="timeline_title_{{ $formKey }}" class="{{ $labelClass }}">Judul kegiatan <span class="text-rose-500">*</span></label>
         <input id="timeline_title_{{ $formKey }}" type="text" name="title" value="{{ $existingTitle }}" required maxlength="255" class="{{ $inputClass }}" placeholder="Contoh: Kemah Bakti Pramuka">
     </div>
 
-    {{-- Tanggal & waktu --}}
     <div>
         <label for="timeline_date_{{ $formKey }}" class="{{ $labelClass }}">Tanggal <span class="text-rose-500">*</span></label>
         <input id="timeline_date_{{ $formKey }}" type="date" name="date" value="{{ $existingDate }}" required class="{{ $inputClass }}">
@@ -59,7 +56,6 @@
         <input id="timeline_time_{{ $formKey }}" type="time" name="time" value="{{ $existingTime }}" class="{{ $inputClass }}">
     </div>
 
-    {{-- Lokasi --}}
     <div>
         <label for="timeline_location_{{ $formKey }}" class="{{ $labelClass }}">Nama lokasi <span class="text-rose-500">*</span></label>
         <input id="timeline_location_{{ $formKey }}" type="text" name="location" value="{{ $existingLocation }}" required maxlength="255" class="{{ $inputClass }}" placeholder="Contoh: SMK Negeri 1 Bangsri">
@@ -70,26 +66,16 @@
         <input id="timeline_location_url_{{ $formKey }}" type="url" name="location_url" value="{{ $existingLocationUrl }}" class="{{ $inputClass }}" placeholder="https://maps.app.goo.gl/...">
     </div>
 
-    {{-- Panduan --}}
-    <div class="md:col-span-2">
-        <label for="timeline_guide_url_{{ $formKey }}" class="{{ $labelClass }}">Link panduan kegiatan</label>
-        <input id="timeline_guide_url_{{ $formKey }}" type="url" name="guide_url" value="{{ $existingGuideUrl }}" class="{{ $inputClass }}" placeholder="https://drive.google.com/...">
-        <p class="mt-1 text-[11px] text-slate-500 dark:text-slate-400">Jika diisi, tombol "Panduan Kegiatan" muncul di halaman detail.</p>
-    </div>
-
-    {{-- Tema --}}
     <div class="md:col-span-2">
         <label for="timeline_theme_{{ $formKey }}" class="{{ $labelClass }}">Tema / Motto</label>
         <textarea id="timeline_theme_{{ $formKey }}" name="theme" rows="2" class="{{ $inputClass }}" placeholder="Isi tema kegiatan jika ada">{{ $existingTheme }}</textarea>
     </div>
 
-    {{-- Deskripsi --}}
     <div class="md:col-span-2">
         <label for="timeline_description_{{ $formKey }}" class="{{ $labelClass }}">Deskripsi</label>
         <textarea id="timeline_description_{{ $formKey }}" name="description" rows="5" class="{{ $inputClass }}" placeholder="Deskripsi kegiatan. Tekan Enter untuk membuat paragraf baru.">{{ $existingDescription }}</textarea>
     </div>
 
-    {{-- Status, urutan, publikasi --}}
     <div class="md:col-span-2 grid gap-4 sm:grid-cols-3">
         <div>
             <label for="timeline_status_{{ $formKey }}" class="{{ $labelClass }}">Status</label>
@@ -114,7 +100,6 @@
         </div>
     </div>
 
-    {{-- Logo (dropzone, dikendalikan script di timeline.blade.php) --}}
     <div class="md:col-span-2">
         <span class="{{ $labelClass }}">Logo kegiatan</span>
 
@@ -122,7 +107,6 @@
             <input type="file" id="{{ $logoId }}" name="logo" accept="image/png,image/jpeg,image/webp" class="sr-only" data-input>
             <input type="hidden" name="remove_logo" value="0" data-remove>
 
-            {{-- Keadaan kosong --}}
             <label for="{{ $logoId }}" data-empty class="flex cursor-pointer flex-col items-center justify-center gap-2 px-4 py-8 text-center">
                 <svg class="h-9 w-9 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5m-13.5-9L12 3m0 0l4.5 4.5M12 3v13.5"/>
@@ -131,7 +115,6 @@
                 <p class="text-[11px] text-slate-500 dark:text-slate-400">PNG, JPG, atau WEBP &middot; maksimal 4 MB</p>
             </label>
 
-            {{-- Keadaan terisi --}}
             <div data-filled class="hidden">
                 <div class="flex items-center gap-3 p-3">
                     <img data-preview alt="Preview logo" class="h-20 w-20 shrink-0 rounded-xl border border-slate-200 bg-white object-contain dark:border-slate-700">

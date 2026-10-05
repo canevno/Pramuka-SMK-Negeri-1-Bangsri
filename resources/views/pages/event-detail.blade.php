@@ -149,13 +149,6 @@
                             @endif
                         </div>
 
-                        @if(! empty($event->guide_url))
-                            <div class="mt-3">
-                                <a href="{{ $event->guide_url }}" target="_blank" rel="noopener" class="inline-flex items-center gap-2 rounded-md bg-[#0D1B2A] px-3 py-1.5 text-xs font-semibold text-white hover:bg-[#162b45]">
-                                    [Panduan Kegiatan]
-                                </a>
-                            </div>
-                        @endif
                     </div>
                 </div>
 

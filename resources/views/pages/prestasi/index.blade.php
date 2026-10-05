@@ -94,7 +94,7 @@
                         </div>
                     </div>
 
-                    <h1 id="featured-title" class="mb-5 text-2xl font-bold leading-[1.1] text-slate-900 sm:text-[2.5rem]">{{ $featured['title'] }}</h1>
+                    <h1 id="featured-title" class="mb-5 text-2xl font-semibold tracking-tight text-slate-900 sm:text-3xl">{{ $featured['title'] }}</h1>
 
                     <div class="mt-5 overflow-hidden rounded-xl bg-slate-100">
                         <img id="featured-image" src="{{ $featured['image'] }}" alt="{{ $featured['alt'] }}" class="h-[220px] w-full object-cover sm:h-[330px]">
@@ -114,7 +114,7 @@
 
                 <aside class="relative">
                     <div class="flex flex-col rounded-none border-0 bg-transparent p-0 shadow-none sm:rounded-xl sm:border sm:border-slate-200 sm:bg-white sm:p-4 sm:shadow-sm lg:absolute lg:inset-0">
-                        <h3 class="shrink-0 text-center text-lg font-semibold text-slate-900 sm:text-left">Prestasi Lainnya</h3>
+                        <h3 class="shrink-0 text-center text-lg font-semibold tracking-tight text-slate-900 sm:text-left sm:text-xl">Prestasi Lainnya</h3>
 
                         <div class="related-scroll mt-4 flex flex-col gap-3 lg:min-h-0 lg:flex-1 lg:overflow-y-auto lg:pr-2">
                             @foreach ($items as $item)
@@ -131,7 +131,7 @@
                                                 <span class="text-slate-300">•</span>
                                                 <p class="font-medium text-slate-400">{{ $item['date'] }}</p>
                                             </div>
-                                            <h4 class="mt-1.5 text-left text-[0.9rem] font-semibold leading-5 text-slate-900 line-clamp-2 sm:text-[0.95rem]">{{ $item['title'] }}</h4>
+                                            <h4 class="mt-1.5 text-left text-[0.9rem] font-semibold tracking-tight leading-5 text-slate-900 line-clamp-2 sm:text-[0.95rem]">{{ $item['title'] }}</h4>
                                             @if (! empty($item['location']))
                                                 <div class="mt-1 flex items-center gap-1.5 text-[10px] text-slate-500 sm:text-[10.5px]">
                                                     <svg class="h-3 w-3 shrink-0 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -227,29 +227,13 @@
                 .desc-scroll {
                     scroll-behavior: smooth;
                     overscroll-behavior: contain;
-                    scrollbar-width: thin;
-                    scrollbar-color: transparent transparent;
-                }
-                .desc-scroll:hover {
-                    scrollbar-color: #94a3b8 transparent;
+                    scrollbar-width: none;
+                    -ms-overflow-style: none;
                 }
                 .desc-scroll::-webkit-scrollbar {
-                    width: 6px;
-                }
-                .desc-scroll::-webkit-scrollbar-thumb {
-                    background: transparent;
-                    border-radius: 9999px;
-                }
-                .desc-scroll:hover::-webkit-scrollbar-thumb {
-                    background: #94a3b8;
-                }
-                @media (hover: none) {
-                    .desc-scroll {
-                        scrollbar-color: #94a3b8 transparent;
-                    }
-                    .desc-scroll::-webkit-scrollbar-thumb {
-                        background: #94a3b8;
-                    }
+                    display: none;
+                    width: 0;
+                    height: 0;
                 }
 
                 @media (min-width: 1024px) {
