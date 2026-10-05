@@ -36,7 +36,7 @@
     /* ===== Desktop (>= 1024px): 2 kolom (kiri: header + tema, kanan: deskripsi) ===== */
     @media (min-width: 1024px) {
         .event-container.event-container {
-            margin-top: 1rem;
+            margin-top: 0;
             max-width: 80rem;
             padding-left: 2rem;
             padding-right: 2rem;
@@ -53,7 +53,7 @@
         /* Kolom kiri menempel saat deskripsi digulir */
         .event-left {
             position: sticky;
-            top: 6.5rem; /* memberi ruang lebih dari navbar saat sticky aktif */
+            top: 5.5rem; /* memberi ruang cukup di bawah navbar saat sticky aktif */
             align-self: start;
         }
 
@@ -83,7 +83,7 @@
     }
 </style>
 
-<section class="bg-slate-50 pt-10 pb-4 dark:bg-gray-950 sm:pt-12 sm:pb-6 lg:pt-14">
+<section class="bg-slate-50 pt-4 pb-4 dark:bg-gray-950 sm:pt-5 sm:pb-6 lg:pt-6">
     <div class="event-container mx-auto max-w-4xl px-4 sm:px-6">
         @php
             $locationText = trim((string) ($event->location ?? ''));
