@@ -114,30 +114,63 @@ if ($nextEvent === null && $latestEvent !== null) {
                     {{ is_array($nextEvent) ? ($nextEvent['title'] ?? 'Kegiatan') : ($nextEvent->title ?? 'Kegiatan') }}
                 </h2>
 
-                {{-- Meta row (inline) --}}
-                <div class="flex flex-col items-center gap-2.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center md:justify-start sm:gap-x-8 sm:gap-y-2">
+                @php
+                    $locationText = is_array($nextEvent) ? ($nextEvent['location'] ?? '-') : ($nextEvent->location ?? '-');
+                    $locationHref = null;
 
-                    {{-- Location --}}
-                    @php
-                        $locationText = is_array($nextEvent) ? ($nextEvent['location'] ?? '-') : ($nextEvent->location ?? '-');
-                        $locationHref = null;
+                    if (is_array($nextEvent)) {
+                        $locationHref = trim((string) ($nextEvent['location_url'] ?? '')) ?: null;
+                    } else {
+                        $locationHref = trim((string) ($nextEvent->location_url ?? '')) ?: null;
+                    }
 
-                        if (is_array($nextEvent)) {
-                            $locationHref = trim((string) ($nextEvent['location_url'] ?? '')) ?: null;
-                        } else {
-                            $locationHref = trim((string) ($nextEvent->location_url ?? '')) ?: null;
+                    if (empty($locationHref) && is_string($locationText) && $locationText !== '-') {
+                        if (filter_var($locationText, FILTER_VALIDATE_URL)) {
+                            $locationHref = $locationText;
+                        } elseif (! empty($nextEvent['latitude'] ?? null) && ! empty($nextEvent['longitude'] ?? null)) {
+                            $locationHref = 'https://www.google.com/maps/search/?api=1&query=' . urlencode(($nextEvent['latitude'] ?? '') . ',' . ($nextEvent['longitude'] ?? ''));
+                        } elseif (! empty($nextEvent->latitude ?? null) && ! empty($nextEvent->longitude ?? null)) {
+                            $locationHref = 'https://www.google.com/maps/search/?api=1&query=' . urlencode(($nextEvent->latitude ?? '') . ',' . ($nextEvent->longitude ?? ''));
                         }
+                    }
+                @endphp
 
-                        if (empty($locationHref) && is_string($locationText) && $locationText !== '-') {
-                            if (filter_var($locationText, FILTER_VALIDATE_URL)) {
-                                $locationHref = $locationText;
-                            } elseif (! empty($nextEvent['latitude'] ?? null) && ! empty($nextEvent['longitude'] ?? null)) {
-                                $locationHref = 'https://www.google.com/maps/search/?api=1&query=' . urlencode(($nextEvent['latitude'] ?? '') . ',' . ($nextEvent['longitude'] ?? ''));
-                            } elseif (! empty($nextEvent->latitude ?? null) && ! empty($nextEvent->longitude ?? null)) {
-                                $locationHref = 'https://www.google.com/maps/search/?api=1&query=' . urlencode(($nextEvent->latitude ?? '') . ',' . ($nextEvent->longitude ?? ''));
-                            }
-                        }
-                    @endphp
+                {{-- Mobile-only metadata row: location, date, and guide side-by-side --}}
+                <div class="flex flex-row flex-wrap items-center justify-center gap-2.5 text-center md:hidden">
+                    <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                        </svg>
+                        @if(! empty($locationHref))
+                            <a href="{{ $locationHref }}" target="_blank" rel="noopener" class="font-medium text-slate-900 hover:underline dark:text-white">{{ $locationText }}</a>
+                        @else
+                            <span class="font-medium text-slate-900 dark:text-white">{{ $locationText }}</span>
+                        @endif
+                    </div>
+
+                    <div class="flex items-center gap-2 text-sm text-gray-700 dark:text-gray-300">
+                        <svg class="w-4 h-4 text-gray-600 dark:text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"></line>
+                            <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"></line>
+                            <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"></line>
+                        </svg>
+                        <span class="font-medium">{{ is_array($nextEvent) ? ($nextEvent['date_formatted'] ?? '-') : ($nextEvent->date_formatted ?? '-') }}</span>
+                    </div>
+
+                    @if (is_array($nextEvent) ? ! empty($nextEvent['guide_url']) : ! empty($nextEvent->guide_url))
+                        <a href="{{ is_array($nextEvent) ? ($nextEvent['guide_url'] ?? '#') : ($nextEvent->guide_url ?? '#') }}" class="flex items-center gap-1.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
+                            <div class="w-4 h-4 rounded-full border-2 border-slate-300 dark:border-slate-500 flex items-center justify-center flex-shrink-0">
+                                <span class="text-[10px] font-bold text-gray-600 dark:text-gray-400">?</span>
+                            </div>
+                            <span class="font-medium">Panduan Kegiatan</span>
+                        </a>
+                    @endif
+                </div>
+
+                {{-- Desktop metadata row remains unchanged --}}
+                <div class="hidden md:flex md:flex-wrap md:items-center md:justify-start md:gap-x-8 md:gap-y-2">
                     <div class="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300">
                         <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 flex-shrink-0" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
@@ -150,35 +183,30 @@ if ($nextEvent === null && $latestEvent !== null) {
                         @endif
                     </div>
 
-                    <div class="flex flex-col items-center gap-2.5 sm:flex-row sm:items-center"> 
-                        {{-- Date --}}
-                        <div class="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300">
-                            <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
-                                <rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
-                                <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"></line>
-                                <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"></line>
-                                <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"></line>
-                            </svg>
-                            <span class="font-medium">{{ is_array($nextEvent) ? ($nextEvent['date_formatted'] ?? '-') : ($nextEvent->date_formatted ?? '-') }}</span>
-                        </div>
+                    <div class="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300">
+                        <svg class="w-5 h-5 text-gray-600 dark:text-gray-400 flex-shrink-0" fill="currentColor" viewBox="0 0 24 24">
+                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" fill="none" stroke="currentColor" stroke-width="2"></rect>
+                            <line x1="16" y1="2" x2="16" y2="6" stroke="currentColor" stroke-width="2"></line>
+                            <line x1="8" y1="2" x2="8" y2="6" stroke="currentColor" stroke-width="2"></line>
+                            <line x1="3" y1="10" x2="21" y2="10" stroke="currentColor" stroke-width="2"></line>
+                        </svg>
+                        <span class="font-medium">{{ is_array($nextEvent) ? ($nextEvent['date_formatted'] ?? '-') : ($nextEvent->date_formatted ?? '-') }}</span>
+                    </div>
 
-                        {{-- Guide --}}
-                        @if (is_array($nextEvent) ? ! empty($nextEvent['guide_url']) : ! empty($nextEvent->guide_url))
+                    @if (is_array($nextEvent) ? ! empty($nextEvent['guide_url']) : ! empty($nextEvent->guide_url))
                         <a href="{{ is_array($nextEvent) ? ($nextEvent['guide_url'] ?? '#') : ($nextEvent->guide_url ?? '#') }}" class="flex items-center gap-2.5 text-sm text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white transition-colors">
                             <div class="w-5 h-5 rounded-full border-2 border-slate-300 dark:border-slate-500 flex items-center justify-center flex-shrink-0">
                                 <span class="text-xs font-bold text-gray-600 dark:text-gray-400">?</span>
                             </div>
                             <span class="font-medium">Panduan Kegiatan</span>
                         </a>
-                        @endif
-                    </div>
-
+                    @endif
                 </div>
             </div>
 
             {{-- ── RIGHT: Label + Countdown ── --}}
-            <div class="order-2 flex-shrink-0 w-full md:w-auto">
-                <p class="text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 tracking-wide text-center md:text-left">Kegiatan Mendatang</p>
+            <div class="order-2 md:order-2 flex-shrink-0 w-full md:w-auto">
+                <p class="hidden md:block text-sm font-bold text-gray-600 dark:text-gray-300 mb-3 tracking-wide text-center md:text-left">Kegiatan Mendatang</p>
 
                 {{-- Countdown digits --}}
                 <div class="flex items-baseline justify-center md:justify-start gap-1.5 font-mono">
@@ -193,7 +221,7 @@ if ($nextEvent === null && $latestEvent !== null) {
             </div>
 
             {{-- ── RIGHT: Logo + Theme ── --}}
-            <div class="order-3 flex-shrink-0 flex items-center justify-center gap-4 md:flex-col md:items-center w-full md:w-auto">
+            <div class="order-3 md:order-3 flex-shrink-0 flex items-center justify-center gap-4 md:flex-col md:items-center w-full md:w-auto">
                 <div class="w-20 h-20 sm:w-24 sm:h-24 md:w-32 md:h-32 flex items-center justify-center flex-shrink-0 overflow-hidden rounded-2xl border border-transparent bg-transparent shadow-none dark:border-transparent dark:bg-transparent">
                     @php
                         $eventLogo = is_array($nextEvent) ? ($nextEvent['logo_path'] ?? null) : ($nextEvent->logo_path ?? null);

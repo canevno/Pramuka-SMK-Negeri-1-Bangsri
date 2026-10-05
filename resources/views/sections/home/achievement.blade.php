@@ -3,7 +3,7 @@
 @endphp
 
 <section class="bg-white pt-8 pb-10 dark:bg-slate-950 transition-colors duration-200">
-    <div class="mx-auto max-w-[1400px] px-2 sm:px-4 lg:px-6">
+    <div class="mx-auto max-w-[1280px] px-4 sm:px-4 lg:px-6">
         <div class="mb-6 pb-4 text-center">
             <h2 class="text-2xl font-semibold tracking-tight text-slate-900 dark:text-white sm:text-3xl">
                 Prestasi Pangkalan SMKN 1 Bangsri
@@ -62,23 +62,26 @@
                                 {{ $achievement['title'] }}
                             </h3>
 
-                            <div class="mt-3 space-y-2 pt-1 text-[11px] text-slate-600 dark:text-slate-300">
-                                <div class="flex items-center gap-2">
-                                    <svg class="h-3.5 w-3.5 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                        <path d="M8 2v3M16 2v3M3.5 9.5h17M5 5.5h14a1.5 1.5 0 011.5 1.5v11A1.5 1.5 0 0119 19.5H5A1.5 1.5 0 013.5 18V7A1.5 1.5 0 015 5.5z"/>
-                                    </svg>
-                                    <span class="font-medium">{{ $dateLabel }}</span>
-                                </div>
-
-                                @if ($location)
+                            <div class="mt-3 pt-1 text-[11px] text-slate-600 dark:text-slate-300">
+                                <div class="flex flex-wrap items-center gap-2">
                                     <div class="flex items-center gap-2">
                                         <svg class="h-3.5 w-3.5 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                            <path d="M12 21s6-5.686 6-11a6 6 0 10-12 0c0 5.314 6 11 6 11z"/>
-                                            <circle cx="12" cy="10" r="2.5"/>
+                                            <path d="M8 2v3M16 2v3M3.5 9.5h17M5 5.5h14a1.5 1.5 0 011.5 1.5v11A1.5 1.5 0 0119 19.5H5A1.5 1.5 0 013.5 18V7A1.5 1.5 0 015 5.5z"/>
                                         </svg>
-                                        <span class="truncate">{{ $location }}</span>
+                                        <span class="font-medium">{{ $dateLabel }}</span>
                                     </div>
-                                @endif
+
+                                    @if ($location)
+                                        <div class="flex items-center gap-2">
+                                            <span class="text-slate-300">•</span>
+                                            <svg class="h-3.5 w-3.5 shrink-0 text-slate-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <path d="M12 21s6-5.686 6-11a6 6 0 10-12 0c0 5.314 6 11 6 11z"/>
+                                                <circle cx="12" cy="10" r="2.5"/>
+                                            </svg>
+                                            <span class="truncate">{{ $location }}</span>
+                                        </div>
+                                    @endif
+                                </div>
                             </div>
 
                             <div class="mt-auto flex items-center gap-2 pt-3">
