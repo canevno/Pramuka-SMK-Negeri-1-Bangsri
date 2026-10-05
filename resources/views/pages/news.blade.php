@@ -78,7 +78,7 @@
                         </div>
                     </div>
 
-                    <h1 id="featured-title" class="mb-5 text-2xl font-bold leading-[1.1] text-slate-900 sm:text-[2.5rem]">{{ $featured['title'] }}</h1>
+                    <h1 id="featured-title" class="mb-5 text-2xl font-bold leading-[1.1] text-slate-900 sm:text-3xl">{{ $featured['title'] }}</h1>
 
                     <div class="mt-5 overflow-hidden rounded-xl bg-slate-100">
                         <img id="featured-image" src="{{ $featured['image'] }}" alt="{{ $featured['alt'] }}" class="h-[220px] w-full object-cover sm:h-[330px]">
@@ -201,29 +201,11 @@
                 .desc-scroll {
                     scroll-behavior: smooth;
                     overscroll-behavior: contain;
-                    scrollbar-width: thin;
-                    scrollbar-color: transparent transparent;
-                }
-                .desc-scroll:hover {
-                    scrollbar-color: #94a3b8 transparent;
+                    scrollbar-width: none;
+                    -ms-overflow-style: none;
                 }
                 .desc-scroll::-webkit-scrollbar {
-                    width: 6px;
-                }
-                .desc-scroll::-webkit-scrollbar-thumb {
-                    background: transparent;
-                    border-radius: 9999px;
-                }
-                .desc-scroll:hover::-webkit-scrollbar-thumb {
-                    background: #94a3b8;
-                }
-                @media (hover: none) {
-                    .desc-scroll {
-                        scrollbar-color: #94a3b8 transparent;
-                    }
-                    .desc-scroll::-webkit-scrollbar-thumb {
-                        background: #94a3b8;
-                    }
+                    display: none;
                 }
 
                 @media (min-width: 1024px) {

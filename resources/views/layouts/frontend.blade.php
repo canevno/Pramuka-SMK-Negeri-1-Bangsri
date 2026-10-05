@@ -4,9 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pramuka SMK Negeri 1 Bangsri</title>
-    <link rel="icon" href="/images/logos/smklogo.png" type="image/png" sizes="32x32">
-    <link rel="apple-touch-icon" href="/images/logos/smklogo.png">
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="icon" href="{{ asset('favicon.ico') }}?v=3" sizes="48x48">
+    <link rel="icon" type="image/png" sizes="32x32" href="{{ asset('favicon-32.png') }}?v=3">
+    <link rel="apple-touch-icon" href="{{ asset('apple-touch-icon.png') }}?v=3">
+        <link rel="preconnect" href="https://cdnjs.cloudflare.com">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" media="print" onload="this.media='all'">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
